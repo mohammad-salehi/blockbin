@@ -19,8 +19,176 @@
   }
 }
 
+@font-face {
+  font-family: sans;
+  src: url('../../public/fonts/IRANSansXFaNum-Medium.ttf');
+}
+.vazir{
+  font-family: vazir;
+}
+*{
+  font-family: sans !important;
+  direction: rtl;
+}
+
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+}
+
+.container {
+  display: flex;
+  height: 100vh;
+  width: 100%;
+  background: blue;
+  margin: 0px !important;
+  max-width: none !important;
+  background: #090979;
+  background: linear-gradient(90deg, rgb(19, 61, 153) 0%, rgb(40, 121, 175) 100%);
+}
+
+/* بخش چپ (لوگو) */
+.left {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.logo {
+  max-width: 60%;
+  height: auto;
+}
+
+/* بخش راست (فرم) */
+.right {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 0 1rem;
+}
+
+/* خود فرم */
+.login-form {
+  width: 100%;
+  max-width: 560px;
+}
+
+/* ورودی‌ها با آیکن */
+.icon-group {
+  position: relative;
+  margin-bottom: 16px;
+
+}
+
+.icon-group .icon {
+  position: absolute;
+  left: 16px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 24px;
+  color: #7a8a9f;
+}
+
+.icon-group input {
+  width: 100%;
+  height: 48px;
+  padding: 0 16px 0 48px;
+  border: none;
+  border-radius: 6px;
+  background-color: #f0f4f8;
+  font-size: 14px;
+  outline: none;
+}
+
+.icon-group input::placeholder {
+  color: #9aa0a6;
+}
+
+/* Remember me و Forgot Password */
+.options {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24px;
+  font-size: 13px;
+}
+
+.options .forgot {
+  text-decoration: none;
+  color: rgb(218, 218, 218);
+}
+
+/* چک‌باکس سفارشی */
+.remember {
+  position: relative;
+  padding-left: 24px;
+  cursor: pointer;
+  user-select: none;
+  color: #4a4a4a;
+}
+
+.remember input {
+  position: absolute;
+  opacity: 0;
+  cursor: pointer;
+}
+
+.checkmark {
+  position: absolute;
+  top: 2px;
+  left: 0;
+  height: 16px;
+  width: 16px;
+  background-color: #e6e6e6;
+  border-radius: 3px;
+}
+
+.remember input:checked~.checkmark {
+  background-color: #397ac8;
+}
+
+.checkmark:after {
+  content: "";
+  position: absolute;
+  display: none;
+}
+
+.remember input:checked~.checkmark:after {
+  display: block;
+}
+
+.remember .checkmark:after {
+  left: 4px;
+  top: 1px;
+  width: 5px;
+  height: 10px;
+  border: solid white;
+  border-width: 0 2px 2px 0;
+  transform: rotate(45deg);
+}
+
+/* دکمه LOGIN */
+.btn-login {
+  width: 100%;
+  height: 48px;
+  border: none;
+  border-radius: 6px;
+  background-color: #528bd1;
+  color: #fff;
+  font-size: 16px;
+  cursor: pointer;
+  text-transform: uppercase;
+}
+
+/* واکنش‌گرا: مخفی‌کردن بخش چپ در موبایل */
+@media (max-width: 768px) {
+  .left {
+    display: none;
+  }
+
+  .right {
+    flex: 1;
+  }
 }
