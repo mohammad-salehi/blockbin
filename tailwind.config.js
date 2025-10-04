@@ -1,4 +1,5 @@
 // tailwind.config.js
+
 const config = {
   darkMode: "class",
   content: [
@@ -70,4 +71,5 @@ const config = {
   },
   presets: [require("@heathmont/moon-themes")],
 };
+
 export default config;
