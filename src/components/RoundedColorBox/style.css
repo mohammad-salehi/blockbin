@@ -1,0 +1,53 @@
+@import "tailwindcss";
+
+/* متغیرهای اصلی که در @theme قبلاً داری */
+
+@keyframes spin-angle {
+  to {
+    --angle: 1turn;
+  }
+}
+
+/* 🔥 کلاس سفارشی برای باکس با بوردر متحرک */
+.animated-border-box {
+  --border-width: 2px;
+  --radius: 16px;
+  --angle: 0turn;
+  position: relative;
+  border-radius: var(--radius);
+  border: var(--border-width) solid transparent;
+}
+
+.animated-border-box::before {
+    content: "";
+    position: absolute;
+    inset: calc(var(--border-width) * -1);
+    border: inherit;
+    border-radius: inherit;
+    background-image: conic-gradient(
+      from var(--angle),
+      var(--color-borderNeutral) 80%,
+      var(--dynamic-color) 88%,
+      var(--dynamic-color) 92%,
+      var(--color-borderNeutral) 100%
+    );
+    background-origin: border-box;
+    -webkit-mask:
+      linear-gradient(black, black) content-box,
+      linear-gradient(black, black);
+    mask:
+      linear-gradient(black, black),
+      linear-gradient(black, black);
+    -webkit-mask-clip: content-box, border-box;
+    mask-clip: content-box, border-box;
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    animation: spin-angle 6s linear infinite;
+  }
+  
+
+@property --angle {
+  syntax: "<angle>";
+  inherits: true;
+  initial-value: 0turn;
+}

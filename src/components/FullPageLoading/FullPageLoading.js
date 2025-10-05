@@ -14,7 +14,7 @@ export default function FullPageLoading() {
     }, [letters.length]);
 
     return (
-        <div className="fixed inset-0 z-500 grid place-items-center bg-boxColor/30  backdrop-blur-sm w-full">
+        <div className="fixed inset-0 z-500 grid place-items-center bg-boxColor/50  backdrop-blur-sm w-full">
             <div className="pointer-events-none">
                 <div className="flex justify-center items-center h-screen ">
                     <h1 className="text-[64px] sm:text-[96px] font-bold tracking-[8px] text-white font-sans block">

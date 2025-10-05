@@ -22,6 +22,7 @@
 @import "tailwindcss";
 
 /* توکن‌های تم در Tailwind v4 */
+
 @theme {
   --color-primary: #2fa2dc;
   --color-bgPrimary: #EAF6FC;
@@ -36,11 +37,16 @@
   --color-buttonBorderColor: #ededed;
   --color-buttonSelectedColor: #eaf6fc;
   --color-buttonSelectedBorderColor: #9fd4ef;
+  --color-borderNeutral: #e6e6e6; /* رنگ روشن برای حالت لایت */
+  --gradient-main: linear-gradient(
+    to bottom right,
+    var(--color-bgColor) 0%,
+    var(--color-bgColor2) 100%
+  );
 
   --font-iranSans: "IRANSansXFaNum", sans-serif;
 }
 
-/* 🌙 تم تیره */
 :root.dark {
   --color-primary: #4fc2fc;
   --color-bgPrimary: rgb(94 94 93);
@@ -55,6 +61,19 @@
   --color-buttonBorderColor: #6B6E74;
   --color-buttonSelectedColor: #54565C;
   --color-buttonSelectedBorderColor: #2fa2dc;
+  --color-borderNeutral: #444; /* رنگ تیره‌تر برای حالت دارک */
+  --gradient-main: linear-gradient(
+    to bottom right,
+    var(--color-bgColor) 0%,
+    var(--color-bgColor2) 100%
+  );
+}
+
+/* 🔧 این خط را اضافه کن */
+.bg-gradient-main {
+  background-image: var(--gradient-main);
+  background-repeat: no-repeat;
+  background-size: cover;
 }
 
 @font-face {
