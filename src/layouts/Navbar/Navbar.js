@@ -21,7 +21,7 @@ const Navbar = ({ isOpen, setIsOpen, isMobileOpen, setIsMobileOpen, toggleDarkMo
     const navItems = [
         {
             link: "dashboard",
-            label: "داشبورد",
+            label: "کاوشگر",
             icon: (
                 <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
                     <mask id="path-1-inside-1_92_1581" fill="white">
@@ -33,7 +33,7 @@ const Navbar = ({ isOpen, setIsOpen, isMobileOpen, setIsMobileOpen, toggleDarkMo
         },
         {
             link: "exchanges-list",
-            label: "لیست صرافی‌ها",
+            label: "موجودیت‌ها",
             icon: (
                 <svg width="20px" height="20px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                     <path d="M8 6.00067L21 6.00139M8 12.0007L21 12.0015M8 18.0007L21 18.0015M3.5 6H3.51M3.5 12H3.51M3.5 18H3.51M4 6C4 6.27614 3.77614 6.5 3.5 6.5C3.22386 6.5 3 6.27614 3 6C3 5.72386 3.22386 5.5 3.5 5.5C3.77614 5.5 4 5.72386 4 6ZM4 12C4 12.2761 3.77614 12.5 3.5 12.5C3.22386 12.5 3 12.2761 3 12C3 11.7239 3.22386 11.5 3.5 11.5C3.77614 11.5 4 11.7239 4 12ZM4 18C4 18.2761 3.77614 18.5 3.5 18.5C3.22386 18.5 3 18.2761 3 18C3 17.7239 3.22386 17.5 3.5 17.5C3.77614 17.5 4 17.7239 4 18Z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
@@ -42,7 +42,7 @@ const Navbar = ({ isOpen, setIsOpen, isMobileOpen, setIsMobileOpen, toggleDarkMo
         },
         {
             link: "add-new-exchange",
-            label: "افزودن صرافی جدید",
+            label: "سرویس ریسک",
             icon: (
                 <svg width="20px" height="20px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                     <path d="M15 12L12 12M12 12L9 12M12 12L12 9M12 12L12 15" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
@@ -61,7 +61,7 @@ const Navbar = ({ isOpen, setIsOpen, isMobileOpen, setIsMobileOpen, toggleDarkMo
         },
         {
             link: "ticket",
-            label: "تیکت‌گذاری",
+            label: "پرونده‌ها",
             icon: (
                 <svg fill="currentColor" version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlnsXlink="http://www.w3.org/1999/xlink"
                     width="20px" height="20px" viewBox="796 796 200 200" enableBackground="new 796 796 200 200" xmlSpace="preserve">
@@ -94,20 +94,26 @@ const Navbar = ({ isOpen, setIsOpen, isMobileOpen, setIsMobileOpen, toggleDarkMo
             {/* Sidebar */}
             <div
                 className={clsx(
-                    "fixed top-0 right-0 h-screen w-64 shadow-sm transition-transform duration-300 z-50 bg-boxColor dark:bg-boxColor-dark dark:text-titleText-dark",
+                    "fixed top-0 right-0 h-screen w-64 shadow-sm transition-transform duration-300 z-50 bg-boxColor",
                     {
                         "translate-x-full lg:translate-x-0": (!isOpen && !isMobileOpen),
                         "translate-x-0": (isOpen || isMobileOpen),
                     }
                 )}
             >
-                <div className="flex items-center p-4 border-b dark:border-[#666]">
-                    <img src='../../images/pantaLogo.png' className="w-12" alt="image" />
-                    <span className="text-sm font-bold mr-4 text-titleText dark:text-titleText-dark">بلاکبین</span>
+                <div className="flex items-center p-4 border-b border-boxBorderColor">
+                    {/* حالت روشن */}
+                    <img
+                        src='../../images/logo_dark.png'
+                        className="w-48 block m-auto"
+                    />
+
+                    
+
                 </div>
 
                 <div className="p-4 space-y-4 block lg:hidden">
-                    <button className="flex items-center justify-center border border-gray-200 bg-gray-100 hover:bg-gray-200 transition ml-2 h-9 w-9 rounded-full dark:text-gray-200 dark:bg-bgColor-dark dark:hover:bg-gray-900 dark:border-gray-600" onClick={toggleDarkMode}>
+                    <button className="flex items-center justify-center border border-gray-200 bg-gray-100 hover:bg-gray-200 transition ml-2 h-9 w-9 rounded-full " onClick={toggleDarkMode}>
                         {
                             isDarkMode ?
                                 <div>
@@ -128,15 +134,15 @@ const Navbar = ({ isOpen, setIsOpen, isMobileOpen, setIsMobileOpen, toggleDarkMo
                 </div>
 
 
-                <nav className="p-2 space-y-4">
+                <nav className="p-2 space-y-4 mt-8">
                     {navItems.map((item) => (
-                        <a href={`/panel/${item.link}`} style={{ display: 'block', textDecoration: 'none', color: 'inherit' }} key={item.label}>
+                        <a href={`/panel/${item.link}`} style={{ display: 'block', textDecoration: 'none', color: 'inherit' }} key={item.label} className="">
                             <button
 
-                                className={`flex items-center space-x-2 w-full px-4 py-2 rounded-md ${item.link === pathName ? "bg-BgPrimary text-primary dark:bg-BgPrimary-dark dark:text-primary-dark" : "hover:bg-gray-200 dark:hover:bg-gray-600"}  transition`}
+                                className={`flex items-center space-x-2 w-full px-4 py-2 rounded-md ${item.link === pathName ? "bg-bgPrimary text-primary " : "hover:bg-bgPrimary cursor-pointer "}  transition`}
                             >
-                                <span className={`text-xl ml-2 ${item.link === pathName ? " text-primary dark:text-titleText-dark" : ""} `}>{item.icon}</span>
-                                <span className={` ${item.link === pathName ? " text-primary dark:text-titleText-dark" : "text-titleText dark:text-titleText-dark"} `}>{item.label}</span>
+                                <span className={`text-xl ml-2 ${item.link === pathName ? " text-primary " : "text-textColor"} `}>{item.icon}</span>
+                                <span className={` ${item.link === pathName ? " text-primary " : "text-textColor "} `}>{item.label}</span>
                             </button>
                         </a>
 
@@ -144,18 +150,18 @@ const Navbar = ({ isOpen, setIsOpen, isMobileOpen, setIsMobileOpen, toggleDarkMo
                     <div className="mt-auto pt-12">
                         <button
                             key={'exit'}
-                            className="flex items-center space-x-2 w-full px-4 py-2 rounded-md hover:bg-gray-200 dark:hover:bg-gray-600 transition"
+                            className="flex items-center space-x-2 w-full px-4 py-2 rounded-md hover:bg-bgPrimary transition cursor-pointer "
                             onClick={() => {
                                 document.cookie = `${'token'}=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;`;
                                 window.location.assign('/')
                             }}
                         >
-                            <span className="text-xl ml-2 dark:text-gray-200">
+                            <span className="text-xl ml-2 text-textColor">
                                 <svg width="20px" height="20px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                                     <path d="M10 12H18M18 12L15.5 9.77778M18 12L15.5 14.2222M18 7.11111V5C18 4.44772 17.5523 4 17 4H7C6.44772 4 6 4.44772 6 5V19C6 19.5523 6.44772 20 7 20H17C17.5523 20 18 19.5523 18 19V16.8889" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" />
                                 </svg>
                             </span>
-                            <span className="text-titleText dark:text-titleText-dark"
+                            <span className="text-textColor "
 
                             >خروج</span>
                         </button>

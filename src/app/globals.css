@@ -19,6 +19,44 @@
   }
 }
 
+@import "tailwindcss";
+
+/* توکن‌های تم در Tailwind v4 */
+@theme {
+  --color-primary: #2fa2dc;
+  --color-bgPrimary: #EAF6FC;
+  --color-textColor: #606060;
+  --color-redText: #ff0000;
+  --color-bgColor: #FBFAFA;
+  --color-boxColor: #FFFFFF;
+  --color-boxBorderColor: #D8D8D8;
+  --color-boxbordercolor2: #FFF;
+  --color-buttonColor: #FFFFFF;
+  --color-buttonBorderColor: #ededed;
+  --color-buttonSelectedColor: #eaf6fc;
+  --color-buttonSelectedBorderColor: #9fd4ef;
+  --color-overlay: rgba(255, 255, 255, 0.3);
+
+  --font-iranSans: "IRANSansXFaNum", sans-serif;
+}
+
+/* 🌙 تم تیره */
+:root.dark {
+  --color-primary: #4fc2fc;
+  --color-bgPrimary: rgb(94 94 93);
+  --color-textColor: #dcdcdc;
+  --color-redText: #ff4d4d;
+  --color-bgColor: #343a3f;
+  --color-boxColor: #494b50;
+  --color-boxBorderColor: #6B6E74;
+  --color-boxbordercolor2: #6B6E74;
+  --color-buttonColor: #54565C;
+  --color-buttonBorderColor: #6B6E74;
+  --color-buttonSelectedColor: #54565C;
+  --color-buttonSelectedBorderColor: #2fa2dc;
+  --color-overlay: rgba(0, 0, 0, 0.3);
+}
+
 @font-face {
   font-family: sans;
   src: url('../../public/fonts/IRANSansXFaNum-Medium.ttf');
