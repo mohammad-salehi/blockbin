@@ -1,37 +1,40 @@
 import React, { useEffect, useState } from "react";
 // import { Card, Col, Row } from 'reactstrap'   ← حذف
 import "./style.css";
-// import { GetRequest } from '../../../../newProcessors/GetRequest'
-// import { serverAddress } from '../../../../address'
-// import { getSymbole } from '../../../../newProcessors/NetworksData'
+import { GetRequest } from "@/functions/GetRequest";
+import { serverAddress } from "@/functions/ServerAddress";
 
 const RoundedColorBox = (props) => {
-    const [Price, SetPrice] = useState(123000);
-    const [Block, SetBlock] = useState(2891022);
+    const [Price, SetPrice] = useState(0);
+    const [Block, SetBlock] = useState(0);
 
-    // useEffect(() => {
-    //     try {
-    //         document.documentElement.style.setProperty('--dynamic-color', '#01153a');
+    useEffect(() => {
+        try {
+            document.documentElement.style.setProperty('--dynamic-color', '#01153a');
 
-    //     } catch (error) {
-    //         document.documentElement.style.setProperty('--dynamic-color', 'black');
+        } catch (error) {
+            document.documentElement.style.setProperty('--dynamic-color', 'black');
 
-    //     }
-    //     GetRequest(`${serverAddress}/explorer/price-service/?timestamp=${Math.trunc(Date.now() / 1000)}&symbol=${props.symbol !== 'BSC' ? props.symbol : 'BNB'}`)
-    //         .then((response) => {
-    //             SetPrice(response.data.price)
-    //         })
-    //         .catch((err) => {
-    //             console.log(err)
-    //         })
+        }
+        GetRequest(`${serverAddress}/dashboard/explorer/price-service/?timestamp=${Math.trunc(Date.now() / 1000)}&symbol=${props.symbol !== 'BSC' ? props.symbol : 'BNB'}`)
+            .then((response) => {
+                console.log(response)
+                SetPrice(response.data.price)
+            })
+            .catch((err) => {
+                console.log(err)
+            })
 
-    //     GetRequest(`${serverAddress}/explorer/latest-block-info/?network=${props.symbol}`)
-    //         .then((response) => {
-    //             if (response.status === 200) {
-    //                 SetBlock(response.data.block_number)
-    //             }
-    //         })
-    // }, [])
+        GetRequest(`${serverAddress}/dashboard/explorer/latest-block-info/?network=${props.symbol}`)
+            .then((response) => {
+                if (response.status === 200) {
+                    SetBlock(response.data.block_number)
+                }
+            })
+            .catch((err) => {
+                console.log(err)
+            })
+    }, [])
 
     return (
         <div

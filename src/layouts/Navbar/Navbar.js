@@ -104,7 +104,7 @@ const Navbar = ({ isOpen, setIsOpen, isMobileOpen, setIsMobileOpen, toggleDarkMo
                 <div className="flex items-center p-4 border-b border-boxBorderColor">
                     {/* حالت روشن */}
                     <img
-                        src='../../images/logo_dark.png'
+                        src='../../../images/logo_dark.png'
                         className="w-48 block m-auto"
                     />
 
@@ -139,7 +139,7 @@ const Navbar = ({ isOpen, setIsOpen, isMobileOpen, setIsMobileOpen, toggleDarkMo
                         <a href={`/panel/${item.link}`} style={{ display: 'block', textDecoration: 'none', color: 'inherit' }} key={item.label} className="">
                             <button
 
-                                className={`flex items-center space-x-2 w-full px-4 py-2 rounded-md ${item.link === pathName ? "bg-bgPrimary text-primary " : "hover:bg-bgPrimary cursor-pointer "}  transition`}
+                                className={`flex items-center space-x-2 w-full px-4 py-2 rounded-md ${item.link === pathName ? "bg-bgPrimary text-primary cursor-pointer  " : "hover:bg-bgPrimary cursor-pointer "}  transition`}
                             >
                                 <span className={`text-xl ml-2 ${item.link === pathName ? " text-primary " : "text-textColor"} `}>{item.icon}</span>
                                 <span className={` ${item.link === pathName ? " text-primary " : "text-textColor "} `}>{item.label}</span>

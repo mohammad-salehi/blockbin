@@ -1,14 +1,52 @@
 import MainInput from '@/components/MainInput/MainInput'
 import RoundedColorBox from '@/components/RoundedColorBox/RoundedColorBox'
 import { Networks } from '@/functions/Networks'
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
+import toast from 'react-hot-toast'
+import { GetRequest } from '@/functions/GetRequest'
+import { serverAddress } from '@/functions/ServerAddress'
+import NetworkSelection from '@/components/networkSelection/NetworkSelection'
 
-const Main = ({SetLoading}) => {
+const Main = ({ SetLoading }) => {
 
     const [inputText, SetInputText] = useState('')
+    const [query, Setquery] = useState('')
+    const [NetworkFounded, SetNetworkFounded] = useState([])
+    const [ShowSelection, SetShowSelection] = useState(false)
+
     const onSubmit = () => {
         SetLoading(true)
+
+        GetRequest(`${serverAddress}/dashboard/explorer/network-detection/?query=${inputText}`)
+            .then((response) => {
+                console.log(response)
+                SetLoading(false)
+                Setquery(response.data.query)
+                if (response.data.network.length > 1) {
+                    SetNetworkFounded(response.data.network)
+                    SetShowSelection(true)
+                } else if (response.data.network.length === 1) {
+                    window.location.assign(`/panel/dashboard/${response.data.query}/${inputText}`)
+                }
+            })
+            .catch((err) => {
+                SetLoading(false)
+                console.log(err)
+                return toast.error('آدرس مورد نظر یافت نشد', {
+                    position: 'bottom-left'
+                })
+            })
     }
+
+    const handleClickOutside = (event) => {
+        if (event.target.id !== "NetworkSelection") {
+            SetShowSelection(false)
+        }
+      };
+    
+      useEffect(() => {
+        document.addEventListener("click", handleClickOutside);
+      }, []);
     return (
         <div className='mt-16 max-w-7xl m-auto'>
             <h1 className='text-4xl font-bold text-textColor'>
@@ -41,14 +79,22 @@ const Main = ({SetLoading}) => {
                 <p className='inline-block'>
                     نمونه کاوش
                 </p>
-
-                <p className='inline-block mr-4 bg-bgColor2 px-4 py-1 rounded-full cursor-pointer'>
+                <p className='inline-block mr-4 bg-bgColor2 px-4 py-1 rounded-full cursor-pointer' onClick={() => { SetInputText('TAngDVCCBBs5Z2v42N9KzvcGfdRhnaXrrG') }}>
                     آدرس
                 </p>
-                <p className='inline-block mr-4 bg-bgColor2 px-4 py-1 rounded-full cursor-pointer'>
+                <p className='inline-block mr-4 bg-bgColor2 px-4 py-1 rounded-full cursor-pointer' onClick={() => { SetInputText('38f6f5464e83eb65fc818b7164e5c88bd66c734f3ca7e39dbae9db80e69cea2a') }}>
                     تراکنش
                 </p>
             </h1>
+
+            {
+                ShowSelection ?
+                    <div className='mt-4'>
+                        <NetworkSelection FoundedType={query} networks={NetworkFounded} type='researcher' mode='main' address={inputText} />
+                    </div>
+                    :
+                    null
+            }
 
 
             <h1 className='text-lg font-bold text-textColor mt-8'>

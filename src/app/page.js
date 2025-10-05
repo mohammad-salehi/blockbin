@@ -26,7 +26,7 @@ export default function Home() {
       })
     } else {
       SetLoading(true)
-      axios.post(serverAddress + "/accounts/api/token/", {
+      axios.post(serverAddress + "/dashboard/accounts/api/token/", {
         username: username,
         password: password,
       })
@@ -45,13 +45,7 @@ export default function Home() {
               window.location.assign(getLastPath)
             }
             else if (Number(response.data.role.role_id) === 2 || Number(response.data.role.role_id) === 3) {
-              window.location.assign('/researcher')
-            } else if (Number(response.data.role.role_id) === 4) {
-              window.location.assign('/tax')
-            } else if (Number(response.data.role.role_id) === 5 || Number(response.data.role.role_id) === 27) {
-              window.location.assign('/miner')
-            } else if (Number(response.data.role.role_id) === 28) {
-              window.location.assign('/usdt')
+              window.location.assign('/panel/dashboard')
             }
           } else {
             SetLoading(false)
