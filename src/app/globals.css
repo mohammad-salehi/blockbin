@@ -35,7 +35,6 @@
   --color-buttonBorderColor: #ededed;
   --color-buttonSelectedColor: #eaf6fc;
   --color-buttonSelectedBorderColor: #9fd4ef;
-  --color-overlay: rgba(255, 255, 255, 0.3);
 
   --font-iranSans: "IRANSansXFaNum", sans-serif;
 }
@@ -54,7 +53,6 @@
   --color-buttonBorderColor: #6B6E74;
   --color-buttonSelectedColor: #54565C;
   --color-buttonSelectedBorderColor: #2fa2dc;
-  --color-overlay: rgba(0, 0, 0, 0.3);
 }
 
 @font-face {
