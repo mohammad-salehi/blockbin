@@ -107,9 +107,6 @@ const Navbar = ({ isOpen, setIsOpen, isMobileOpen, setIsMobileOpen, toggleDarkMo
                         src='../../../images/logo_dark.png'
                         className="w-48 block m-auto"
                     />
-
-                    
-
                 </div>
 
                 <div className="p-4 space-y-4 block lg:hidden">

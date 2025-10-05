@@ -88,10 +88,10 @@ export default function Home() {
   useEffect(() => {
     const token = Cookies.get('access')
     if (token !== undefined && token !== 0 && token !== '0') {
-      GetRequest(`${serverAddress}/explorer/backendversion`)
+      GetRequest(`${serverAddress}/dashboard/explorer/backendversion`)
         .then((response) => {
           if (response.status === 200) {
-            window.location.assign('/researcher')
+            window.location.assign('/panel/dashboard')
           }
         })
     }

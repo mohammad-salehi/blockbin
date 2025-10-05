@@ -66,7 +66,7 @@ const Main = ({ SetLoading }) => {
                     جست‌وجو در
                 </p>
                 <p className='inline-block mr-1 ml-1 text-primary'>
-                    8 شبکه
+                    {Networks.length} شبکه
                 </p>
                 <p className='inline-block'>
                     پشتیبانی‌شده
