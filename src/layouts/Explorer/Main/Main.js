@@ -26,7 +26,7 @@ const Main = ({ SetLoading }) => {
                     SetNetworkFounded(response.data.network)
                     SetShowSelection(true)
                 } else if (response.data.network.length === 1) {
-                    window.location.assign(`/panel/dashboard/${response.data.query}/${inputText}`)
+                    window.location.assign(`/panel/dashboard/${response.data.query}/${response.data.network}/${inputText}`)
                 }
             })
             .catch((err) => {

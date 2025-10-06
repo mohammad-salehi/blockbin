@@ -18,7 +18,7 @@ const NetworkSelection = ({ networks, FoundedType, address }) => {
             {
                 networks.map((network, index) => {
                     return (
-                        <a style={{ color: 'inherit' }} className='' href={`/panel/dashboard/${FoundedType}/${address}`}>
+                        <a style={{ color: 'inherit' }} className='' href={`/panel/dashboard/${Networks.find(item => item.symbole === network).symbole}/${FoundedType}/${address}`}>
                             <div className='m-1 p-2 selectNetworkBox hover:bg-bgPrimary cursor-pointer rounded-xl' style={{  transition: '0.2s', textAlign: 'right' }} id='SelectionNetworkForExploreLinks'>
                                 <img src={`/images/${Networks.find(item => item.symbole === network).symbole}.png`} style={{ width: '20px' }} className='inline-block'/>
                                 <span style={{ marginRight: '4px' }}>
