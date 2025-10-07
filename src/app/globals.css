@@ -27,10 +27,19 @@
   --color-primary: #2fa2dc;
   --color-bgPrimary: #EAF6FC;
   --color-textColor: #606060;
+  --color-textTitleColor: #909090;
   --color-redText: #ff0000;
   --color-bgColor: #FBFAFA;
   --color-bgColor2: #e8e8e8;
+  --color-TableBorder: #f3f3f3;
+  --color-TableRow: #FFFFFF;
+  --color-TextRed: rgb(173,1,1);
+  --color-BgRed: rgba(128, 0, 0, 0.1);
+  --color-TextGreen: rgb(27,96,33);
+  --color-BgGreen: rgba(0, 128, 0, 0.1);
   --color-boxColor: #FFFFFF;
+  --color-PaginationBg: #ddd;
+  --color-PaginationSelectedBg: #FFFFFF;
   --color-boxBorderColor: #D8D8D8;
   --color-boxbordercolor2: #FFF;
   --color-buttonColor: #FFFFFF;
@@ -43,18 +52,33 @@
     var(--color-bgColor) 0%,
     var(--color-bgColor2) 100%
   );
+  --gradient-main-2: linear-gradient(
+    to bottom right,
+    var(--color-bgColor) 0%,
+    #eee 100%
+  );
 
   --font-iranSans: "IRANSansXFaNum", sans-serif;
 }
 
 :root.dark {
+  --color-primary: #ebf2f5;
   --color-primary: #4fc2fc;
   --color-bgPrimary: rgb(94 94 93);
   --color-textColor: #dcdcdc;
+  --color-textTitleColor: #b6b6b6;
   --color-redText: #ff4d4d;
   --color-bgColor: #343a3f;
   --color-bgColor2: #555;
+  --color-TableBorder: #494b50;
+  --color-TableRow: #343a3f;
+  --color-TextRed: #f25e5a;
+  --color-BgRed: rgb(106,57,65);
+  --color-TextGreen: rgb(38,173,175);
+  --color-BgGreen: rgba(08, 143, 145, 0.2);
   --color-boxColor: #494b50;
+  --color-PaginationBg: #666;
+  --color-PaginationSelectedBg: #333;
   --color-boxBorderColor: #6B6E74;
   --color-boxbordercolor2: #6B6E74;
   --color-buttonColor: #54565C;
@@ -67,11 +91,21 @@
     var(--color-bgColor) 0%,
     var(--color-bgColor2) 100%
   );
+  --gradient-main-2: linear-gradient(
+    to bottom right,
+    var(--color-bgColor) 0%,
+    var(--color-boxColor)100%
+  );
 }
 
 /* 🔧 این خط را اضافه کن */
 .bg-gradient-main {
   background-image: var(--gradient-main);
+  background-repeat: no-repeat;
+  background-size: cover;
+}
+.bg-gradient-main-2 {
+  background-image: var(--gradient-main-2);
   background-repeat: no-repeat;
   background-size: cover;
 }
@@ -248,4 +282,56 @@ body {
   .right {
     flex: 1;
   }
+}
+
+/* متغیرهای اصلی که در @theme قبلاً داری */
+
+@keyframes spin-angle {
+  to {
+    --angle: 1turn;
+  }
+}
+
+.main-animated-border-box {
+  --border-width: 2px;
+  --radius: 16px;
+  --angle: 0turn;
+  position: relative;
+  border-radius: var(--radius);
+  border: var(--border-width) solid transparent;
+}
+
+.main-animated-border-box::before {
+    content: "";
+    position: absolute;
+    inset: calc(var(--border-width) * -1);
+    border: inherit;
+    border-radius: inherit;
+    background-image: conic-gradient(
+      from var(--angle),
+      var(--color-borderNeutral) 88%,
+      var(--dynamic-color) 92%,
+      var(--dynamic-color) 96%,
+      var(--color-borderNeutral) 100%
+    );
+    background-origin: border-box;
+    -webkit-mask:
+      linear-gradient(black, black) content-box,
+      linear-gradient(black, black);
+    mask:
+      linear-gradient(black, black),
+      linear-gradient(black, black);
+    -webkit-mask-clip: content-box, border-box;
+    mask-clip: content-box, border-box;
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    animation: spin-angle 12s linear infinite;
+    pointer-events: none;
+  }
+  
+
+@property --angle {
+  syntax: "<angle>";
+  inherits: true;
+  initial-value: 0turn;
 }

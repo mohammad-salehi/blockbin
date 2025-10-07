@@ -73,7 +73,9 @@ const Main = ({ SetLoading }) => {
                 </p>
             </h1>
 
-            <MainInput SetInputText={SetInputText} inputText={inputText} onSubmit={onSubmit} />
+            <div className='mt-4'>
+                <MainInput SetInputText={SetInputText} inputText={inputText} onSubmit={onSubmit} />
+            </div>
 
             <h1 className='text-md  text-textColor mt-4'>
                 <p className='inline-block'>

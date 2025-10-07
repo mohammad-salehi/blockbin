@@ -6,7 +6,7 @@ import Header from "@/layouts/Header/Header";
 import Head from "next/head";
 
 export default function DashboardLayout({ children }) {
-  const [isNavbarOpen, setIsNavbarOpen] = useState(true);
+  const [isNavbarOpen, setIsNavbarOpen] = useState(false);
   const [isMobileOpen, SetisMobileOpen] = useState(false);
   const [isDarkMode, setIsDarkMode] = useState(null);
 
@@ -56,7 +56,7 @@ export default function DashboardLayout({ children }) {
         <style>{`html{transition:background-color .3s ease}`}</style>
       </Head>
 
-      <div className={`bg-bgColor flex-1 flex flex-col transition-all  ${isNavbarOpen ? "mr-64" : "mr-0"} ${isNavbarOpen ? "p-8 pb-0" : "p-0"} pt-0`}>
+      <div className={`bg-bgColor flex-1 flex flex-col transition-all  ${"mr-0"} ${isNavbarOpen ? "p-8 pb-0" : "p-0"} pt-0`}>
         <Header
           isOpen={isNavbarOpen}
           setIsOpen={setIsNavbarOpen}
@@ -65,9 +65,12 @@ export default function DashboardLayout({ children }) {
           toggleDarkMode={toggleDarkMode}
           isDarkMode={isDarkMode}
         />
-        <main className="flex-1 overflow-auto pt-0 mt-4 ">{children}</main>
+        <main className="flex-1 overflow-auto pt-0 mt-4 mb-2">
+          <div className="max-w-screen-2xl mx-auto w-full px-4">
+            {children}
+          </div>
+        </main>
 
-        {/* توجه: نام رنگ‌هارو طبق @theme v4 به kebab-case تعریف کن */}
         <footer className="text-textColor mx-auto w-full max-w-screen-xl text-sm py-1">
           <div className="text-center">
             <p>© طراحی‌ و توسعه توسط شرکت پردازش داده های زنجیره امین (پنتا)</p>
@@ -75,14 +78,14 @@ export default function DashboardLayout({ children }) {
         </footer>
       </div>
 
-      <Navbar
+      {/* <Navbar
         isOpen={isNavbarOpen}
         setIsOpen={setIsNavbarOpen}
         isMobileOpen={isMobileOpen}
         setIsMobileOpen={SetisMobileOpen}
         toggleDarkMode={toggleDarkMode}
         isDarkMode={isDarkMode}
-      />
+      /> */}
     </div>
   );
 }

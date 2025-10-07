@@ -16,6 +16,7 @@
     "@heathmont/moon-themes-tw": "^10.22.2",
     "@mui/icons-material": "^7.3.4",
     "axios": "^1.12.2",
+    "jalali-moment": "^3.3.11",
     "js-cookie": "^3.0.5",
     "next": "15.5.4",
     "react": "19.1.0",

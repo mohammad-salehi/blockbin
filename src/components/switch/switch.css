@@ -1,0 +1,27 @@
+#CalandarSwitch .option {
+  display: inline-block;
+  margin-right: 0px;
+  border-width: 1px;
+  border-style: none;
+  width: 65px !important;
+  cursor: pointer;
+  height: 30px;
+}
+@media only screen and (max-width: 992px) {
+  #CalandarSwitch .option {
+    width: 30px;
+    font-size: 13px;
+  }
+}
+#CalandarSwitch .option p {
+  width: 100%;
+  text-align: center;
+  font-size: 12px;
+  padding-top: 2px;
+}
+#CalandarSwitch .selected {
+  /* background: #daa520; */
+  border-color: #daa520;
+}
+
+/*# sourceMappingURL=switch.css.map */

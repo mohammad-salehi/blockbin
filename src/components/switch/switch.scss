@@ -1,0 +1,29 @@
+#CalandarSwitch{
+    .option{
+        display: inline-block;
+        margin-right: 0px;
+        border-width: 1px;
+        border-color: rgb(155, 155, 155);
+        border-style: solid;
+        width: 35px;
+        float: left;
+        height: 30px;
+            cursor: pointer;
+            height: 25px;
+        @media only screen and (max-width:992px) {
+            width: 30px;
+            font-size: 13px;
+        }
+        p{
+            width: 100%;
+            text-align: center;
+            font-size: 12px;
+            padding-top: 3px;
+        }
+    }
+    .selected{
+        p{
+            color: white;
+        }
+    }
+}

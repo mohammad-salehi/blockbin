@@ -12,10 +12,10 @@ export default function MainInput({ onSubmit, inputText, SetInputText }) {
         <form
             onSubmit={handleSubmit}
             dir="rtl"
-            className="w-full  mx-auto px-1 mt-6"
+            className="w-full  mx-auto px-1 "
         >
             {/* ظرف اصلی با سایه و حالت کپسولی */}
-            <div className="flex items-center gap-2 rounded-full bg-boxColor border border-boxBorderColor shadow-[0_4px_18px_rgba(0,0,0,0.08)] overflow-hidden p-1 m-0">
+            <div className="flex items-center gap-2 rounded-full bg-boxColor border border-boxBorderColor  overflow-hidden p-1 m-0">
                 <input
                     onChange={(e) => {SetInputText(e.target.value)}}
                     value={inputText}
