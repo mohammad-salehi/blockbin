@@ -102,7 +102,7 @@ const AdressActivity = ({ SetTokenSelected, TokenSelected, SetMiladi, Miladi, Se
   }, []);
 
   return (
-    <div className='bg-gradient-main-2 border border-boxBorderColor rounded-xl main-animated-border-box' style={{ "--dynamic-color": 'red' }}>
+    <div className='bg-gradient-main-2 border border-boxBorderColor rounded-xl main-animated-border-box'  style={{ "--dynamic-color": `${Networks.find(item => item.symbole === network).color}` }}>
       <div className='flex justify-between items-center border-b border-b-boxBorderColor p-3'>
         <div className='flex items-center'>
           <h6 className='inline-block text-xl mr-2 text-textColor p-1'>
@@ -187,7 +187,7 @@ const AdressActivity = ({ SetTokenSelected, TokenSelected, SetMiladi, Miladi, Se
             {
               Balance !== null ?
                 <span>
-                  {(Balance).toLocaleString()}<small className='ml-1'>TRX</small>
+                  {(Balance).toLocaleString()}<small className='ml-1'>{TokenSelected}</small>
                 </span>
                 :
                 'نامشخص'
