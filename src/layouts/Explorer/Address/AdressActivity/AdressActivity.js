@@ -42,17 +42,27 @@ const AdressActivity = ({ SetTokenSelected, TokenSelected, SetMiladi, Miladi, Se
       GetRequest(`${serverAddress}/explorer/token-transfer-list/?query=${hash}&network=${network}`)
         .then((response) => {
           if (response.status === 200) {
-            console.log(response)
+            const Result = response.data.find(item => item.symbol === TokenSelected)
+
+            SetBalance(Result.crypto_balance * Math.pow(10, -Result.decimals))
+            SetFirstActivity(Result.first_activity)
+            SetLastActivity(Result.last_activity)
+
+            GetRequest(`${serverAddress}/explorer/total-transaction/?type=asset_transactions&contract_address=${TokenTransfered.find(item => item.symbol === TokenSelected).contract_address}&query=${hash}&network=${network}`)
+              .then((response) => {
+                console.log(response)
+                if (response.status === 200) {
+                  SetTransactions(response.data.total_document)
+                }
+              })
           }
         })
         .catch((err) => {
-
+          console.log(err)
         })
     }
 
   }, [, TokenSelected])
-
-
 
   useEffect(() => {
     SetSelectTokenLoading(true)
@@ -196,10 +206,9 @@ const AdressActivity = ({ SetTokenSelected, TokenSelected, SetMiladi, Miladi, Se
             </svg>
             <span className=''>
               {
-                Transactions !== null ?
-                  Transactions.toLocaleString()
-                  :
-                  'نامشخص'
+                typeof (Transactions) === "number"
+                  ? Transactions
+                  : "نامشخص"
               }
             </span>
           </p>
