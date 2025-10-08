@@ -21,7 +21,6 @@ const AdressActivity = ({ SetTokenSelected, TokenSelected, SetMiladi, Miladi, Se
   const [FirstActivity, SetFirstActivity] = useState(null)
   const [LastActivity, SetLastActivity] = useState(null)
   const [Transactions, SetTransactions] = useState(null)
-  const [exchangeType, SetexchangeType] = useState("")
   const [SelectTokenLoading, SetSelectTokenLoading] = useState(false)
 
   useEffect(() => {
