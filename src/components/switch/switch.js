@@ -1,13 +1,13 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 
-const CalendarSwitch = ({ options = [], color = '#0ea5e9', defaultIndex = 0, onChange }) => {
+const CalendarSwitch = ({ options = [], color = '#0ea5e9', defaultIndex = 0, SetMiladi }) => {
   const [selected, setSelected] = useState(
     Math.min(Math.max(defaultIndex, 0), Math.max(options.length - 1, 0))
   )
 
   const handleClick = (i) => {
     setSelected(i)
-    onChange?.(i)
+    SetMiladi(i)
   }
 
   return (
@@ -22,7 +22,10 @@ const CalendarSwitch = ({ options = [], color = '#0ea5e9', defaultIndex = 0, onC
           <button
             key={i}
             type="button"
-            onClick={() => handleClick(i)}
+            onClick={() => {
+              handleClick(i)
+
+            }}
             className={[
               'w-1/2 min-w-[50px] px-3 py-2',
               'inline-flex items-center justify-center',

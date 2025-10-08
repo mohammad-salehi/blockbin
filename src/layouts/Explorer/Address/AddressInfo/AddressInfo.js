@@ -31,7 +31,6 @@ const AddressInfo = () => {
         GetRequest(`${serverAddress}/explorer/address-detail?query=${hash}`)
             .then((response) => {
                 if (response.status === 200) {
-                    console.log(response)
                     SetOwner(response.data.address_detail.entity)
                     SetLabel(response.data.address_detail.labels)
                     SetMetadata(response.data.address_detail.metadata.label)

@@ -1,14 +1,96 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { Dropdown, MenuItem, Button, Input } from "@heathmont/moon-core-tw";
 import CalendarSwitch from '@/components/switch/switch';
 import { ControlsChevronDown } from '@heathmont/moon-icons-tw';
+import { useParams, usePathname, useRouter } from 'next/navigation'
+import { serverAddress } from '@/functions/ServerAddress';
+import { GetRequest } from '@/functions/GetRequest';
+import { Networks } from '@/functions/Networks';
+import { JalaliCalendar } from '@/functions/jalaliCalendar';
+import { MiladiCalendar } from '@/functions/miladiCalendar';
 
-const AdressActivity = () => {
-  const [Risk, SetRisk] = useState(0)
-  const [Owner, SetOwner] = useState('Nobitex')
-  const [IdentificationBy, SetIdentificationBy] = useState('Arkham')
-  const [Label, SetLabel] = useState(null)
+const AdressActivity = ({ SetTokenSelected, TokenSelected, SetMiladi, Miladi, SetTokenTransfered, TokenTransfered }) => {
+
+  const params = useParams()
+
+  const query = params.query
+  const network = params.network
+  const hash = params.hash
+
+  const [Balance, SetBalance] = useState(null)
+  const [FirstActivity, SetFirstActivity] = useState(null)
+  const [LastActivity, SetLastActivity] = useState(null)
+  const [Transactions, SetTransactions] = useState(null)
   const [exchangeType, SetexchangeType] = useState("")
+  const [SelectTokenLoading, SetSelectTokenLoading] = useState(false)
+
+  useEffect(() => {
+    if (TokenSelected === network) {
+      GetRequest(`${serverAddress}/explorer/address-aggregation/?query=${hash}&network=${network}`)
+        .then((response) => {
+          if (response.status === 200) {
+            console.log(response)
+            SetBalance(response.data.balance)
+            SetFirstActivity(response.data.first_activity)
+            SetLastActivity(response.data.last_activity)
+            SetTransactions(response.data.transactions)
+          }
+        })
+        .catch((err) => {
+
+        })
+    } else {
+      GetRequest(`${serverAddress}/explorer/token-transfer-list/?query=${hash}&network=${network}`)
+        .then((response) => {
+          if (response.status === 200) {
+            console.log(response)
+          }
+        })
+        .catch((err) => {
+
+        })
+    }
+
+  }, [, TokenSelected])
+
+
+
+  useEffect(() => {
+    SetSelectTokenLoading(true)
+    GetRequest(`${serverAddress}/explorer/token-transfer-list/?query=${hash}&network=${network}`)
+      .then((response) => {
+        console.log(response)
+        SetSelectTokenLoading(false)
+        const getData = [];
+        getData.push(TokenTransfered[0]);
+        for (let i = 0; i < response.data.length; i++) {
+          if (!getData.some(item => item.symbol === response.data[i].symbol)) {
+            getData.push(
+              {
+                symbol: response.data[i].symbol,
+                contract_address: response.data[i].contract_address,
+                value: response.data[i].symbol,
+                label: response.data[i].symbol,
+              }
+            );
+          }
+        }
+        SetTokenTransfered(getData);
+      })
+      .catch((err) => {
+        SetSelectTokenLoading(false)
+        const getData = [];
+        getData.push(
+          {
+            symbol: network,
+            contract_address: null,
+            value: network,
+            label: network,
+          }
+        );
+        SetTokenTransfered(getData);
+      });
+  }, []);
 
   return (
     <div className='bg-gradient-main-2 border border-boxBorderColor rounded-xl main-animated-border-box' style={{ "--dynamic-color": 'red' }}>
@@ -23,7 +105,7 @@ const AdressActivity = () => {
 
         <div>
           <div className="relative w-full mt-2">
-            <Dropdown onChange={SetexchangeType} value={exchangeType}>
+            <Dropdown onChange={SetTokenSelected} value={TokenSelected}>
               <Dropdown.Trigger className="w-full">
                 <Button
                   as="span"
@@ -35,43 +117,40 @@ const AdressActivity = () => {
                    dark:text-gray-100 appearance-none relative "
                 >
                   <span className='text-textColor'>
-                    <img src={`/images/TRX.png`} className='w-5 inline-block ml-1' />
-                    TRX
+                    <img src={`/images/${TokenSelected}.png`} className='w-5 inline-block ml-1' />
+                    {TokenSelected}
                   </span>
                 </Button>
               </Dropdown.Trigger>
 
               <Dropdown.Options
                 className="absolute left-0 mt-2 w-72 pl-2 pr-2
-                 text-gray-700 bg-white dark:bg-buttonColor-dark
-                 border border-gray-300 dark:border-buttonBorderColor-dark 
+                 text-gray-700 bg-bgColor dark:bg-buttonColor-dark
+                 border border-boxBorderColor dark:border-buttonBorderColor-dark 
                  rounded-lg dark:text-gray-100 appearance-none z-50
                  max-h-60 overflow-y-auto"
               >
-                <Dropdown.Option value="سهامی" key="option1">
-                  {({ selected, active }) => (
-                    <MenuItem isActive={active} isSelected={selected}
-                      className={`border mt-2 mb-1 rounded-md border-gray-100 dark:border-buttonBorderColor-dark ${exchangeType === "سهامی"
-                        ? "bg-gray-100 border-gray-200 dark:bg-gray-700"
-                        : ""
-                        }`}
-                    >
-                      <MenuItem.Title>سهامی</MenuItem.Title>
-                    </MenuItem>
-                  )}
-                </Dropdown.Option>
-                <Dropdown.Option value="مسئولیت محدود" key="option2">
-                  {({ active }) => (
-                    <MenuItem isActive={active}
-                      className={`border mt-2 mb-1 rounded-md border-gray-100 dark:border-buttonBorderColor-dark ${exchangeType === "مسئولیت محدود"
-                        ? "bg-gray-100 border-gray-200 dark:bg-gray-700"
-                        : ""
-                        }`}
-                    >
-                      <MenuItem.Title>مسئولیت محدود</MenuItem.Title>
-                    </MenuItem>
-                  )}
-                </Dropdown.Option>
+                {
+                  TokenTransfered.map((item, index) => {
+                    return (
+                      <Dropdown.Option value={item.symbol} key="option1">
+                        {({ selected, active }) => (
+                          <MenuItem isActive={active} isSelected={selected}
+                            className={`border mt-2 mb-1 rounded-md border-gray-100 dark:border-buttonBorderColor-dark ${TokenSelected === item.symbol
+                              ? "bg-boxColor border-boxBorderColor dark:bg-gray-700"
+                              : "border-boxBorderColor"
+                              } text-textColor`}
+                          >
+                            <MenuItem.Title>
+                              <img src={`/images/${item.symbol}.png`} className='w-5 inline-block ml-1' />
+                              {item.symbol}
+                            </MenuItem.Title>
+                          </MenuItem>
+                        )}
+                      </Dropdown.Option>
+                    )
+                  })
+                }
               </Dropdown.Options>
             </Dropdown>
 
@@ -82,7 +161,7 @@ const AdressActivity = () => {
         </div>
 
         <div className='pt-2'>
-          <CalendarSwitch options={['میلادی', 'شمسی']} color={'red'} />
+          <CalendarSwitch options={['میلادی', 'شمسی']} color={'red'} SetMiladi={SetMiladi} />
         </div>
 
         <div>
@@ -96,7 +175,15 @@ const AdressActivity = () => {
               <circle cx="18" cy="12" r="1" fill="currentColor" />
               <path d="M13 4C16.7712 4 18.6569 4 19.8284 5.17157C20.6366 5.97975 20.8873 7.1277 20.965 9M10 20H13C16.7712 20 18.6569 20 19.8284 18.8284C20.6366 18.0203 20.8873 16.8723 20.965 15M9 4.00093C5.8857 4.01004 4.23467 4.10848 3.17157 5.17157C2 6.34315 2 8.22876 2 12C2 15.7712 2 17.6569 3.17157 18.8284C3.82475 19.4816 4.69989 19.7706 6 19.8985" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
             </svg>
-            {(1274).toLocaleString()}<small className='ml-1'>TRX</small>
+            {
+              Balance !== null ?
+                <span>
+                  {(Balance).toLocaleString()}<small className='ml-1'>TRX</small>
+                </span>
+                :
+                'نامشخص'
+
+            }
           </p>
         </div>
 
@@ -109,7 +196,12 @@ const AdressActivity = () => {
               <path d="M17.0020048,13 C17.5542895,13 18.0020048,13.4477153 18.0020048,14 C18.0020048,14.5128358 17.6159646,14.9355072 17.1186259,14.9932723 L17.0020048,15 L5.41700475,15 L8.70911154,18.2928932 C9.0695955,18.6533772 9.09732503,19.2206082 8.79230014,19.6128994 L8.70911154,19.7071068 C8.34862757,20.0675907 7.78139652,20.0953203 7.38910531,19.7902954 L7.29489797,19.7071068 L2.29489797,14.7071068 C1.69232289,14.1045317 2.07433707,13.0928192 2.88837381,13.0059833 L3.00200475,13 L17.0020048,13 Z M16.6128994,4.20970461 L16.7071068,4.29289322 L21.7071068,9.29289322 C22.3096819,9.8954683 21.9276677,10.9071808 21.1136309,10.9940167 L21,11 L7,11 C6.44771525,11 6,10.5522847 6,10 C6,9.48716416 6.38604019,9.06449284 6.88337887,9.00672773 L7,9 L18.585,9 L15.2928932,5.70710678 C14.9324093,5.34662282 14.9046797,4.77939176 15.2097046,4.38710056 L15.2928932,4.29289322 C15.6533772,3.93240926 16.2206082,3.90467972 16.6128994,4.20970461 Z" />
             </svg>
             <span className=''>
-                {(253).toLocaleString()}
+              {
+                Transactions !== null ?
+                  Transactions.toLocaleString()
+                  :
+                  'نامشخص'
+              }
             </span>
           </p>
         </div>
@@ -125,7 +217,15 @@ const AdressActivity = () => {
               <path d="M12 12V7M21 12C21 16.9706 16.9706 21 12 21C7.02944 21 3 16.9706 3 12C3 7.02944 7.02944 3 12 3C16.9706 3 21 7.02944 21 12Z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
             </svg>
             <span>
-              1403/04/24
+              {
+                FirstActivity !== null ?
+                  Miladi === 0 ?
+                    `${MiladiCalendar(FirstActivity).year}/${MiladiCalendar(FirstActivity).month}/${MiladiCalendar(FirstActivity).day}`
+                    :
+                    `${JalaliCalendar(FirstActivity).year}/${JalaliCalendar(FirstActivity).month}/${JalaliCalendar(FirstActivity).day}`
+                  :
+                  'نامشخص'
+              }
             </span>
           </p>
         </div>
@@ -139,7 +239,15 @@ const AdressActivity = () => {
               <path d="M12 12V17M21 12C21 16.9706 16.9706 21 12 21C7.02944 21 3 16.9706 3 12C3 7.02944 7.02944 3 12 3C16.9706 3 21 7.02944 21 12Z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
             </svg>
             <span>
-            1403/04/24
+              {
+                LastActivity !== null ?
+                  Miladi === 0 ?
+                    `${MiladiCalendar(LastActivity).year}/${MiladiCalendar(LastActivity).month}/${MiladiCalendar(LastActivity).day}`
+                    :
+                    `${JalaliCalendar(LastActivity).year}/${JalaliCalendar(LastActivity).month}/${JalaliCalendar(LastActivity).day}`
+                  :
+                  'نامشخص'
+              }
             </span>
           </p>
         </div>
