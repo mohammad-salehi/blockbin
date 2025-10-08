@@ -16,11 +16,11 @@ const AddressTransactions = () => {
         {
           row.Date !== null ?
             true ?
-              <p style={{ margin: "0px" }}>{(GetMyTime(row.Date).hour + ':' + GetMyTime(row.Date).minute + ' - ' + moment(GetMyTime(row.Date).year + '-' + GetMyTime(row.Date).month + '-' + GetMyTime(row.Date).day, 'YYYY/MM/DD').locale('fa').format('YYYY/MM/DD'))} ({timeSince(row.Date)})</p>
+              <span style={{ margin: "0px" }}>{(GetMyTime(row.Date).hour + ':' + GetMyTime(row.Date).minute + ' - ' + moment(GetMyTime(row.Date).year + '-' + GetMyTime(row.Date).month + '-' + GetMyTime(row.Date).day, 'YYYY/MM/DD').locale('fa').format('YYYY/MM/DD'))} ({timeSince(row.Date)})</span>
               :
-              <p style={{ margin: "0px" }}>{(GetMyTime(row.Date).hour + ':' + GetMyTime(row.Date).minute + ' - ' + GetMyTime(row.Date).year + '/' + GetMyTime(row.Date).month + '/' + GetMyTime(row.Date).day)} ({timeSince(row.Date)})</p>
+              <span style={{ margin: "0px" }}>{(GetMyTime(row.Date).hour + ':' + GetMyTime(row.Date).minute + ' - ' + GetMyTime(row.Date).year + '/' + GetMyTime(row.Date).month + '/' + GetMyTime(row.Date).day)} ({timeSince(row.Date)})</span>
             :
-            <p style={{ margin: "0px" }}>_</p>
+            <span style={{ margin: "0px" }}>_</span>
         }
 
       </p>

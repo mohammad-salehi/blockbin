@@ -17,7 +17,7 @@ const Main = ({ SetLoading }) => {
     const onSubmit = () => {
         SetLoading(true)
 
-        GetRequest(`${serverAddress}/dashboard/explorer/network-detection/?query=${inputText}`)
+        GetRequest(`${serverAddress}/explorer/network-detection/?query=${inputText}`)
             .then((response) => {
                 console.log(response)
                 SetLoading(false)

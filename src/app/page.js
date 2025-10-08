@@ -26,7 +26,7 @@ export default function Home() {
       })
     } else {
       SetLoading(true)
-      axios.post(serverAddress + "/dashboard/accounts/api/token/", {
+      axios.post(serverAddress + "/accounts/api/token/", {
         username: username,
         password: password,
       })
@@ -88,7 +88,7 @@ export default function Home() {
   useEffect(() => {
     const token = Cookies.get('access')
     if (token !== undefined && token !== 0 && token !== '0') {
-      GetRequest(`${serverAddress}/dashboard/explorer/backendversion`)
+      GetRequest(`${serverAddress}/explorer/backendversion`)
         .then((response) => {
           if (response.status === 200) {
             window.location.assign('/panel/dashboard')

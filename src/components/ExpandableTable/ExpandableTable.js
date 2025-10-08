@@ -216,7 +216,7 @@ export default function ExpandableTable(props) {
                                   {isOpen ? <CaretDown /> : <CaretRight />}
                                 </button>
                               ) : (
-                                <span className="inline-block w-[18px]" />
+                                <span className="inline-block" />
                               )}
                               <span>{renderCell(c, node.row)}</span>
                             </div>
@@ -240,7 +240,7 @@ export default function ExpandableTable(props) {
                                     {isOpen ? <CaretDown /> : <CaretRight />}
                                   </button>
                                 ) : (
-                                  <span className="inline-block w-[18px]" />
+                                  <span className="inline-block" />
                                 )}
                                 <span className="text-titleText dark:text-titleText-dark">{renderCell(c, node.row)}</span>
                               </div>

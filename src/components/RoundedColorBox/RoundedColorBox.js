@@ -16,7 +16,7 @@ const RoundedColorBox = (props) => {
             document.documentElement.style.setProperty('--dynamic-color', 'black');
 
         }
-        GetRequest(`${serverAddress}/dashboard/explorer/price-service/?timestamp=${Math.trunc(Date.now() / 1000)}&symbol=${props.symbol !== 'BSC' ? props.symbol : 'BNB'}`)
+        GetRequest(`${serverAddress}/explorer/price-service/?timestamp=${Math.trunc(Date.now() / 1000)}&symbol=${props.symbol !== 'BSC' ? props.symbol : 'BNB'}`)
             .then((response) => {
                 console.log(response)
                 SetPrice(response.data.price)
@@ -25,7 +25,7 @@ const RoundedColorBox = (props) => {
                 console.log(err)
             })
 
-        GetRequest(`${serverAddress}/dashboard/explorer/latest-block-info/?network=${props.symbol}`)
+        GetRequest(`${serverAddress}/explorer/latest-block-info/?network=${props.symbol}`)
             .then((response) => {
                 if (response.status === 200) {
                     SetBlock(response.data.block_number)

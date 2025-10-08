@@ -1,39 +1,175 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { AddressFormat } from '@/components/AddressFormat/AddressFormat'
 import ContentCopyIcon from '@mui/icons-material/ContentCopy';
 import toast from "react-hot-toast";
+import { useParams, usePathname, useRouter } from 'next/navigation'
+import { serverAddress } from '@/functions/ServerAddress';
+import { GetRequest } from '@/functions/GetRequest';
+import { Networks } from '@/functions/Networks';
+import axios from 'axios';
+import { Modal, Button, Input } from "@heathmont/moon-core-tw";
+import Cookies from 'js-cookie';
 
 const AddressInfo = () => {
 
-    const [Risk, SetRisk] = useState(0)
-    const [Owner, SetOwner] = useState('Nobitex')
-    const [IdentificationBy, SetIdentificationBy] = useState('Arkham')
+    const params = useParams()
+
+    const query = params.query
+    const network = params.network
+    const hash = params.hash
+
+    const [Risk, SetRisk] = useState(null)
+    const [Owner, SetOwner] = useState(null)
+    const [IdentificationBy, SetIdentificationBy] = useState(null)
     const [Label, SetLabel] = useState(null)
+    const [newLabel, SetnewLabel] = useState(null)
+    const [metadata, SetMetadata] = useState(null)
+    const [isOpen, setIsOpen] = useState(false);
+
+    useEffect(() => {
+        // setLoading(true)
+        GetRequest(`${serverAddress}/explorer/address-detail?query=${hash}`)
+            .then((response) => {
+                if (response.status === 200) {
+                    console.log(response)
+                    SetOwner(response.data.address_detail.entity)
+                    SetLabel(response.data.address_detail.labels)
+                    SetMetadata(response.data.address_detail.metadata.label)
+                    SetIdentificationBy(response.data.address_detail.address_label[0])
+                }
+                // setLoading(false)
+            })
+            .catch((err) => {
+                // setLoading(false)
+            })
+
+        GetRequest(`${serverAddress}/explorer/risk-score/?address=${hash}&network=${network}`)
+            .then((response) => {
+                if (response.status === 200) {
+                    SetRisk(response.data.risk_score)
+                }
+            })
+            .catch((err) => { console.log(err) })
+
+        // getTagList()
+    }, [])
+
+    const AddLabel = () => {
+        if (newLabel !== null && newLabel !== '') {
+
+            axios.post(serverAddress + "/address-labels/label/",
+                {
+                    items: [
+                        {
+                            address: hash,
+                            label: newLabel,
+                            network: Networks.find(item => item.symbole === network).id
+                        }
+                    ]
+                },
+                {
+                    headers: {
+                        Authorization: `Bearer ${Cookies.get('access')}`
+                    }
+                }
+            )
+                .then((response) => {
+                    if (Number(response.status) >= 200 && Number(response.status) < 300) {
+                        console.log(response.data[0])
+                        SetLabel([response.data[0]])
+                        SetnewLabel(null)
+                        setIsOpen(false)
+                        return toast.success('برچسب موردنظر باموفقیت ثبت شد', {
+                            position: 'bottom-left'
+                        })
+                    } else {
+                        return toast.error('خطا در پردازش', {
+                            position: 'bottom-left'
+                        })
+                    }
+                })
+                .catch((err) => {
+                    console.log(err)
+                    return toast.error('خطا در پردازش', {
+                        position: 'bottom-left'
+                    })
+                })
+        }
+        else {
+            return toast.error('برچسب را وارد کنید', {
+                position: 'bottom-left'
+            })
+        }
+    }
+
+    const deleteLabel = () => {
+        axios.delete(serverAddress + `/address-labels/label/${Label[0].id}/`,
+          {
+            headers: {
+              Authorization: `Bearer ${Cookies.get('access')}`
+            }
+          }
+        )
+          .then((response) => {
+            if (Number(response.status) >= 200 && Number(response.status) < 300) {
+              SetLabel(null)
+              console.log(response)
+              return toast.success('برچسب موردنظر باموفقیت حذف شد', {
+                position: 'bottom-left'
+            })
+            } else {
+              return toast.error('خطا در پردازش', {
+                position: 'bottom-left'
+              })
+            }
+          })
+          .catch((err) => {
+            console.log(err)
+            return toast.error('خطا در پردازش', {
+              position: 'bottom-left'
+            })
+          })
+      }
     return (
-        <div className='bg-gradient-main-2 border border-boxBorderColor rounded-xl main-animated-border-box' style={{ "--dynamic-color": 'red' }}>
+        <div className='bg-gradient-main-2 border border-boxBorderColor rounded-xl main-animated-border-box' style={{ "--dynamic-color": `${Networks.find(item => item.symbole === network).color}` }}>
             <div className='flex justify-between items-center border-b border-b-boxBorderColor p-3'>
                 <div className='flex items-center'>
-                    <img src={"/images/TRX.png"} className='w-8 inline-block ' />
+                    <img src={`/images/${network}.png`} className='w-8 inline-block ' />
                     <h6 className='inline-block text-xl mr-2 text-textColor'>
-                        آدرس ترون
+                        آدرس {Networks.find(item => item.symbole === network).name}
                     </h6>
                 </div>
                 <div className='flex items-center text-primary cursor-pointer'>
-                    <div className='flex items-center justify-center border bg-bgColor text-textColor border-boxBorderColor transition ml-2 h-9 w-9 rounded-full cursor-pointer'>
-                        <svg
-                            width="25"
-                            height="25"
-                            viewBox="0 0 50 50"
-                            fill="currentColor"
-                            aria-hidden="true"
-                        >
-                            <path d="M24.896,9.463c-0.188-0.188-0.441-0.293-0.707-0.293L11.232,9.169c-0.551,0-0.998,0.445-1,0.996L10.186,23.17
+                    {
+                        (Label === null || Label.length === 0) ?
+                            <div className='flex items-center justify-center border bg-bgColor text-textColor border-boxBorderColor transition ml-2 h-9 w-9 rounded-full cursor-pointer'>
+                                <svg
+                                    width="25"
+                                    height="25"
+                                    viewBox="0 0 50 50"
+                                    fill="currentColor"
+                                    aria-hidden="true"
+                                    onClick={() => {
+                                        setIsOpen(true)
+                                    }}
+                                >
+                                    <path d="M24.896,9.463c-0.188-0.188-0.441-0.293-0.707-0.293L11.232,9.169c-0.551,0-0.998,0.445-1,0.996L10.186,23.17
       c-0.001,0.267,0.104,0.522,0.293,0.711l16.995,16.995c0.188,0.188,0.441,0.293,0.707,0.293s0.52-0.105,0.707-0.293l13.004-13.004
       c0.391-0.391,0.391-1.023,0-1.414L24.896,9.463z M28.181,38.755L12.188,22.761l0.041-11.592l11.547,0.001l15.995,15.995
       L28.181,38.755z" />
-                            <circle cx="20.362" cy="19.346" r="2.61" />
-                        </svg>
-                    </div>
+                                    <circle cx="20.362" cy="19.346" r="2.61" />
+                                </svg>
+                            </div>
+                            :
+                            <div className='flex items-center justify-center bg-orange-300 text-black transition ml-2 h-9 rounded-4xl cursor-pointer px-4'
+                                onClick={() => {
+                                    deleteLabel()
+                                }}
+                            >
+                                {Label[0].label}
+                            </div>
+                    }
+
                     <div className='flex items-center justify-center border bg-bgColor text-textColor border-boxBorderColor transition ml-2 h-9 w-9 rounded-full cursor-pointer'>
                         <ContentCopyIcon className='text-textColor' style={{ fontSize: '16px', cursor: 'pointer' }}
                             onClick={() => {
@@ -43,7 +179,7 @@ const AddressInfo = () => {
                                 });
                             }} />
                     </div>
-                    {AddressFormat('TAngDVCCBBs5Z2v42N9KzvcGfdRhnaXrrG', 8, 'address', 'TRX', false)}
+                    {AddressFormat(hash, 8, query, network, false)}
 
                 </div>
             </div>
@@ -67,7 +203,13 @@ const AddressInfo = () => {
                                 </g>
                             </g>
                         </svg>
-                        %{Risk}
+                        {
+                            Risk !== null ?
+                                `%${Risk}`
+                                :
+                                'نامشخص'
+                        }
+
                     </p>
                 </div>
 
@@ -77,11 +219,11 @@ const AddressInfo = () => {
                     </p>
                     <p>
                         <svg width="20px" height="20px" viewBox="0 0 24 24" fill="none" className='inline-block ml-1'>
-                            <path d="M22 12.2039V13.725C22 17.6258 22 19.5763 20.8284 20.7881C19.6569 22 17.7712 22 14 22H10C6.22876 22 4.34315 22 3.17157 20.7881C2 19.5763 2 17.6258 2 13.725V12.2039C2 9.91549 2 8.77128 2.5192 7.82274C3.0384 6.87421 3.98695 6.28551 5.88403 5.10813L7.88403 3.86687C9.88939 2.62229 10.8921 2 12 2C13.1079 2 14.1106 2.62229 16.116 3.86687L18.116 5.10812C20.0131 6.28551 20.9616 6.87421 21.4808 7.82274" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" />
-                            <path d="M15 18H9" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" />
+                            <path d="M22 12.2039V13.725C22 17.6258 22 19.5763 20.8284 20.7881C19.6569 22 17.7712 22 14 22H10C6.22876 22 4.34315 22 3.17157 20.7881C2 19.5763 2 17.6258 2 13.725V12.2039C2 9.91549 2 8.77128 2.5192 7.82274C3.0384 6.87421 3.98695 6.28551 5.88403 5.10813L7.88403 3.86687C9.88939 2.62229 10.8921 2 12 2C13.1079 2 14.1106 2.62229 16.116 3.86687L18.116 5.10812C20.0131 6.28551 20.9616 6.87421 21.4808 7.82274" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+                            <path d="M15 18H9" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
                         </svg>
-                        <span className='text-primary cursor-pointer'>
-                            {Owner}
+                        <span className={`${Owner !== null ? 'text-primary' : 'text-textColor'} cursor-pointer`}>
+                            {Owner !== null ? Owner.name : 'نامشخص'}
                         </span>
                     </p>
                 </div>
@@ -104,22 +246,22 @@ const AddressInfo = () => {
                             </g>
                         </svg>
                         <span className='mr-1'>
-                            {IdentificationBy}
+                            {IdentificationBy !== null ? IdentificationBy : 'نامشخص'}
                         </span>
                     </p>
                 </div>
 
                 <div>
                     <p className='text-textTitleColor'>
-                        نشانه‌گذاری
+                        نوع آدرس
                     </p>
                     <p>
-                        <svg width="20px" height="20px" viewBox="0 0 24 24" fill="none" className='inline-block ml-1'>
-                            <path d="M15 12L12 12M12 12L9 12M12 12L12 9M12 12L12 15" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" />
-                            <path d="M7 3.33782C8.47087 2.48697 10.1786 2 12 2C17.5228 2 22 6.47715 22 12C22 17.5228 17.5228 22 12 22C6.47715 22 2 17.5228 2 12C2 10.1786 2.48697 8.47087 3.33782 7" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" />
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" className='inline-block ml-1'>
+                            <path d="M19 7.24997H18.75V4.99997C18.7474 4.53665 18.5622 4.09305 18.2345 3.76543C17.9069 3.43781 17.4633 3.25259 17 3.24997C16.9207 3.23552 16.8393 3.23552 16.76 3.24997L4.86 7.24997H4.75H4.59L4.42 7.30997H4.28L4.12 7.39997L4 7.56997L3.86 7.68997L3.75 7.78997L3.63 7.93997C3.598 7.96867 3.57097 8.00246 3.55 8.03997C3.51288 8.09779 3.47948 8.15791 3.45 8.21997L3.39 8.32997C3.36216 8.40179 3.33878 8.47526 3.32 8.54997C3.3245 8.5865 3.3245 8.62344 3.32 8.65997C3.30967 8.77307 3.30967 8.88687 3.32 8.99997V19C3.3221 19.4515 3.49765 19.8849 3.81034 20.2106C4.12303 20.5364 4.54895 20.7295 5 20.75H19C19.4633 20.7473 19.9069 20.5621 20.2345 20.2345C20.5622 19.9069 20.7474 19.4633 20.75 19V8.99997C20.7474 8.53665 20.5622 8.09305 20.2345 7.76543C19.9069 7.43781 19.4633 7.25259 19 7.24997ZM17.08 4.75997C17.1293 4.77814 17.1719 4.81078 17.2022 4.85362C17.2325 4.89646 17.2492 4.94748 17.25 4.99997V7.24997H9.62L17.08 4.75997ZM19.25 19C19.25 19.0663 19.2237 19.1299 19.1768 19.1767C19.1299 19.2236 19.0663 19.25 19 19.25H5C4.9337 19.25 4.87011 19.2236 4.82322 19.1767C4.77634 19.1299 4.75 19.0663 4.75 19V8.99997C4.75 8.93367 4.77634 8.87008 4.82322 8.82319C4.87011 8.77631 4.9337 8.74997 5 8.74997H19C19.0663 8.74997 19.1299 8.77631 19.1768 8.82319C19.2237 8.87008 19.25 8.93367 19.25 8.99997V19Z" fill="currentColor" />
+                            <path d="M16.5 15.25C17.1904 15.25 17.75 14.6904 17.75 14C17.75 13.3096 17.1904 12.75 16.5 12.75C15.8096 12.75 15.25 13.3096 15.25 14C15.25 14.6904 15.8096 15.25 16.5 15.25Z" fill="currentColor" />
                         </svg>
                         <span>
-                            افزودن
+                            {metadata !== null ? metadata : 'نامشخص'}
                         </span>
                     </p>
                 </div>
@@ -128,12 +270,12 @@ const AddressInfo = () => {
                 <div className='flex items-center w-full'>
                     <button className='border border-primary rounded-lg bg-primary text-white w-full py-2 cursor-pointer'>
                         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" className='inline-block ml-1'>
-                            <path d="M9 6C9 7.65685 7.65685 9 6 9C4.34315 9 3 7.65685 3 6C3 4.34315 4.34315 3 6 3C7.65685 3 9 4.34315 9 6Z" stroke="currentColor" stroke-width="2" />
-                            <path d="M21 18C21 19.6569 19.6569 21 18 21C16.3431 21 15 19.6569 15 18C15 16.3431 16.3431 15 18 15C19.6569 15 21 16.3431 21 18Z" stroke="currentColor" stroke-width="2" />
-                            <path d="M15 3L12.0605 5.93945V5.93945C12.0271 5.97289 12.0271 6.02711 12.0605 6.06055V6.06055L15 9" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
-                            <path d="M9 21L11.9473 18.0527V18.0527C11.9764 18.0236 11.9764 17.9764 11.9473 17.9473V17.9473L9 15" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
-                            <path d="M12 6C14.8284 6 16.2426 6 17.1213 6.87868C18 7.75736 18 9.17157 18 12V15" stroke="currentColor" stroke-width="2" />
-                            <path d="M12 18C9.17157 18 7.75736 18 6.87868 17.1213C6 16.2426 6 14.8284 6 12L6 9" stroke="currentColor" stroke-width="2" />
+                            <path d="M9 6C9 7.65685 7.65685 9 6 9C4.34315 9 3 7.65685 3 6C3 4.34315 4.34315 3 6 3C7.65685 3 9 4.34315 9 6Z" stroke="currentColor" strokeWidth="2" />
+                            <path d="M21 18C21 19.6569 19.6569 21 18 21C16.3431 21 15 19.6569 15 18C15 16.3431 16.3431 15 18 15C19.6569 15 21 16.3431 21 18Z" stroke="currentColor" strokeWidth="2" />
+                            <path d="M15 3L12.0605 5.93945V5.93945C12.0271 5.97289 12.0271 6.02711 12.0605 6.06055V6.06055L15 9" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                            <path d="M9 21L11.9473 18.0527V18.0527C11.9764 18.0236 11.9764 17.9764 11.9473 17.9473V17.9473L9 15" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                            <path d="M12 6C14.8284 6 16.2426 6 17.1213 6.87868C18 7.75736 18 9.17157 18 12V15" stroke="currentColor" strokeWidth="2" />
+                            <path d="M12 18C9.17157 18 7.75736 18 6.87868 17.1213C6 16.2426 6 14.8284 6 12L6 9" stroke="currentColor" strokeWidth="2" />
                         </svg>
                         ترسیم گراف
 
@@ -149,6 +291,21 @@ const AddressInfo = () => {
                     </button>
                 </div>
             </div>
+            <Modal open={isOpen} onClose={() => { setIsOpen(false) }}>
+                <Modal.Backdrop />
+                <div className="fixed inset-0 flex z-50 backdrop-blur-sm bg-white/10">
+                    <Modal.Panel className="w-full max-w-xl rounded-lg bg-boxColor  shadow-lg mt-[200px] text-textColor p-4">
+                        <h5>
+                            برچسب موردنظر را وارد کنید
+                        </h5>
+                        <Input className='border border-boxBorderColor rounded-md mt-4' placeholder='برچسب' onChange={(e) => { SetnewLabel(e.target.value) }} value={newLabel} />
+                        <button className='bg-boxBorderColor border border-boxBorderColor rounded-lg text-textColor w-full py-1 cursor-pointer mt-4' onClick={() => AddLabel()}>
+                            ثبت
+                        </button>
+                    </Modal.Panel>
+                </div>
+            </Modal>
+
         </div>
     )
 }
