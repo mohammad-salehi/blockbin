@@ -120,7 +120,7 @@ const AdressActivity = ({ SetTokenSelected, TokenSelected, SetMiladi, Miladi, Se
                   as="span"
                   role="button"
                   variant="ghost"
-                  className="flex items-center justify-between w-full pl-10 pr-10 py-2 
+                  className="flex items-center justify-between w-full pl-10 pr-10 py-2 cursor-pointer
                    text-gray-700 border border-boxBorderColor
                    rounded-lg dark:border-buttonBorderColor-dark focus:outline-none 
                    dark:text-gray-100 appearance-none relative "
@@ -142,7 +142,7 @@ const AdressActivity = ({ SetTokenSelected, TokenSelected, SetMiladi, Miladi, Se
                 {
                   TokenTransfered.map((item, index) => {
                     return (
-                      <Dropdown.Option value={item.symbol} key="option1">
+                      <Dropdown.Option value={item.symbol} key={index}>
                         {({ selected, active }) => (
                           <MenuItem isActive={active} isSelected={selected}
                             className={`border mt-2 mb-1 rounded-md border-gray-100 dark:border-buttonBorderColor-dark ${TokenSelected === item.symbol
