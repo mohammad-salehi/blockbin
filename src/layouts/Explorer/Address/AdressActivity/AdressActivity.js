@@ -28,7 +28,6 @@ const AdressActivity = ({ SetTokenSelected, TokenSelected, SetMiladi, Miladi, Se
       GetRequest(`${serverAddress}/explorer/address-aggregation/?query=${hash}&network=${network}`)
         .then((response) => {
           if (response.status === 200) {
-            console.log(response)
             SetBalance(response.data.balance)
             SetFirstActivity(response.data.first_activity)
             SetLastActivity(response.data.last_activity)
@@ -68,7 +67,6 @@ const AdressActivity = ({ SetTokenSelected, TokenSelected, SetMiladi, Miladi, Se
     SetSelectTokenLoading(true)
     GetRequest(`${serverAddress}/explorer/token-transfer-list/?query=${hash}&network=${network}`)
       .then((response) => {
-        console.log(response)
         SetSelectTokenLoading(false)
         const getData = [];
         getData.push(TokenTransfered[0]);

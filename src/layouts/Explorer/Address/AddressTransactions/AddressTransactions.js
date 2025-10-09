@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import ExpandableTable from '@/components/ExpandableTable/ExpandableTable'
 import { AddressFormat } from '@/components/AddressFormat/AddressFormat';
 import { GetMyTime } from '@/functions/getMyTime';
@@ -6,16 +6,27 @@ import { timeSince } from '@/functions/timeSince';
 import moment from 'jalali-moment'
 import { formatSmallNumber } from '@/functions/formatSmallNumber';
 import Pagination from '@/components/Pagination/Pagination';
+import { useParams, usePathname, useRouter } from 'next/navigation'
+import { ExploreProcessor } from '@/functions/ExploreProcessor';
+import { GetRequest } from '@/functions/GetRequest';
+import { serverAddress } from '@/functions/ServerAddress';
 
-const AddressTransactions = () => {
+const AddressTransactions = ({ TokenTransfered, Miladi, TokenSelected }) => {
 
+  const [First, SetFirst] = useState(1)
+
+  const params = useParams()
+
+  const query = params.query
+  const network = params.network
+  const hash = params.hash
 
   const DateRow = (row) => {
     return (
       <p className='p-0 m-0'>
         {
           row.Date !== null ?
-            true ?
+            Miladi === 1 ?
               <span style={{ margin: "0px" }}>{(GetMyTime(row.Date).hour + ':' + GetMyTime(row.Date).minute + ' - ' + moment(GetMyTime(row.Date).year + '-' + GetMyTime(row.Date).month + '-' + GetMyTime(row.Date).day, 'YYYY/MM/DD').locale('fa').format('YYYY/MM/DD'))} ({timeSince(row.Date)})</span>
               :
               <span style={{ margin: "0px" }}>{(GetMyTime(row.Date).hour + ':' + GetMyTime(row.Date).minute + ' - ' + GetMyTime(row.Date).year + '/' + GetMyTime(row.Date).month + '/' + GetMyTime(row.Date).day)} ({timeSince(row.Date)})</span>
@@ -132,53 +143,61 @@ const AddressTransactions = () => {
     },
   ];
 
-  const filteredData = [
-    {
-      Date: 1723849201,
-      hash: 'TAngDVCCBBs5Z2v42N9KzvcGfdRhnaXrrG',
-      mode: true,
-      symbole: 'TRX',
-      value: 1422.24,
-      fee: 1.25,
-    },
-    {
-      Date: 1723849201,
-      hash: 'TAngDVCCBBs5Z2v42N9KzvcGfdRhnaXrrG',
-      mode: false,
-      symbole: 'TRX',
-      value: 1422.24,
-      fee: 1.25,
-    },
-    {
-      Date: 1723849201,
-      hash: 'TAngDVCCBBs5Z2v42N9KzvcGfdRhnaXrrG',
-      mode: true,
-      symbole: 'TRX',
-      value: 1422.24,
-      fee: 1.25,
-    },
-    {
-      Date: 1723849201,
-      hash: 'TAngDVCCBBs5Z2v42N9KzvcGfdRhnaXrrG',
-      mode: true,
-      symbole: 'TRX',
-      value: 1422.24,
-      fee: 0.00000025,
-    },
-    {
-      Date: 1723849201,
-      hash: 'TAngDVCCBBs5Z2v42N9KzvcGfdRhnaXrrG',
-      mode: true,
-      symbole: 'TRX',
-      value: 1422.24,
-      fee: 1.25,
-    },
-  ]
-  const First = 0
+  const [filteredData, SetFiltredData] = useState([])
+
+  useEffect(() => {
+    let address = '';
+    if (TokenSelected === network) {
+      address = `${serverAddress}/explorer/search/?query=${hash}&network=${network}&page_number=${First}&page_size=10`;
+    } else {
+      const token = TokenTransfered?.find((item) => item.symbol === TokenSelected);
+      if (!token?.contract_address) {
+        SetFiltredData([]); // گارد در صورت نبودن توکن
+        return;
+      }
+      address = `${serverAddress}/explorer/search/?query=${hash}&network=${network}&page_number=${First}&page_size=10&type=token-20&contract_address=${token.contract_address}`;
+    }
+
+    let cancelled = false;
+
+    GetRequest(address)
+      .then((response) => {
+        let raw
+        if (TokenSelected === network) {
+          raw = ExploreProcessor(hash, response, null) || [];
+        } else {
+          raw = ExploreProcessor(hash, null, response) || [];
+        }
+
+
+        const rows = raw.map((d) => ({
+          Date: d.Time ?? null,
+          hash: d.address,
+          mode: d.mode,
+          symbole: d.currencyType,
+          value: d.BTCAmount,
+          fee: d.Fee,
+        }));
+
+        if (!cancelled) {
+          SetFiltredData(rows);
+          console.log(rows);
+        }
+      })
+      .catch((err) => {
+        if (!cancelled) console.log(err);
+      });
+
+    return () => {
+      cancelled = true;
+    };
+  }, [TokenSelected, First, network, hash, TokenTransfered, serverAddress]);
+
+
   return (
     <div>
       <ExpandableTable
-        data={filteredData.slice((First * 10), (First * 10) + 10)}          // ← فقط دیتای فیلترشده را بده
+        data={filteredData}          // ← فقط دیتای فیلترشده را بده
         columns={columns}
         rowDetailsMode="row"
         rowDetailsClassName="rounded-xl p-3"
@@ -187,10 +206,10 @@ const AddressTransactions = () => {
         rtl
         totalItems={143}
         pageSize={10}
-        currentPage={First + 1}
+        currentPage={First}
         onPageChange={
           (e) => {
-            SetFirst(e - 1)
+            SetFirst(e)
           }
         }
       />

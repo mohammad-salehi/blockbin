@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import AddressInfo from './AddressInfo/AddressInfo'
 import AdressActivity from './AdressActivity/AdressActivity'
 import AddressTransactions from './AddressTransactions/AddressTransactions'
@@ -24,6 +24,10 @@ const AddressPage = () => {
         }
     ]);
 
+    useEffect(() => {
+        
+    },[])
+
     return (
         <div>
             <div className='mt-0'>
@@ -45,7 +49,11 @@ const AddressPage = () => {
                 </div>
             </div>
             <div className='mt-4'>
-                <AddressTransactions />
+                <AddressTransactions
+                    TokenTransfered={TokenTransfered}
+                    Miladi={Miladi}
+                    TokenSelected={TokenSelected}
+                />
             </div>
         </div>
 
