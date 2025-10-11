@@ -63,7 +63,7 @@ const OutputsTable = ({ SetTotalUSDValue }) => {
       `${serverAddress}/explorer/search/?query=${hash}&page_number=0&page_size=0&network=${network}&pageNumberFrom=1&pageSizeFrom=1&pageNumberTo=${First * 5 + 1}&pageSizeTo=5`
     )
       .then((response) => {
-        SetTotalInputs(response.data.data.total_inputs)
+        SetTotalInputs(response.data.data.total_outputs)
         const array = [];
         const getData = UTXOTr(
           response.data.data,
