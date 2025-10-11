@@ -14,7 +14,7 @@ import { GetMyTime } from '@/functions/getMyTime';
 import { timeSince } from '@/functions/timeSince';
 import moment from 'jalali-moment'
 
-const TransactionInfo = ({ TotalUSDValue }) => {
+const TransactionInfo = ({ TotalUSDValue , SetTotalUSDValue }) => {
 
     const params = useParams()
 
@@ -39,10 +39,26 @@ const TransactionInfo = ({ TotalUSDValue }) => {
     useEffect(() => {
         GetRequest(`${serverAddress}/explorer/search/?query=${hash}&network=${network}`)
             .then((response) => {
-                SetblockNumber(response.data.data.block_number)
-                SetTrValue(response.data.data.value)
-                SetFee(response.data.data.fee)
-                SetTime(response.data.data.time)
+                console.log(response)
+                if (Networks.find(item => item.symbole === network).type === 'account') {
+                    SetblockNumber(response.data.data.block_number)
+                    SetTrValue(response.data.data.value)
+                    SetFee(response.data.data.fee)
+                    SetTime(response.data.data.time)
+                } else {
+                    SetblockNumber(response.data.data.block_number)
+                    SetTrValue(response.data.data.amount_transacted)
+                    SetFee(response.data.data.fee)
+                    SetTime(response.data.data.time)
+                    if (response.status == 200) {
+                        let sum = 0
+                        for (let i = 0; i < response.data.data.outputs.length; i++) {
+                          sum = sum + response.data.data.outputs[i].ValueInDollar
+                        }
+                        SetTotalUSDValue(sum)
+                      }
+                }
+
             })
             .catch((err) => {
                 console.log(err)

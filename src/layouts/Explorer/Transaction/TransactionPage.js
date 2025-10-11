@@ -21,7 +21,7 @@ const TransactionPage = () => {
             </div>
 
             <div className='mt-4'>
-                <TransactionInfo TotalUSDValue={TotalUSDValue}/>
+                <TransactionInfo TotalUSDValue={TotalUSDValue} SetTotalUSDValue={SetTotalUSDValue}/>
             </div>
             {
                 Networks.find(item => item.symbole === network).type === 'account' ?
