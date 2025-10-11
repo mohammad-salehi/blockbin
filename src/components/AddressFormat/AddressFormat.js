@@ -23,7 +23,7 @@ export function AddressFormat(str, number = 8, type, network, showCopy = true) {
     }
     const firstPart = str.substring(0, number);
     const lastPart = str.substring(str.length - number);
-    return (<>
+    return (<div className='inline-block'>
         {
             showCopy ?
                 <ContentCopyIcon className='text-textColor' style={{ fontSize: '16px', marginTop: '-4px', marginLeft: '4px', cursor: 'pointer' }}
@@ -38,5 +38,5 @@ export function AddressFormat(str, number = 8, type, network, showCopy = true) {
         }
         <a style={{ textDecoration: 'none' }} className='text-primary' href={`/panel/dashboard/${type}/${network}/${str}/`}>{firstPart + '...' + lastPart}</a>
 
-    </>);
+    </div>);
 }
