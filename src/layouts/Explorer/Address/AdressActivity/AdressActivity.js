@@ -27,6 +27,7 @@ const AdressActivity = ({ SetTokenSelected, TokenSelected, SetMiladi, Miladi, Se
   useEffect(() => {
     SetLoading1(true)
     if (TokenSelected === network) {
+      
       GetRequest(`${serverAddress}/explorer/address-aggregation/?query=${hash}&network=${network}`)
         .then((response) => {
           if (response.status === 200) {
@@ -41,7 +42,7 @@ const AdressActivity = ({ SetTokenSelected, TokenSelected, SetMiladi, Miladi, Se
           SetLoading1(false)
         })
     } else {
-      SetLoading1(true)
+      
       GetRequest(`${serverAddress}/explorer/token-transfer-list/?query=${hash}&network=${network}`)
         .then((response) => {
           if (response.status === 200) {
@@ -53,13 +54,16 @@ const AdressActivity = ({ SetTokenSelected, TokenSelected, SetMiladi, Miladi, Se
 
             GetRequest(`${serverAddress}/explorer/total-transaction/?type=asset_transactions&contract_address=${TokenTransfered.find(item => item.symbol === TokenSelected).contract_address}&query=${hash}&network=${network}`)
               .then((response) => {
-                console.log(response)
                 if (response.status === 200) {
                   SetTransactions(response.data.total_document)
                 }
+                SetLoading1(false)
+
+              })
+              .catch((err) => {
+                SetLoading1(false)
               })
           }
-          SetLoading1(false)
 
         })
         .catch((err) => {
