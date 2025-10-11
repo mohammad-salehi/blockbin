@@ -143,7 +143,7 @@ export default function ExpandableTable(props) {
   return (
     <div>
       <div className="overflow-x-auto rounded-2xl border border-boxBorderColor dark:border-boxColor-dark bg-TableBorder shadow-sm px-2 ">
-        <table className="min-w-[720px] w-full text-sm border-separate border-spacing-y-2">
+        <table className=" w-full text-sm border-separate border-spacing-y-2">
           <thead className="sticky top-0 bg-TableBorder text-textColor">
             <tr className="text-right">
               {columns.map((c, i) => (

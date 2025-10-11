@@ -39,7 +39,6 @@ const TransactionInfo = ({ TotalUSDValue , SetTotalUSDValue }) => {
     useEffect(() => {
         GetRequest(`${serverAddress}/explorer/search/?query=${hash}&network=${network}`)
             .then((response) => {
-                console.log(response)
                 if (Networks.find(item => item.symbole === network).type === 'account') {
                     SetblockNumber(response.data.data.block_number)
                     SetTrValue(response.data.data.value)
