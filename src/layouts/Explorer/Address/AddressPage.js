@@ -15,6 +15,7 @@ const AddressPage = () => {
 
     const [TokenSelected, SetTokenSelected] = useState(network)
     const [Miladi, SetMiladi] = useState(0)
+    const [Transactions, SetTransactions] = useState(0)
     const [TokenTransfered, SetTokenTransfered] = useState([
         {
             symbol: network,
@@ -45,6 +46,8 @@ const AddressPage = () => {
                         Miladi={Miladi}
                         SetTokenTransfered={SetTokenTransfered}
                         TokenTransfered={TokenTransfered}
+                        SetTransactions={SetTransactions}
+                        Transactions={Transactions}
                     />
                 </div>
             </div>
@@ -53,6 +56,7 @@ const AddressPage = () => {
                     TokenTransfered={TokenTransfered}
                     Miladi={Miladi}
                     TokenSelected={TokenSelected}
+                    Transactions={Transactions}
                 />
             </div>
         </div>

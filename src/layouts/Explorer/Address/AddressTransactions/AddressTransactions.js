@@ -10,10 +10,11 @@ import { useParams, usePathname, useRouter } from 'next/navigation'
 import { ExploreProcessor } from '@/functions/ExploreProcessor';
 import { GetRequest } from '@/functions/GetRequest';
 import { serverAddress } from '@/functions/ServerAddress';
-
-const AddressTransactions = ({ TokenTransfered, Miladi, TokenSelected }) => {
+import SkeletonLoading from '@/components/SkeletonLoading/SkeletonLoading';
+const AddressTransactions = ({ TokenTransfered, Miladi, TokenSelected, Transactions }) => {
 
   const [First, SetFirst] = useState(1)
+  const [Loading, SetLoading] = useState(false)
 
   const params = useParams()
 
@@ -146,6 +147,7 @@ const AddressTransactions = ({ TokenTransfered, Miladi, TokenSelected }) => {
   const [filteredData, SetFiltredData] = useState([])
 
   useEffect(() => {
+    SetLoading(true)
     let address = '';
     if (TokenSelected === network) {
       address = `${serverAddress}/explorer/search/?query=${hash}&network=${network}&page_number=${First}&page_size=10`;
@@ -182,37 +184,54 @@ const AddressTransactions = ({ TokenTransfered, Miladi, TokenSelected }) => {
         if (!cancelled) {
           SetFiltredData(rows);
           console.log(rows);
+          SetLoading(false)
         }
       })
       .catch((err) => {
-        if (!cancelled) console.log(err);
+        if (!cancelled) {
+          SetLoading(false)
+          console.log(err)
+        };
       });
 
     return () => {
       cancelled = true;
     };
-  }, [TokenSelected, First, network, hash, TokenTransfered, serverAddress]);
+  }, [TokenSelected, First, network, hash]);
 
+  useEffect(() => {
+    SetFirst(1)
+  },[TokenSelected])
 
   return (
     <div>
-      <ExpandableTable
-        data={filteredData}          // ← فقط دیتای فیلترشده را بده
-        columns={columns}
-        rowDetailsMode="row"
-        rowDetailsClassName="rounded-xl p-3"
-      />
-      <Pagination
-        rtl
-        totalItems={143}
-        pageSize={10}
-        currentPage={First}
-        onPageChange={
-          (e) => {
-            SetFirst(e)
-          }
-        }
-      />
+      {
+        !Loading ?
+          <>
+            <ExpandableTable
+              data={filteredData}          // ← فقط دیتای فیلترشده را بده
+              columns={columns}
+              rowDetailsMode="row"
+              rowDetailsClassName="rounded-xl p-3"
+            />
+            <Pagination
+              rtl
+              totalItems={Transactions}
+              pageSize={10}
+              currentPage={First}
+              onPageChange={
+                (e) => {
+                  SetFirst(e)
+                }
+              }
+            />
+          </>
+          :
+          <div className='overflow-x-auto rounded-2xl border border-boxBorderColor dark:border-boxColor-dark shadow-sm px-2 '>
+            <SkeletonLoading />
+          </div>
+      }
+
     </div>
   )
 }

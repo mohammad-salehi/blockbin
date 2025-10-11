@@ -60,7 +60,7 @@ export default function Pagination({
 
       <div className="flex items-center justify-center gap-1 mt-4">
         <button
-          className={`border-boxBorderColor rounded-xl border bg-PaginationBg   ${size} disabled:opacity-40 text-titleText`}
+          className={`border-boxBorderColor rounded-xl border bg-PaginationBg   ${size} disabled:opacity-40 text-titleText ${!isFirst ? 'cursor-pointer text-textColor' : ''}`}
           onClick={() => onPageChange(currentPage - 1)}
           disabled={isFirst}
         >
@@ -83,7 +83,7 @@ export default function Pagination({
         ))}
 
         <button
-          className={`rounded-xl border bg-PaginationBg border-boxBorderColor  ${size} disabled:opacity-40 text-titleText`}
+          className={`rounded-xl border bg-PaginationBg border-boxBorderColor  ${size} disabled:opacity-40 text-titleText ${!isLast ? 'cursor-pointer text-textColor' : ''}`}
           onClick={() => onPageChange(currentPage + 1)}
           disabled={isLast}
         >
