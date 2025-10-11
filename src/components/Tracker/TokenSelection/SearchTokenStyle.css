@@ -1,0 +1,41 @@
+#searchTokenDiv{
+    max-height: 60vh !important;
+    overflow-y: scroll;
+}
+
+#searchTokenDiv #tokenItems:hover{
+    background: #eef6fb;
+    cursor: pointer;
+}
+#searchTokenDiv #tokenItems:hover span{
+    color: #1d78a5;
+}
+
+#searchTokenDiv .active{
+    color: #1d78a5;
+    background: #eef6fb;
+    cursor: pointer;
+}
+
+#searchTokenDiv #MainSearchInputGroup{
+    border: none !important;
+    margin: 0px !important;
+    box-shadow: none !important;
+    border-radius: 0px !important;
+    border-bottom-style: solid !important;
+    border-bottom-color: rgb(220, 220, 220) !important;
+    border-bottom-width: 1px !important;
+}
+
+#searchTokenDiv #MainSearchInputSymbole{
+    border: none !important;
+    cursor: pointer;
+    border-radius: 0px !important;
+}
+
+#searchTokenDiv #MainSearchInputBox{
+    border: none !important;
+    border-radius: 0px !important;
+    padding: 24px 24px;
+
+}

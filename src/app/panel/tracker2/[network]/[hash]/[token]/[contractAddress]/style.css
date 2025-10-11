@@ -1,0 +1,50 @@
+#myGraphDiv{
+    background-image: url('/public/images/Graph_BG.png');
+    background-color: rgb(250, 250, 250);
+    background-repeat: no-repeat;
+    background-position: center;
+    height: calc(100vh - 60px)
+  }
+
+  @media only screen and (max-width:1200px) {
+    #tracker{
+      margin-top: -60px;
+    }
+  }
+
+  .Graph-Address-modal-body {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch ; /* یا 'stretch' اگر می‌خواهید محتوا تا عرض کامل کشیده شود */
+    
+  }
+
+  .modal-slide-in2222 {
+    direction: ltr;
+  }
+
+  .modal-slide-in2222 .modal-dialog .modal-content{
+    border-radius: 0px !important;
+  }
+
+  .modal-open .modal-slide-in2222 {
+    pointer-events: none;
+  }
+  
+  .modal-open .modal-backdrop {
+    pointer-events: none;
+  }
+
+  .GraphAddresBoxTable td{
+    padding: 12px !important;
+  }
+
+  .HoverOption{
+    padding: 8px 8px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: 0.2s;
+  }
+  .HoverOption:hover{
+    background: rgb(240, 240, 240);
+  }
