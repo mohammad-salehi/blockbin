@@ -483,12 +483,11 @@ const FuckingGraph_V2 = ({
   return (
     <div
       id="myGraphDiv"
+      className="bg-bgColor"
       ref={networkRef}
       style={{
         minWidth: "100%",
         transition: "0.3s",
-        position: "absolute",
-        top: "0px",
       }}
     >
 

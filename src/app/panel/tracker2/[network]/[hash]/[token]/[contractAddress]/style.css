@@ -1,15 +1,11 @@
 #myGraphDiv{
     background-image: url('/public/images/Graph_BG.png');
-    background-color: rgb(250, 250, 250);
     background-repeat: no-repeat;
     background-position: center;
-    height: calc(100vh - 60px)
-  }
-
-  @media only screen and (max-width:1200px) {
-    #tracker{
-      margin-top: -60px;
-    }
+    height: calc(100vh - 60px);
+    position: fixed;
+    top: 73px;
+    left: 0px;
   }
 
   .Graph-Address-modal-body {

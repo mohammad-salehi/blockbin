@@ -5,8 +5,6 @@ import { useParams } from 'next/navigation'
 import axios from "axios";
 import Cookies from "js-cookie";
 import "./style.css";
-// import FuckingGraph_V2 from "./components/graph/Graph";
-
 // import SearchTokens from "./components/TokenSelection/SearchTokens";
 // import LoadingButton from "../../components/loadinButton/LoadingButton";
 import toast from 'react-hot-toast'
