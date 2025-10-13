@@ -1,14 +1,14 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import { useParams } from 'next/navigation'
+import { useParams } from "next/navigation";
 import axios from "axios";
 import Cookies from "js-cookie";
 import "./style.css";
 // import SearchTokens from "./components/TokenSelection/SearchTokens";
 // import LoadingButton from "../../components/loadinButton/LoadingButton";
-import toast from 'react-hot-toast'
-
+import toast from "react-hot-toast";
+import Switch from '@mui/material/Switch';
 // import ReportModal from "./components/ReportBox/ReportBox";
 import { Networks } from "@/functions/Networks";
 // import { selectThemeColors } from '@utils'
@@ -20,14 +20,14 @@ import { Account_transaction } from "@/functions/NetworksProcessor/Account_trans
 import { UTXO_Transaction } from "@/functions/NetworksProcessor/UTXO_Transaction";
 import FuckingGraph_V2 from "@/components/Tracker/graph/Graph";
 import FullPageLoading from "@/components/FullPageLoading/FullPageLoading";
+import Select, { components } from 'react-select'
 
 const Page = () => {
-
-  const { id } = useParams()
-  const { hash } = useParams()
-  const { network } = useParams()
-  const { token } = useParams()
-  const { contractAddress } = useParams()
+  const { id } = useParams();
+  const { hash } = useParams();
+  const { network } = useParams();
+  const { token } = useParams();
+  const { contractAddress } = useParams();
 
   //actions
   const [Reload, SetReload] = useState(false);
@@ -36,24 +36,23 @@ const Page = () => {
 
   //graph Draw values
   const [NodesPosition, SetNodesPosition] = useState([]);
-  const [SavedPositions, SetSavedPositions] = useState([])
-  const [Distance, SetDistance] = useState(300)
-  const [Scale, SetScale] = useState(1)
-  const [XPosition, SetXPosition] = useState(0)
-  const [YPosition, SetYPosition] = useState(800)
+  const [SavedPositions, SetSavedPositions] = useState([]);
+  const [Distance, SetDistance] = useState(300);
+  const [Scale, SetScale] = useState(1);
+  const [XPosition, SetXPosition] = useState(0);
+  const [YPosition, SetYPosition] = useState(800);
   const [SelectedEdges, SetSelectedEdges] = useState([]);
-  const [PaintedEdges, SetPaintedEdges] = useState([])
+  const [PaintedEdges, SetPaintedEdges] = useState([]);
   const [Data, SetData] = useState([]);
-  const [Name, SetName] = useState('')
-  const [Description, SetDescription] = useState('')
+  const [Name, SetName] = useState("");
+  const [Description, SetDescription] = useState("");
 
   //graph setting
-  const [ShowPrice, SetShowPrice] = useState(false)
-  const [ShowValues, SetShowValues] = useState(true)
-  const [ShowTimes, SetShowTimes] = useState(true)
-  const [ShowGuides, SetShowGuides] = useState(false)
-  const [OpenSaveBox, SetOpenSaveBox] = useState(false)
-
+  const [ShowPrice, SetShowPrice] = useState(false);
+  const [ShowValues, SetShowValues] = useState(true);
+  const [ShowTimes, SetShowTimes] = useState(true);
+  const [ShowGuides, SetShowGuides] = useState(false);
+  const [OpenSaveBox, SetOpenSaveBox] = useState(false);
 
   //start graph drawing
   const [ShowGraph, SetShowGraph] = useState(false);
@@ -61,686 +60,368 @@ const Page = () => {
   const [ReportBox, SetReportBox] = useState(false);
 
   useEffect(() => {
-    document.title = `بلاک‌بین`
-  })
+    document.title = `بلاک‌بین`;
+  });
 
   const SetColor = (color) => {
-    const Edges = []
+    const Edges = [];
     for (let i = 0; i < PaintedEdges.length; i++) {
-      Edges.push(PaintedEdges[i])
+      Edges.push(PaintedEdges[i]);
     }
     for (let i = 0; i < SelectedEdges.length; i++) {
-      if (!Edges.some(item => (item.from === SelectedEdges[i].from && item.to === SelectedEdges[i].to))) {
-        Edges.push(
-          {
-            from: SelectedEdges[i].from,
-            to: SelectedEdges[i].to,
-            color: color
-          }
+      if (
+        !Edges.some(
+          (item) =>
+            item.from === SelectedEdges[i].from &&
+            item.to === SelectedEdges[i].to
         )
+      ) {
+        Edges.push({
+          from: SelectedEdges[i].from,
+          to: SelectedEdges[i].to,
+          color: color,
+        });
       } else {
-        Edges.find(item => (item.from === SelectedEdges[i].from && item.to === SelectedEdges[i].to)).color = color
+        Edges.find(
+          (item) =>
+            item.from === SelectedEdges[i].from &&
+            item.to === SelectedEdges[i].to
+        ).color = color;
       }
     }
-    SetPaintedEdges(Edges)
-    SetReload(!Reload)
-  }
+    SetPaintedEdges(Edges);
+    SetReload(!Reload);
+  };
   const DeleteColor = () => {
-    let Edges = PaintedEdges
+    let Edges = PaintedEdges;
     for (let i = 0; i < SelectedEdges.length; i++) {
-      Edges = Edges.filter(item => (item.from !== SelectedEdges[i].from && item.to !== SelectedEdges[i].to))
+      Edges = Edges.filter(
+        (item) =>
+          item.from !== SelectedEdges[i].from || item.to !== SelectedEdges[i].to
+      );
     }
-    SetPaintedEdges(Edges)
-  }
+    SetPaintedEdges(Edges);
+  };
 
   const saveGraph = () => {
+    let GraphName;
+    let GraphDescription;
 
-    let GraphName
-    let GraphDescription
+    GraphName = document.getElementById("GraphName").value;
+    GraphDescription = document.getElementById("GraphDescription").value;
 
-    GraphName = document.getElementById('GraphName').value
-    GraphDescription = document.getElementById('GraphDescription').value
-
-    if (GraphName !== '' || id !== undefined) {
+    if (GraphName !== "" || id !== undefined) {
       if (Data.length > 0) {
         if (id !== undefined) {
-          SetLoading(true)
+          SetLoading(true);
           //Error Done
-          axios.put(`${serverAddress}/tracing/graph/${Number(id)}/`,
-            {
-              value: {
-                GraphName: GraphName,
-                NodesPosition,
-                SavedPositions,
-                Scale,
-                XPosition,
-                YPosition,
-                PaintedEdges,
-                Data,
-                GraphDescription: GraphDescription,
-                network,
-                token,
-                contractAddress
+          axios
+            .put(
+              `${serverAddress}/tracing/graph/${Number(id)}/`,
+              {
+                value: {
+                  GraphName: GraphName,
+                  NodesPosition,
+                  SavedPositions,
+                  Scale,
+                  XPosition,
+                  YPosition,
+                  PaintedEdges,
+                  Data,
+                  GraphDescription: GraphDescription,
+                  network,
+                  token,
+                  contractAddress,
+                },
+                title: GraphName,
               },
-              title: GraphName,
-            },
-            { headers: { Authorization: `Bearer ${Cookies.get('access')}` } })
+              { headers: { Authorization: `Bearer ${Cookies.get("access")}` } }
+            )
             .then((response) => {
-              SetLoading(false)
+              SetLoading(false);
               //adad daghigh set she
               if (response.status === 200) {
-                SetOpenSaveBox(false)
+                SetOpenSaveBox(false);
 
                 // window.location.assign(`/tracker/loadGraph/${networkName}/${response.data.id}/${Token}`)
-                return toast.success('با موفقیت ذخیره شد.', {
-                  position: 'bottom-left'
-                })
-
+                return toast.success("با موفقیت ذخیره شد.", {
+                  position: "bottom-left",
+                });
               } else {
-                return toast.error('ناموفق', {
-                  position: 'bottom-left'
-                })
+                return toast.error("ناموفق", {
+                  position: "bottom-left",
+                });
               }
             })
             .catch((err) => {
-              SetLoading(false)
+              SetLoading(false);
               try {
                 if (err.response.status === 403) {
-                  Cookies.set('refresh', '0')
-                  Cookies.set('access', '0')
-                  window.location.assign('/')
+                  Cookies.set("refresh", "0");
+                  Cookies.set("access", "0");
+                  window.location.assign("/");
                 } else if (err.response.status === 401) {
-                  Cookies.set('refresh', '0')
-                  Cookies.set('access', '0')
-                  window.location.assign('/')
+                  Cookies.set("refresh", "0");
+                  Cookies.set("access", "0");
+                  window.location.assign("/");
                 } else {
-                  return toast.error('ناموفق', {
-                    position: 'bottom-left'
-                  })
+                  return toast.error("ناموفق", {
+                    position: "bottom-left",
+                  });
                 }
               } catch (error) {
-                return toast.error('ناموفق', {
-                  position: 'bottom-left'
-                })
+                return toast.error("ناموفق", {
+                  position: "bottom-left",
+                });
               }
-            })
+            });
         } else {
-          SetLoading(false)
+          SetLoading(false);
           //Error Done
-          axios.post(`${serverAddress}/tracing/graph/`,
-            {
-              value: {
-                GraphName: GraphName,
-                NodesPosition,
-                SavedPositions,
-                Scale,
-                XPosition,
-                YPosition,
-                PaintedEdges,
-                Data,
-                GraphDescription: GraphDescription,
-                network,
-                token,
-                contractAddress
+          axios
+            .post(
+              `${serverAddress}/tracing/graph/`,
+              {
+                value: {
+                  GraphName: GraphName,
+                  NodesPosition,
+                  SavedPositions,
+                  Scale,
+                  XPosition,
+                  YPosition,
+                  PaintedEdges,
+                  Data,
+                  GraphDescription: GraphDescription,
+                  network,
+                  token,
+                  contractAddress,
+                },
+                title: GraphName,
               },
-              title: GraphName,
-
-            },
-            { headers: { Authorization: `Bearer ${Cookies.get('access')}` } })
+              { headers: { Authorization: `Bearer ${Cookies.get("access")}` } }
+            )
             .then((response) => {
-              SetLoading(false)
+              SetLoading(false);
               if (response.status === 201) {
-                SetOpenSaveBox(false)
-                window.location.assign(`/tracker2/load/${network}/${response.data.id}/${token}/${contractAddress !== undefined ? contractAddress : ''}`)
+                SetOpenSaveBox(false);
+                window.location.assign(
+                  `/tracker2/load/${network}/${response.data.id}/${token}/${
+                    contractAddress !== undefined ? contractAddress : ""
+                  }`
+                );
               } else {
-                return toast.error('ناموفق', {
-                  position: 'bottom-left'
-                })
+                return toast.error("ناموفق", {
+                  position: "bottom-left",
+                });
               }
             })
             .catch((err) => {
-              SetLoading(false)
-              console.log(err)
+              SetLoading(false);
+              console.log(err);
               try {
                 if (err.response.status === 403) {
-                  Cookies.set('refresh', '')
-                  Cookies.set('access', '')
-                  window.location.assign('/')
-                  return toast.error('دوباره به حساب کاربری وارد شوید.', {
-                    position: 'bottom-left'
-                  })
+                  Cookies.set("refresh", "");
+                  Cookies.set("access", "");
+                  window.location.assign("/");
+                  return toast.error("دوباره به حساب کاربری وارد شوید.", {
+                    position: "bottom-left",
+                  });
                 } else if (err.response.status === 401) {
-                  Cookies.set('refresh', '')
-                  Cookies.set('access', '')
-                  window.location.assign('/')
-                  return toast.error('دوباره به حساب کاربری وارد شوید.', {
-                    position: 'bottom-left'
-                  })
+                  Cookies.set("refresh", "");
+                  Cookies.set("access", "");
+                  window.location.assign("/");
+                  return toast.error("دوباره به حساب کاربری وارد شوید.", {
+                    position: "bottom-left",
+                  });
                 } else {
-                  return toast.error('ناموفق', {
-                    position: 'bottom-left'
-                  })
+                  return toast.error("ناموفق", {
+                    position: "bottom-left",
+                  });
                 }
               } catch (error) {
-                return toast.error('ناموفق', {
-                  position: 'bottom-left'
-                })
+                return toast.error("ناموفق", {
+                  position: "bottom-left",
+                });
               }
-            })
+            });
         }
       } else {
-        return toast.error('گراف رسم نشده است.', {
-          position: 'bottom-left'
-        })
+        return toast.error("گراف رسم نشده است.", {
+          position: "bottom-left",
+        });
       }
     } else {
-      return toast.error('عنوان گراف نباید خالی باشد.', {
-        position: 'bottom-left'
-      })
+      return toast.error("عنوان گراف نباید خالی باشد.", {
+        position: "bottom-left",
+      });
     }
-  }
+  };
 
   //start Drawing Graph
   useEffect(() => {
     // token selection checker
     if (id === undefined) {
-
       if (token === undefined) {
-        if (Networks.find(item => item.symbole === network).type === 'account') {
-          SetSelectTokenBox(true)
+        if (
+          Networks.find((item) => item.symbole === network).type === "account"
+        ) {
+          SetSelectTokenBox(true);
         } else {
-          window.location.assign(`/tracker2/${network}/${hash}/${network}`)
+          window.location.assign(`/tracker2/${network}/${hash}/${network}`);
         }
       } else {
         //Get Trs data
-        let GetAddress
+        let GetAddress;
         GetRequest(`${serverAddress}/explorer/network-detection/?query=${hash}`)
           .then((response) => {
-            if (response.data.query === 'address') {
+            if (response.data.query === "address") {
               if (token === network) {
-                GetAddress = `${serverAddress}/explorer/search/?query=${hash}&network=${network}`
+                GetAddress = `${serverAddress}/explorer/search/?query=${hash}&network=${network}`;
               } else {
-                GetAddress = `${serverAddress}/explorer/search/?query=${hash}&network=${network}&page_number=1&page_size=10&type=token-20&contract_address=${contractAddress}`
+                GetAddress = `${serverAddress}/explorer/search/?query=${hash}&network=${network}&page_number=1&page_size=10&type=token-20&contract_address=${contractAddress}`;
               }
             } else {
-              if (Networks.find(item => item.symbole === network).type === 'account') {
-                GetAddress = `${serverAddress}/explorer/search/?query=${hash}&network=${network}&page_number=1&page_size=100`
+              if (
+                Networks.find((item) => item.symbole === network).type ===
+                "account"
+              ) {
+                GetAddress = `${serverAddress}/explorer/search/?query=${hash}&network=${network}&page_number=1&page_size=100`;
               } else {
-                GetAddress = `${serverAddress}/explorer/search/?query=${hash}&page_number=0&page_size=0&network=${network}&pageNumberFrom=1&pageSizeFrom=2&pageNumberTo=1&pageSizeTo=2`
+                GetAddress = `${serverAddress}/explorer/search/?query=${hash}&page_number=0&page_size=0&network=${network}&pageNumberFrom=1&pageSizeFrom=2&pageNumberTo=1&pageSizeTo=2`;
               }
             }
             GetRequest(GetAddress)
               .then(async (TrsResponse) => {
                 if (TrsResponse.status === 200) {
-                  if (Networks.find(item => item.symbole === network).type === 'account') {
-                    if (response.data.query === 'address') {
+                  if (
+                    Networks.find((item) => item.symbole === network).type ===
+                    "account"
+                  ) {
+                    if (response.data.query === "address") {
                       if (network === token) {
-                        const getData = (Account_Address(TrsResponse.data.data, hash, network, 0))
-                        GetRequest(`${serverAddress}/explorer/risk-score/?address=${hash}&network=${network}`)
-                          .then((RiskResponse) => {
-                            let risk = null
-                            if (RiskResponse.status === 200) {
-                              const risk = (RiskResponse.data.risk_score)
-                            }
-                            let createdData = [{
-                              id: hash,
-                              text: hash,
-                              type: "address",
-                              label: getData.Label ? getData.Label : null,
-                              main: true,
-                              entity: getData.entity,
-                              risk: risk,
-                              x: 0,
-                              y: 800,
-                              metadata: getData.metadata,
-                              inputs: [],
-                              outputs: [],
-                            }]
-                            SetData(createdData)
-                            SetLoading(false)
-                            SetShowGraph(true)
-                          })
-                          .catch((err) => {
-                            let createdData = [{
-                              id: hash,
-                              text: hash,
-                              type: "address",
-                              label: getData.Label ? getData.Label : null,
-                              main: true,
-                              entity: getData.entity,
-                              risk: null,
-                              x: 0,
-                              y: 800,
-                              metadata: getData.metadata,
-                              inputs: [],
-                              outputs: [],
-                            }]
-                            SetData(createdData)
-                            SetLoading(false)
-                            SetShowGraph(true)
-                          })
-
-                      } else {
-                        const getData = (Account_Token_Address(TrsResponse.data.data, hash, network, 0))
-                        GetRequest(`${serverAddress}/explorer/risk-score/?address=${hash}&network=${network}`)
-                          .then((RiskResponse) => {
-                            let risk = null
-                            if (RiskResponse.status === 200) {
-                              risk = (RiskResponse.data.risk_score)
-                            }
-                            
-                            let createdData = [{
-                              id: hash,
-                              text: hash,
-                              type: "address",
-                              label: getData.Label ? getData.Label : null,
-                              main: true,
-                              entity: getData.entity,
-                              risk: risk,
-                              x: 0,
-                              y: 800,
-                              metadata: getData.metadata,
-                              inputs: [],
-                              outputs: [],
-                            }]
-                            SetData(createdData)
-                            SetLoading(false)
-                            SetShowGraph(true)
-                          })
-                          .catch((err) => {
-                            let createdData = [{
-                              id: hash,
-                              text: hash,
-                              type: "address",
-                              label: getData.Label ? getData.Label : null,
-                              main: true,
-                              entity: getData.entity,
-                              risk: null,
-                              x: 0,
-                              y: 800,
-                              metadata: getData.metadata,
-                              inputs: [],
-                              outputs: [],
-                            }]
-                            SetData(createdData)
-                            SetLoading(false)
-                            SetShowGraph(true)
-                          })
-                      }
-                    } else {
-                      if (network === token) {
-                        const getData = (Account_transaction(TrsResponse.data.data, network, 0))
-                        let createdData = []
-
-                        createdData.push(
-                          {
-                            id: hash,
-                            text: hash,
-                            type: "transaction",
-                            label: null,
-                            entity: null,
-                            risk: null,
-                            metadata: null,
-                            x: 0,
-                            y: 800,
-                            main: true,
-                            network: network,
-                            inputs: [
-                              {
-                                id: getData.from,
-                                text: getData.FromLabel ? getData.FromLabel : getData.FromEntity ? getData.FromEntity.name : getData.from,
-                                DollarValue: getData.valueInDollar,
-                                value: getData.value,
-                                time: getData.timestamp,
-                                symbol: getData.symbole,
-                                color: false
-                              },
-                            ],
-                            outputs: [
-                              {
-                                id: getData.to,
-                                text: getData.ToLabel ? getData.ToLabel : getData.ToEntity ? getData.ToEntity.name : getData.to,
-                                DollarValue: getData.valueInDollar,
-                                value: getData.value,
-                                time: getData.timestamp,
-                                symbol: getData.symbole,
-                                color: false
-                              },
-                            ],
-                          }
+                        const getData = Account_Address(
+                          TrsResponse.data.data,
+                          hash,
+                          network,
+                          0
+                        );
+                        GetRequest(
+                          `${serverAddress}/explorer/risk-score/?address=${hash}&network=${network}`
                         )
-                        createdData.push(
-                          {
-                            id: getData.from,
-                            text: getData.from,
-                            type: "address",
-                            label: getData.FromLabel,
-                            entity: getData.FromEntity,
-                            risk: null,
-                            x: 300,
-                            y: 800,
-                            metadata: getData.FromMetadata,
-                            main: false,
-                            inputs: [],
-                            outputs: [
+                          .then((RiskResponse) => {
+                            let risk = null;
+                            if (RiskResponse.status === 200) {
+                              const risk = RiskResponse.data.risk_score;
+                            }
+                            let createdData = [
                               {
                                 id: hash,
                                 text: hash,
-                                DollarValue: getData.valueInDollar,
-                                value: getData.value,
-                                time: getData.timestamp,
-                                symbol: getData.symbole,
-                                color: false
-                              },
-                            ],
-                          },
-                        )
-                        createdData.push(
-                          {
-                            id: getData.to,
-                            text: getData.to,
-                            type: "address",
-                            label: getData.ToLabel,
-                            entity: getData.ToEntity,
-                            risk: null,
-                            x: -300,
-                            y: 800,
-                            metadata: getData.ToMetadata,
-                            main: false,
-                            inputs: [{
-                              id: hash,
-                              text: hash,
-                              DollarValue: getData.valueInDollar,
-                              value: getData.value,
-                              time: getData.timestamp,
-                              symbol: getData.symbole,
-                              color: false
-                            }],
-                            outputs: [],
-                          },
-                        )
-                        let FromRisk = null
-                        let ToRisk = null
-                        GetRequest(`${serverAddress}/explorer/risk-score/?address=${getData.from}&network=${network}`)
-                          .then((RiskResponse) => {
-                            if (RiskResponse.status === 200) {
-                              FromRisk = (RiskResponse.data.risk_score)
-                              GetRequest(`${serverAddress}/explorer/risk-score/?address=${getData.to}&network=${network}`)
-                                .then((RiskResponse) => {
-                                  if (RiskResponse.status === 200) {
-                                    ToRisk = (RiskResponse.data.risk_score)
-                                    createdData.find(item => item.id === getData.from).risk = FromRisk
-                                    createdData.find(item => item.id === getData.to).risk = ToRisk
-                                  }
-                                  SetData(createdData)
-                                  SetLoading(false)
-                                  SetShowGraph(true)
-                                })
-                                .catch((err) => {
-                                  createdData.find(item => item.id === getData.from).risk = FromRisk
-                                  SetData(createdData)
-                                  SetLoading(false)
-                                  SetShowGraph(true)
-                                })
-                            }else {
-                              GetRequest(`${serverAddress}/explorer/risk-score/?address=${getData.to}&network=${network}`)
-                              .then((RiskResponse) => {
-                                if (RiskResponse.status === 200) {
-                                  ToRisk = (RiskResponse.data.risk_score)
-                                  createdData.find(item => item.id === getData.from).risk = FromRisk
-                                  createdData.find(item => item.id === getData.to).risk = ToRisk
-                                }
-                                SetData(createdData)
-                                SetLoading(false)
-                                SetShowGraph(true)
-                              })
-                              .catch((err) => {
-                                createdData.find(item => item.id === getData.from).risk = FromRisk
-                                SetData(createdData)
-                                SetLoading(false)
-                                SetShowGraph(true)
-                              })
-                            }
-                          })
-                          .catch((err) => {
-                            GetRequest(`${serverAddress}/explorer/risk-score/?address=${getData.to}&network=${network}`)
-                              .then((RiskResponse) => {
-                                if (RiskResponse.status === 200) {
-                                  ToRisk = (RiskResponse.data.risk_score)
-                                  createdData.find(item => item.id === getData.to).risk = ToRisk
-                                }
-                                SetData(createdData)
-                                SetLoading(false)
-                                SetShowGraph(true)
-                              })
-                              .catch((err) => {
-                                SetData(createdData)
-                                SetLoading(false)
-                                SetShowGraph(true)
-                              })
-                          })
-
-                      } else {
-                        const getData = (Account_transaction(TrsResponse.data.data, network, 0))
-
-                        for (let i = 0; i < getData.logs.length; i++) {
-                          if (getData.logs[i].symbole === token) {
-                            let createdData = []
-                            createdData.push(
-                              {
-                                id: hash,
-                                text: hash,
-                                type: "transaction",
-                                label: null,
-                                entity: null,
-                                risk: null,
-                                metadata: null,
+                                type: "address",
+                                label: getData.Label ? getData.Label : null,
+                                main: true,
+                                entity: getData.entity,
+                                risk: risk,
                                 x: 0,
                                 y: 800,
-                                main: true,
-                                network: network,
-                                inputs: [
-                                  {
-                                    id: getData.logs[i].from,
-                                    text: getData.logs[i].FromLabel ? getData.logs[i].FromLabel : getData.logs[i].FromEntity ? getData.logs[i].FromEntity.name : getData.logs[i].from,
-                                    DollarValue: getData.logs[i].valueInDollar,
-                                    value: getData.logs[i].value,
-                                    time: getData.timestamp,
-                                    symbol: getData.logs[i].symbole,
-                                    color: false
-                                  },
-                                ],
-                                outputs: [
-                                  {
-                                    id: getData.logs[i].to,
-                                    text: getData.logs[i].ToLabel ? getData.logs[i].ToLabel : getData.logs[i].ToEntity ? getData.logs[i].ToEntity.name : getData.logs[i].to,
-                                    DollarValue: getData.logs[i].valueInDollar,
-                                    value: getData.logs[i].value,
-                                    time: getData.timestamp,
-                                    symbol: getData.logs[i].symbole,
-                                    color: false
-                                  },
-                                ],
-                              }
-                            )
-                            createdData.push(
-                              {
-                                id: getData.logs[i].from,
-                                text: getData.logs[i].from,
-                                type: "address",
-                                label: getData.logs[i].FromLabel,
-                                entity: getData.logs[i].FromEntity,
-                                risk: null,
-                                x: 300,
-                                y: 800,
-                                metadata: getData.logs[i].FromMetadata,
-                                main: false,
+                                metadata: getData.metadata,
                                 inputs: [],
-                                outputs: [
-                                  {
-                                    id: hash,
-                                    text: hash,
-                                    DollarValue: getData.logs[i].valueInDollar,
-                                    value: getData.logs[i].value,
-                                    time: getData.timestamp,
-                                    symbol: getData.logs[i].symbole,
-                                    color: false
-                                  },
-                                ],
-                              },
-                            )
-                            createdData.push(
-                              {
-                                id: getData.logs[i].to,
-                                text: getData.logs[i].to,
-                                type: "address",
-                                label: getData.logs[i].ToLabel,
-                                entity: getData.logs[i].ToEntity,
-                                risk: null,
-                                x: -300,
-                                y: 800,
-                                metadata: getData.logs[i].ToMetadata,
-                                main: false,
-                                inputs: [{
-                                  id: hash,
-                                  text: hash,
-                                  DollarValue: getData.logs[i].valueInDollar,
-                                  value: getData.logs[i].value,
-                                  time: getData.timestamp,
-                                  symbol: getData.logs[i].symbole,
-                                  color: false
-                                }],
                                 outputs: [],
                               },
-                            )
+                            ];
+                            SetData(createdData);
+                            SetLoading(false);
+                            SetShowGraph(true);
+                          })
+                          .catch((err) => {
+                            let createdData = [
+                              {
+                                id: hash,
+                                text: hash,
+                                type: "address",
+                                label: getData.Label ? getData.Label : null,
+                                main: true,
+                                entity: getData.entity,
+                                risk: null,
+                                x: 0,
+                                y: 800,
+                                metadata: getData.metadata,
+                                inputs: [],
+                                outputs: [],
+                              },
+                            ];
+                            SetData(createdData);
+                            SetLoading(false);
+                            SetShowGraph(true);
+                          });
+                      } else {
+                        const getData = Account_Token_Address(
+                          TrsResponse.data.data,
+                          hash,
+                          network,
+                          0
+                        );
+                        GetRequest(
+                          `${serverAddress}/explorer/risk-score/?address=${hash}&network=${network}`
+                        )
+                          .then((RiskResponse) => {
+                            let risk = null;
+                            if (RiskResponse.status === 200) {
+                              risk = RiskResponse.data.risk_score;
+                            }
 
-                            let FromRisk = null
-                            let ToRisk = null
-                            GetRequest(`${serverAddress}/explorer/risk-score/?address=${getData.logs[i].from}&network=${network}`)
-                              .then((FromRiskResponse) => {
-                                if (FromRiskResponse.status === 200) {
-                                  FromRisk = (FromRiskResponse.data.risk_score)
-                                  GetRequest(`${serverAddress}/explorer/risk-score/?address=${getData.logs[i].to}&network=${network}`)
-                                    .then((ToRiskResponse) => {
-                                      if (ToRiskResponse.status === 200) {
-                                        ToRisk = (ToRiskResponse.data.risk_score)
-                                        createdData.find(item => item.id === getData.logs[i].from).risk = FromRisk
-                                        createdData.find(item => item.id === getData.logs[i].to).risk = ToRisk
-
-                                      }
-                                      SetData(createdData)
-                                      SetLoading(false)
-                                      SetShowGraph(true)
-                                    })
-                                    .catch((err) => {
-                                      createdData.find(item => item.id === getData.logs[i].from).risk = FromRisk
-                                      SetData(createdData)
-                                      SetLoading(false)
-                                      SetShowGraph(true)
-                                    })
-                                } else {
-                                  GetRequest(`${serverAddress}/explorer/risk-score/?address=${getData.logs[i].to}&network=${network}`)
-                                  .then((ToRiskResponse) => {
-                                    if (ToRiskResponse.status === 200) {
-                                      ToRisk = (ToRiskResponse.data.risk_score)
-                                      createdData.find(item => item.id === getData.logs[i].from).risk = FromRisk
-                                      createdData.find(item => item.id === getData.logs[i].to).risk = ToRisk
-
-                                    }
-                                    SetData(createdData)
-                                    SetLoading(false)
-                                    SetShowGraph(true)
-                                  })
-                                  .catch((err) => {
-                                    createdData.find(item => item.id === getData.logs[i].from).risk = FromRisk
-                                    SetData(createdData)
-                                    SetLoading(false)
-                                    SetShowGraph(true)
-                                  })
-                                }
-                              })
-                              .catch((err) => {
-                                GetRequest(`${serverAddress}/explorer/risk-score/?address=${getData.logs[i].to}&network=${network}`)
-                                  .then((ToRiskResponse) => {
-                                    if (ToRiskResponse.status === 200) {
-                                      ToRisk = (ToRiskResponse.data.risk_score)
-                                      createdData.find(item => item.id === getData.logs[i].to).risk = ToRisk
-                                    }
-                                    SetData(createdData)
-                                    SetLoading(false)
-                                    SetShowGraph(true)
-                                  })
-                                  .catch((err) => {
-                                    SetData(createdData)
-                                    SetLoading(false)
-                                    SetShowGraph(true)
-                                  })
-                              })
-                          }
-                        }
-
+                            let createdData = [
+                              {
+                                id: hash,
+                                text: hash,
+                                type: "address",
+                                label: getData.Label ? getData.Label : null,
+                                main: true,
+                                entity: getData.entity,
+                                risk: risk,
+                                x: 0,
+                                y: 800,
+                                metadata: getData.metadata,
+                                inputs: [],
+                                outputs: [],
+                              },
+                            ];
+                            SetData(createdData);
+                            SetLoading(false);
+                            SetShowGraph(true);
+                          })
+                          .catch((err) => {
+                            let createdData = [
+                              {
+                                id: hash,
+                                text: hash,
+                                type: "address",
+                                label: getData.Label ? getData.Label : null,
+                                main: true,
+                                entity: getData.entity,
+                                risk: null,
+                                x: 0,
+                                y: 800,
+                                metadata: getData.metadata,
+                                inputs: [],
+                                outputs: [],
+                              },
+                            ];
+                            SetData(createdData);
+                            SetLoading(false);
+                            SetShowGraph(true);
+                          });
                       }
-                    }
-                  } else {
-                    if (response.data.query === 'address') {
-                      try {
-                        // ۱. اجرا هم‌زمان دو درخواست
-                        const [riskRes, detailRes] = await Promise.all([
-                          GetRequest(`${serverAddress}/explorer/risk-score/?address=${hash}&network=${network}`),
-                          GetRequest(`${serverAddress}/explorer/address-detail?query=${hash}`)
-                        ]);
-
-                        let createdData = [{
-                          id: hash,
-                          text: hash,
-                          type: "address",
-                          label: detailRes.status === 200 ? detailRes.data.label_tags.labels.length > 0 ? detailRes.data.label_tags.labels.label : null : null,
-                          main: true,
-                          entity: detailRes.status === 200 ? detailRes.data.address_detail.entity !== null ? detailRes.data.address_detail.entity : null : null,
-                          risk: riskRes.status === 200 ? riskRes.data.risk_score : null,
-                          x: 0,
-                          y: 800,
-                          metadata: detailRes.status === 200 ? detailRes.data.address_detail.metadata !== null ? detailRes.data.address_detail.metadata.label : null : null,
-                          inputs: [],
-                          outputs: [],
-                        }]
-
-                        SetData(createdData)
-                        SetLoading(false)
-                      } catch (err) {
-                        console.log(err)
-                        let createdData = [{
-                          id: hash,
-                          text: hash,
-                          type: "address",
-                          label: null,
-                          main: true,
-                          entity: null,
-                          risk: null,
-                          x: 0,
-                          y: 800,
-                          metadata: null,
-                          inputs: [],
-                          outputs: [],
-                        }]
-
-                        SetData(createdData)
-                        SetLoading(false)
-
-                      } finally {
-                        SetLoading(false);
-                        SetShowGraph(true);
-                      }
-
                     } else {
-                      const getData = (UTXO_Transaction(TrsResponse.data.data, network, 0))
-                      let createdData = []
-                      let index = 0
-                      if (getData.inputs[0].address === getData.outputs[0].address) {
-                        index = 1
-                      }
-                      createdData.push(
-                        {
+                      if (network === token) {
+                        const getData = Account_transaction(
+                          TrsResponse.data.data,
+                          network,
+                          0
+                        );
+                        let createdData = [];
+
+                        createdData.push({
                           id: hash,
                           text: hash,
                           type: "transaction",
@@ -754,99 +435,572 @@ const Page = () => {
                           network: network,
                           inputs: [
                             {
-                              id: getData.inputs[0].address,
-                              text: getData.inputs[0].address,
-                              DollarValue: getData.inputs[0].valueInDollar,
-                              value: getData.inputs[0].value,
-                              time: getData.time,
+                              id: getData.from,
+                              text: getData.FromLabel
+                                ? getData.FromLabel
+                                : getData.FromEntity
+                                ? getData.FromEntity.name
+                                : getData.from,
+                              DollarValue: getData.valueInDollar,
+                              value: getData.value,
+                              time: getData.timestamp,
                               symbol: getData.symbole,
-                              color: false
+                              color: false,
                             },
                           ],
                           outputs: [
                             {
-                              id: getData.outputs[index].address,
-                              text: getData.outputs[index].address,
-                              DollarValue: getData.outputs[index].valueInDollar,
-                              value: getData.outputs[index].value,
-                              time: getData.time,
+                              id: getData.to,
+                              text: getData.ToLabel
+                                ? getData.ToLabel
+                                : getData.ToEntity
+                                ? getData.ToEntity.name
+                                : getData.to,
+                              DollarValue: getData.valueInDollar,
+                              value: getData.value,
+                              time: getData.timestamp,
                               symbol: getData.symbole,
-                              color: false
+                              color: false,
                             },
                           ],
-                        }
-                      )
-                      createdData.push(
-                        {
-                          id: getData.inputs[0].address,
-                          text: getData.inputs[0].address,
+                        });
+                        createdData.push({
+                          id: getData.from,
+                          text: getData.from,
                           type: "address",
-                          label: getData.inputs[0].Label ? getData.inputs[0].Label : null,
-                          entity: getData.inputs[0].entity !== null ? getData.inputs[0].entity : null,
+                          label: getData.FromLabel,
+                          entity: getData.FromEntity,
                           risk: null,
                           x: 300,
                           y: 800,
-                          metadata: getData.inputs[0].metadata,
+                          metadata: getData.FromMetadata,
                           main: false,
                           inputs: [],
                           outputs: [
                             {
                               id: hash,
                               text: hash,
-                              DollarValue: getData.inputs[0].valueInDollar,
-                              value: getData.inputs[0].value,
-                              time: getData.time,
+                              DollarValue: getData.valueInDollar,
+                              value: getData.value,
+                              time: getData.timestamp,
                               symbol: getData.symbole,
-                              color: false
+                              color: false,
                             },
                           ],
-                        },
-                      )
-                      createdData.push(
-                        {
-                          id: getData.outputs[index].address,
-                          text: getData.outputs[index].address,
+                        });
+                        createdData.push({
+                          id: getData.to,
+                          text: getData.to,
                           type: "address",
-                          label: getData.outputs[index].Label ? getData.outputs[index].Label : null,
-                          entity: getData.outputs[index].entity !== null ? getData.outputs[index].entity : null,
+                          label: getData.ToLabel,
+                          entity: getData.ToEntity,
                           risk: null,
                           x: -300,
                           y: 800,
-                          metadata: getData.outputs[index].metadata,
+                          metadata: getData.ToMetadata,
                           main: false,
                           inputs: [
                             {
                               id: hash,
                               text: hash,
-                              DollarValue: getData.outputs[index].valueInDollar,
-                              value: getData.outputs[index].value,
-                              time: getData.time,
+                              DollarValue: getData.valueInDollar,
+                              value: getData.value,
+                              time: getData.timestamp,
                               symbol: getData.symbole,
-                              color: false
+                              color: false,
                             },
                           ],
                           outputs: [],
-                        },
-                      )
+                        });
+                        let FromRisk = null;
+                        let ToRisk = null;
+                        GetRequest(
+                          `${serverAddress}/explorer/risk-score/?address=${getData.from}&network=${network}`
+                        )
+                          .then((RiskResponse) => {
+                            if (RiskResponse.status === 200) {
+                              FromRisk = RiskResponse.data.risk_score;
+                              GetRequest(
+                                `${serverAddress}/explorer/risk-score/?address=${getData.to}&network=${network}`
+                              )
+                                .then((RiskResponse) => {
+                                  if (RiskResponse.status === 200) {
+                                    ToRisk = RiskResponse.data.risk_score;
+                                    createdData.find(
+                                      (item) => item.id === getData.from
+                                    ).risk = FromRisk;
+                                    createdData.find(
+                                      (item) => item.id === getData.to
+                                    ).risk = ToRisk;
+                                  }
+                                  SetData(createdData);
+                                  SetLoading(false);
+                                  SetShowGraph(true);
+                                })
+                                .catch((err) => {
+                                  createdData.find(
+                                    (item) => item.id === getData.from
+                                  ).risk = FromRisk;
+                                  SetData(createdData);
+                                  SetLoading(false);
+                                  SetShowGraph(true);
+                                });
+                            } else {
+                              GetRequest(
+                                `${serverAddress}/explorer/risk-score/?address=${getData.to}&network=${network}`
+                              )
+                                .then((RiskResponse) => {
+                                  if (RiskResponse.status === 200) {
+                                    ToRisk = RiskResponse.data.risk_score;
+                                    createdData.find(
+                                      (item) => item.id === getData.from
+                                    ).risk = FromRisk;
+                                    createdData.find(
+                                      (item) => item.id === getData.to
+                                    ).risk = ToRisk;
+                                  }
+                                  SetData(createdData);
+                                  SetLoading(false);
+                                  SetShowGraph(true);
+                                })
+                                .catch((err) => {
+                                  createdData.find(
+                                    (item) => item.id === getData.from
+                                  ).risk = FromRisk;
+                                  SetData(createdData);
+                                  SetLoading(false);
+                                  SetShowGraph(true);
+                                });
+                            }
+                          })
+                          .catch((err) => {
+                            GetRequest(
+                              `${serverAddress}/explorer/risk-score/?address=${getData.to}&network=${network}`
+                            )
+                              .then((RiskResponse) => {
+                                if (RiskResponse.status === 200) {
+                                  ToRisk = RiskResponse.data.risk_score;
+                                  createdData.find(
+                                    (item) => item.id === getData.to
+                                  ).risk = ToRisk;
+                                }
+                                SetData(createdData);
+                                SetLoading(false);
+                                SetShowGraph(true);
+                              })
+                              .catch((err) => {
+                                SetData(createdData);
+                                SetLoading(false);
+                                SetShowGraph(true);
+                              });
+                          });
+                      } else {
+                        const getData = Account_transaction(
+                          TrsResponse.data.data,
+                          network,
+                          0
+                        );
+
+                        for (let i = 0; i < getData.logs.length; i++) {
+                          if (getData.logs[i].symbole === token) {
+                            let createdData = [];
+                            createdData.push({
+                              id: hash,
+                              text: hash,
+                              type: "transaction",
+                              label: null,
+                              entity: null,
+                              risk: null,
+                              metadata: null,
+                              x: 0,
+                              y: 800,
+                              main: true,
+                              network: network,
+                              inputs: [
+                                {
+                                  id: getData.logs[i].from,
+                                  text: getData.logs[i].FromLabel
+                                    ? getData.logs[i].FromLabel
+                                    : getData.logs[i].FromEntity
+                                    ? getData.logs[i].FromEntity.name
+                                    : getData.logs[i].from,
+                                  DollarValue: getData.logs[i].valueInDollar,
+                                  value: getData.logs[i].value,
+                                  time: getData.timestamp,
+                                  symbol: getData.logs[i].symbole,
+                                  color: false,
+                                },
+                              ],
+                              outputs: [
+                                {
+                                  id: getData.logs[i].to,
+                                  text: getData.logs[i].ToLabel
+                                    ? getData.logs[i].ToLabel
+                                    : getData.logs[i].ToEntity
+                                    ? getData.logs[i].ToEntity.name
+                                    : getData.logs[i].to,
+                                  DollarValue: getData.logs[i].valueInDollar,
+                                  value: getData.logs[i].value,
+                                  time: getData.timestamp,
+                                  symbol: getData.logs[i].symbole,
+                                  color: false,
+                                },
+                              ],
+                            });
+                            createdData.push({
+                              id: getData.logs[i].from,
+                              text: getData.logs[i].from,
+                              type: "address",
+                              label: getData.logs[i].FromLabel,
+                              entity: getData.logs[i].FromEntity,
+                              risk: null,
+                              x: 300,
+                              y: 800,
+                              metadata: getData.logs[i].FromMetadata,
+                              main: false,
+                              inputs: [],
+                              outputs: [
+                                {
+                                  id: hash,
+                                  text: hash,
+                                  DollarValue: getData.logs[i].valueInDollar,
+                                  value: getData.logs[i].value,
+                                  time: getData.timestamp,
+                                  symbol: getData.logs[i].symbole,
+                                  color: false,
+                                },
+                              ],
+                            });
+                            createdData.push({
+                              id: getData.logs[i].to,
+                              text: getData.logs[i].to,
+                              type: "address",
+                              label: getData.logs[i].ToLabel,
+                              entity: getData.logs[i].ToEntity,
+                              risk: null,
+                              x: -300,
+                              y: 800,
+                              metadata: getData.logs[i].ToMetadata,
+                              main: false,
+                              inputs: [
+                                {
+                                  id: hash,
+                                  text: hash,
+                                  DollarValue: getData.logs[i].valueInDollar,
+                                  value: getData.logs[i].value,
+                                  time: getData.timestamp,
+                                  symbol: getData.logs[i].symbole,
+                                  color: false,
+                                },
+                              ],
+                              outputs: [],
+                            });
+
+                            let FromRisk = null;
+                            let ToRisk = null;
+                            GetRequest(
+                              `${serverAddress}/explorer/risk-score/?address=${getData.logs[i].from}&network=${network}`
+                            )
+                              .then((FromRiskResponse) => {
+                                if (FromRiskResponse.status === 200) {
+                                  FromRisk = FromRiskResponse.data.risk_score;
+                                  GetRequest(
+                                    `${serverAddress}/explorer/risk-score/?address=${getData.logs[i].to}&network=${network}`
+                                  )
+                                    .then((ToRiskResponse) => {
+                                      if (ToRiskResponse.status === 200) {
+                                        ToRisk = ToRiskResponse.data.risk_score;
+                                        createdData.find(
+                                          (item) =>
+                                            item.id === getData.logs[i].from
+                                        ).risk = FromRisk;
+                                        createdData.find(
+                                          (item) =>
+                                            item.id === getData.logs[i].to
+                                        ).risk = ToRisk;
+                                      }
+                                      SetData(createdData);
+                                      SetLoading(false);
+                                      SetShowGraph(true);
+                                    })
+                                    .catch((err) => {
+                                      createdData.find(
+                                        (item) =>
+                                          item.id === getData.logs[i].from
+                                      ).risk = FromRisk;
+                                      SetData(createdData);
+                                      SetLoading(false);
+                                      SetShowGraph(true);
+                                    });
+                                } else {
+                                  GetRequest(
+                                    `${serverAddress}/explorer/risk-score/?address=${getData.logs[i].to}&network=${network}`
+                                  )
+                                    .then((ToRiskResponse) => {
+                                      if (ToRiskResponse.status === 200) {
+                                        ToRisk = ToRiskResponse.data.risk_score;
+                                        createdData.find(
+                                          (item) =>
+                                            item.id === getData.logs[i].from
+                                        ).risk = FromRisk;
+                                        createdData.find(
+                                          (item) =>
+                                            item.id === getData.logs[i].to
+                                        ).risk = ToRisk;
+                                      }
+                                      SetData(createdData);
+                                      SetLoading(false);
+                                      SetShowGraph(true);
+                                    })
+                                    .catch((err) => {
+                                      createdData.find(
+                                        (item) =>
+                                          item.id === getData.logs[i].from
+                                      ).risk = FromRisk;
+                                      SetData(createdData);
+                                      SetLoading(false);
+                                      SetShowGraph(true);
+                                    });
+                                }
+                              })
+                              .catch((err) => {
+                                GetRequest(
+                                  `${serverAddress}/explorer/risk-score/?address=${getData.logs[i].to}&network=${network}`
+                                )
+                                  .then((ToRiskResponse) => {
+                                    if (ToRiskResponse.status === 200) {
+                                      ToRisk = ToRiskResponse.data.risk_score;
+                                      createdData.find(
+                                        (item) => item.id === getData.logs[i].to
+                                      ).risk = ToRisk;
+                                    }
+                                    SetData(createdData);
+                                    SetLoading(false);
+                                    SetShowGraph(true);
+                                  })
+                                  .catch((err) => {
+                                    SetData(createdData);
+                                    SetLoading(false);
+                                    SetShowGraph(true);
+                                  });
+                              });
+                          }
+                        }
+                      }
+                    }
+                  } else {
+                    if (response.data.query === "address") {
+                      try {
+                        // ۱. اجرا هم‌زمان دو درخواست
+                        const [riskRes, detailRes] = await Promise.all([
+                          GetRequest(
+                            `${serverAddress}/explorer/risk-score/?address=${hash}&network=${network}`
+                          ),
+                          GetRequest(
+                            `${serverAddress}/explorer/address-detail?query=${hash}`
+                          ),
+                        ]);
+
+                        let createdData = [
+                          {
+                            id: hash,
+                            text: hash,
+                            type: "address",
+                            label:
+                              detailRes.status === 200
+                                ? detailRes.data.label_tags.labels.length > 0
+                                  ? detailRes.data.label_tags.labels.label
+                                  : null
+                                : null,
+                            main: true,
+                            entity:
+                              detailRes.status === 200
+                                ? detailRes.data.address_detail.entity !== null
+                                  ? detailRes.data.address_detail.entity
+                                  : null
+                                : null,
+                            risk:
+                              riskRes.status === 200
+                                ? riskRes.data.risk_score
+                                : null,
+                            x: 0,
+                            y: 800,
+                            metadata:
+                              detailRes.status === 200
+                                ? detailRes.data.address_detail.metadata !==
+                                  null
+                                  ? detailRes.data.address_detail.metadata.label
+                                  : null
+                                : null,
+                            inputs: [],
+                            outputs: [],
+                          },
+                        ];
+
+                        SetData(createdData);
+                        SetLoading(false);
+                      } catch (err) {
+                        console.log(err);
+                        let createdData = [
+                          {
+                            id: hash,
+                            text: hash,
+                            type: "address",
+                            label: null,
+                            main: true,
+                            entity: null,
+                            risk: null,
+                            x: 0,
+                            y: 800,
+                            metadata: null,
+                            inputs: [],
+                            outputs: [],
+                          },
+                        ];
+
+                        SetData(createdData);
+                        SetLoading(false);
+                      } finally {
+                        SetLoading(false);
+                        SetShowGraph(true);
+                      }
+                    } else {
+                      const getData = UTXO_Transaction(
+                        TrsResponse.data.data,
+                        network,
+                        0
+                      );
+                      let createdData = [];
+                      let index = 0;
+                      if (
+                        getData.inputs[0].address === getData.outputs[0].address
+                      ) {
+                        index = 1;
+                      }
+                      createdData.push({
+                        id: hash,
+                        text: hash,
+                        type: "transaction",
+                        label: null,
+                        entity: null,
+                        risk: null,
+                        metadata: null,
+                        x: 0,
+                        y: 800,
+                        main: true,
+                        network: network,
+                        inputs: [
+                          {
+                            id: getData.inputs[0].address,
+                            text: getData.inputs[0].address,
+                            DollarValue: getData.inputs[0].valueInDollar,
+                            value: getData.inputs[0].value,
+                            time: getData.time,
+                            symbol: getData.symbole,
+                            color: false,
+                          },
+                        ],
+                        outputs: [
+                          {
+                            id: getData.outputs[index].address,
+                            text: getData.outputs[index].address,
+                            DollarValue: getData.outputs[index].valueInDollar,
+                            value: getData.outputs[index].value,
+                            time: getData.time,
+                            symbol: getData.symbole,
+                            color: false,
+                          },
+                        ],
+                      });
+                      createdData.push({
+                        id: getData.inputs[0].address,
+                        text: getData.inputs[0].address,
+                        type: "address",
+                        label: getData.inputs[0].Label
+                          ? getData.inputs[0].Label
+                          : null,
+                        entity:
+                          getData.inputs[0].entity !== null
+                            ? getData.inputs[0].entity
+                            : null,
+                        risk: null,
+                        x: 300,
+                        y: 800,
+                        metadata: getData.inputs[0].metadata,
+                        main: false,
+                        inputs: [],
+                        outputs: [
+                          {
+                            id: hash,
+                            text: hash,
+                            DollarValue: getData.inputs[0].valueInDollar,
+                            value: getData.inputs[0].value,
+                            time: getData.time,
+                            symbol: getData.symbole,
+                            color: false,
+                          },
+                        ],
+                      });
+                      createdData.push({
+                        id: getData.outputs[index].address,
+                        text: getData.outputs[index].address,
+                        type: "address",
+                        label: getData.outputs[index].Label
+                          ? getData.outputs[index].Label
+                          : null,
+                        entity:
+                          getData.outputs[index].entity !== null
+                            ? getData.outputs[index].entity
+                            : null,
+                        risk: null,
+                        x: -300,
+                        y: 800,
+                        metadata: getData.outputs[index].metadata,
+                        main: false,
+                        inputs: [
+                          {
+                            id: hash,
+                            text: hash,
+                            DollarValue: getData.outputs[index].valueInDollar,
+                            value: getData.outputs[index].value,
+                            time: getData.time,
+                            symbol: getData.symbole,
+                            color: false,
+                          },
+                        ],
+                        outputs: [],
+                      });
 
                       try {
                         // ۱. اجرا هم‌زمان دو درخواست
                         const [FromRisk, ToRisk] = await Promise.all([
-                          GetRequest(`${serverAddress}/explorer/risk-score/?address=${getData.inputs[0].address}&network=${network}`),
-                          GetRequest(`${serverAddress}/explorer/risk-score/?address=${getData.outputs[0].address}&network=${network}`),
+                          GetRequest(
+                            `${serverAddress}/explorer/risk-score/?address=${getData.inputs[0].address}&network=${network}`
+                          ),
+                          GetRequest(
+                            `${serverAddress}/explorer/risk-score/?address=${getData.outputs[0].address}&network=${network}`
+                          ),
                         ]);
 
-                        createdData.find(item => item.id === getData.inputs[0].address).risk = FromRisk.status === 200 ? FromRisk.data.risk_score : null,
-                          createdData.find(item => item.id === getData.outputs[0].address).risk = FromRisk.ToRisk === 200 ? ToRisk.data.risk_score : null,
-                          SetData(createdData)
-                        SetLoading(false)
+                        (createdData.find(
+                          (item) => item.id === getData.inputs[0].address
+                        ).risk =
+                          FromRisk.status === 200
+                            ? FromRisk.data.risk_score
+                            : null),
+                          (createdData.find(
+                            (item) => item.id === getData.outputs[0].address
+                          ).risk =
+                            FromRisk.ToRisk === 200
+                              ? ToRisk.data.risk_score
+                              : null),
+                          SetData(createdData);
+                        SetLoading(false);
                       } catch (err) {
-                        console.log(err)
+                        console.log(err);
 
-
-                        SetData(createdData)
-                        SetLoading(false)
-
+                        SetData(createdData);
+                        SetLoading(false);
                       } finally {
                         SetLoading(false);
                         SetShowGraph(true);
@@ -854,112 +1008,128 @@ const Page = () => {
                     }
                   }
                 } else {
-                  SetLoading(false)
-                  return toast.error('آدرس موردنظر یافت نشد!', {
-                    position: 'bottom-left'
-                  })
+                  SetLoading(false);
+                  return toast.error("آدرس موردنظر یافت نشد!", {
+                    position: "bottom-left",
+                  });
                 }
               })
               .catch((error) => {
-                SetLoading(false)
-                console.log(error)
-                return toast.error('آدرس موردنظر یافت نشد!', {
-                  position: 'bottom-left'
-                })
-              })
+                SetLoading(false);
+                console.log(error);
+                return toast.error("آدرس موردنظر یافت نشد!", {
+                  position: "bottom-left",
+                });
+              });
           })
-          .catch((err) => { console.log(err) })
+          .catch((err) => {
+            console.log(err);
+          });
       }
     } else {
       GetRequest(`${serverAddress}/tracing/graph/`)
         .then((response) => {
-          console.log(response)
-          SetLoading(false)
+          console.log(response);
+          SetLoading(false);
 
           for (let i = 0; i < response.data.results.length; i++) {
             if (response.data.results[i].id === Number(id)) {
-              SetName(response.data.results[i].title)
-              SetDescription(response.data.results[i].value.GraphDescription)
-              SetNodesPosition(response.data.results[i].value.NodesPosition)
-              SetSavedPositions(response.data.results[i].value.SavedPositions)
-              SetScale(response.data.results[i].value.Scale)
-              SetXPosition(response.data.results[i].value.XPosition)
-              SetYPosition(response.data.results[i].value.YPosition)
-              SetPaintedEdges(response.data.results[i].value.PaintedEdges)
-              SetData(response.data.results[i].value.Data)
-              SetShowGraph(true)
+              SetName(response.data.results[i].title);
+              SetDescription(response.data.results[i].value.GraphDescription);
+              SetNodesPosition(response.data.results[i].value.NodesPosition);
+              SetSavedPositions(response.data.results[i].value.SavedPositions);
+              SetScale(response.data.results[i].value.Scale);
+              SetXPosition(response.data.results[i].value.XPosition);
+              SetYPosition(response.data.results[i].value.YPosition);
+              SetPaintedEdges(response.data.results[i].value.PaintedEdges);
+              SetData(response.data.results[i].value.Data);
+              SetShowGraph(true);
             }
           }
-
         })
         .catch((err) => {
-          SetLoading(false)
-          console.log(err)
+          SetLoading(false);
+          console.log(err);
           if (err.response.status === 403) {
-            Cookies.set('refresh', '')
-            Cookies.set('access', '')
-            window.location.assign('/')
+            Cookies.set("refresh", "");
+            Cookies.set("access", "");
+            window.location.assign("/");
           }
           if (err.response.status === 401) {
-            Cookies.set('refresh', '')
-            Cookies.set('access', '')
-            window.location.assign('/')
+            Cookies.set("refresh", "");
+            Cookies.set("access", "");
+            window.location.assign("/");
           }
-          return toast.error('خطا در دریافت اطلاعات', {
-            position: 'bottom-left'
-          })
-        })
+          return toast.error("خطا در دریافت اطلاعات", {
+            position: "bottom-left",
+          });
+        });
     }
+  }, []);
 
-  }, [])
-
-  const [ChangeNetworkBox, setChangeNetworkBox] = useState(false)
-  const [selectedToken, setAddselectedToken] = useState(null)
-  const [GraphTokens, SetGraphTokens] = useState([])
-  const [Tokens, SetTokens] = useState([])
-  const [SavedLink, setSavedLink] = useState(null)
+  const [ChangeNetworkBox, setChangeNetworkBox] = useState(false);
+  const [selectedToken, setAddselectedToken] = useState(null);
+  const [GraphTokens, SetGraphTokens] = useState([]);
+  const [Tokens, SetTokens] = useState([]);
+  const [SavedLink, setSavedLink] = useState(null);
   useEffect(() => {
     if (hash !== undefined) {
-      GetRequest(`${serverAddress}/explorer/token-transfer-list/?query=${hash}&network=${network}`)
+      GetRequest(
+        `${serverAddress}/explorer/token-transfer-list/?query=${hash}&network=${network}`
+      )
         .then((response) => {
           if (response.status === 204) {
-            SetshowNetworkSelectionBox(false)
+            SetshowNetworkSelectionBox(false);
           }
-          const getTokens = []
+          const getTokens = [];
           for (let i = 0; i < response.data.length; i++) {
-            getTokens.push(response.data[i])
+            getTokens.push(response.data[i]);
           }
-          SetTokens(getTokens)
+          SetTokens(getTokens);
         })
-        .catch((err) => { console.log(err) })
+        .catch((err) => {
+          console.log(err);
+        });
     }
-  }, [])
+  }, []);
   useEffect(() => {
-    const tokenOptions = []
-    tokenOptions.push(
-      {
-        value: network,
-        label: network
-      }
-    )
+    const tokenOptions = [];
+    tokenOptions.push({
+      value: network,
+      label: network,
+    });
     for (let i = 0; i < Tokens.length; i++) {
-      if (!tokenOptions.some(item => item.value === Tokens[i].symbol)) {
-        tokenOptions.push(
-          {
-            value: Tokens[i].symbol,
-            label: Tokens[i].symbol,
-            contract: Tokens[i].contract_address
-          }
-        )
+      if (!tokenOptions.some((item) => item.value === Tokens[i].symbol)) {
+        tokenOptions.push({
+          value: Tokens[i].symbol,
+          label: Tokens[i].symbol,
+          contract: Tokens[i].contract_address,
+        });
       }
     }
-    SetGraphTokens(tokenOptions)
+    SetGraphTokens(tokenOptions);
+  }, [Tokens]);
 
-  }, [Tokens])
+
+
+
+
+  const themeColor = (key) => {
+    const isDark = document.documentElement.classList.contains("dark");
+    const map = {
+      red: isDark ? "#ff0000" : "#ff0000",  // blue-400 / blue-600
+      success: isDark ? "#16a34a" : "#16a34a",  // green-400 / green-600
+      warning: isDark ? "#f59e0b" : "#f59e0b",  // amber-400 / amber-500
+      yellow:  isDark ? "#FFFF00" : "#FFFF00",  // violet-300 / violet-700
+      sky:     isDark ? "#9132a8" : "#9132a8",  // blue-300 / sky-400
+    };
+    return map[key];
+  };
+  const [open, setOpen] = useState(false);
 
   return (
     <div>
-      <div id="tracker" >
+      <div id="tracker">
         {ShowGraph ? (
           <FuckingGraph_V2
             Data={Data}
@@ -985,19 +1155,248 @@ const Page = () => {
             SelectedEdges={SelectedEdges}
             PaintedEdges={PaintedEdges}
           />
-
-        ) : <FullPageLoading/>}
+        ) : (
+          <FullPageLoading />
+        )}
       </div>
-      <div style={{
-        position: 'absolute',
-        width: '240px',
-        top: '10px',
-        right: '10px',
-        zIndex: '10000000000'
-      }}>
+      <div
+        style={{
+          position: "absolute",
+          width: "240px",
+          top: "10px",
+          right: "10px",
+          zIndex: "10000000000",
+        }}
+      ></div>
 
+      <div className="fixed top-[80px] right-0 h-[calc(100vh-60px)] flex items-start justify-end z-50">
+        {/* دکمه باز و بسته شدن */}
+        <button
+          onClick={() => setOpen(!open)}
+          className="bg-boxColor text-textColor px-3 py-2 rounded-l-md shadow-md cursor-pointer hover:bg-boxbordercolor2 transition-all"
+        >
+          {open ? "→" : "←"}
+        </button>
+
+        {/* محتوای آکاردیون */}
+        <div
+          className={`bg-boxColor text-textColor shadow-lg border-l transition-all duration-500 overflow-hidden p-2 ${
+            open ? "w-[400px] opacity-100" : "w-0 opacity-0"
+          }`}
+        >
+          <div className="w-full m-0 p-0">
+            {/* دکمه گزارش (فقط برای اکانت بیس) */}
+            {Networks.find(item => item.symbole === network).type === 'account' && (
+              <div className="m-0 p-0">
+                <button
+                  onClick={() => SetReportBox(true)}
+                  className="hover:bg-bgPrimary cursor-pointer flex items-center gap-2 w-full px-2 py-2 rounded-md transition text-textColor"
+                >
+                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                    <path
+                      d="M8 12H9M16 12H12"
+                      stroke="currentColor"
+                      strokeWidth="1.5"
+                      strokeLinecap="round"
+                    />
+                    <path
+                      d="M16 8H15M12 8H8"
+                      stroke="currentColor"
+                      strokeWidth="1.5"
+                      strokeLinecap="round"
+                    />
+                    <path
+                      d="M8 16H13"
+                      stroke="currentColor"
+                      strokeWidth="1.5"
+                      strokeLinecap="round"
+                    />
+                    <path
+                      d="M3 14V10C3 6.22876 3 4.34315 4.17157 3.17157C5.34315 2 7.22876 2 11 2H13C16.7712 2 18.6569 2 19.8284 3.17157C20.4816 3.82476 20.7706 4.69989 20.8985 6M21 10V14C21 17.7712 21 19.6569 19.8284 20.8284C18.6569 22 16.7712 22 13 22H11C7.22876 22 5.34315 22 4.17157 20.8284C3.51839 20.1752 3.22937 19.3001 3.10149 18"
+                      stroke="currentColor"
+                      strokeWidth="1.5"
+                      strokeLinecap="round"
+                    />
+                  </svg>
+                  <span className="text-textColor">دریافت گزارش</span>
+                </button>
+              </div>
+            )}
+
+            {/* ذخیره */}
+            <div className="m-0 p-0 mt-2">
+              <button
+                onClick={() => SetOpenSaveBox(true)}
+                className="hover:bg-bgPrimary cursor-pointer flex items-center gap-2 w-full px-2 py-2 rounded-md transition text-textColor"
+              >
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                  <path
+                    d="M15 8H8.6C8.03995 8 7.75992 8 7.54601 7.89101C7.35785 7.79513 7.20487 7.64215 7.10899 7.45399C7 7.24008 7 6.96005 7 6.4V3M17 21V14.6C17 14.0399 17 13.7599 16.891 13.546C16.7951 13.3578 16.6422 13.2049 16.454 13.109C16.2401 13 15.9601 13 15.4 13H8.6C8.03995 13 7.75992 13 7.54601 13.109C7.35785 13.2049 7.20487 13.3578 7.10899 13.546C7 13.7599 7 14.0399 7 14.6V21M21 9.32548V16.2C21 17.8802 21 18.7202 20.673 19.362C20.3854 19.9265 19.9265 20.3854 19.362 20.673C18.7202 21 17.8802 21 16.2 21H7.8C6.11984 21 5.27976 21 4.63803 20.673C4.07354 20.3854 3.6146 19.9265 3.32698 19.362C3 18.7202 3 17.8802 3 16.2V7.8C3 6.11984 3 5.27976 3.32698 4.63803C3.6146 4.07354 4.07354 3.6146 4.63803 3.32698C5.27976 3 6.11984 3 7.8 3H14.6745C15.1637 3 15.4083 3 15.6385 3.05526C15.8425 3.10425 16.0376 3.18506 16.2166 3.29472C16.4184 3.4184 16.5914 3.59135 16.9373 3.93726L20.0627 7.06274C20.4086 7.40865 20.5816 7.5816 20.7053 7.78343C20.8149 7.96237 20.8957 8.15746 20.9447 8.36154C21 8.59171 21 8.8363 21 9.32548Z"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  />
+                </svg>
+                <span className="text-textColor">ذخیره</span>
+              </button>
+            </div>
+
+            {/* سوئیچ‌ها */}
+            <div className="mt-3 space-y-2">
+              <div className="grid grid-cols-2 items-center px-2">
+                <span className="py-2">نمایش حجم</span>
+                <div className="text-left">
+                  <Switch
+                    defaultChecked={true}
+                    onChange={(e) => SetShowValues(e.target.checked)}
+                  />
+                </div>
+              </div>
+
+              <div className="grid grid-cols-2 items-center px-2 -mt-2">
+                <span className="py-2">نمایش زمان</span>
+                <div className="text-left">
+                  <Switch
+                    defaultChecked={true}
+                    onChange={(e) => SetShowTimes(e.target.checked)}
+                  />
+                </div>
+              </div>
+
+              <div className="grid grid-cols-2 items-center px-2 -mt-2">
+                <span className="py-2">نمایش قیمت(دلار)</span>
+                <div className="text-left">
+                  <Switch
+                    defaultChecked={false}
+                    onChange={(e) => SetShowPrice(e.target.checked)}
+                  />
+                </div>
+              </div>
+            </div>
+
+            {/* سوییچر شبکه/توکن */}
+            <div className="mt-3 px-2">
+              <label className="block mb-1">ترسیم بر اساس</label>
+              <Select
+                id="networkSwitch"
+                isClearable={false}
+                closeMenuOnSelect={false}
+                // theme={selectThemeColors}
+                placeholder=""
+                value={GraphTokens.find((item) => item.value === token)}
+                options={GraphTokens}
+                className="react-select"
+                classNamePrefix="select"
+                onChange={(e) => {
+                  setAddselectedToken({ value: e.value, contract: e.contract });
+                  setChangeNetworkBox(true);
+                }}
+              />
+            </div>
+
+            {/* افزودن رنگ (تم‌محور) */}
+            <div className="mt-3 px-2">
+              <label className="block mb-2">افزودن رنگ</label>
+              <div className="flex items-center gap-2">
+                <button
+                  onClick={() => {
+                    SetSelectedEdges([]);
+                    SetColor(themeColor("red"));
+                  }}
+                  className="h-6 w-6 rounded ring-1 ring-black/10"
+                  style={{
+                    background: "var(--tw-ring-offset-shadow,0 0 #0000)",
+                    backgroundColor: "transparent",
+                  }}
+                >
+                  <span className="block cursor-pointer h-full w-full rounded bg-red-600" />
+                </button>
+
+                <button
+                  onClick={() => {
+                    SetSelectedEdges([]);
+                    SetColor(themeColor("success"));
+                  }}
+                  className="h-6 w-6 rounded ring-1 ring-black/10"
+                >
+                  <span className="block cursor-pointer h-full w-full rounded bg-green-400" />
+                </button>
+
+                <button
+                  onClick={() => {
+                    SetSelectedEdges([]);
+                    SetColor(themeColor("warning"));
+                  }}
+                  className="h-6 w-6 rounded ring-1 ring-black/10"
+                >
+                  <span className="block cursor-pointer h-full w-full rounded bg-amber-500 " />
+                </button>
+
+                <button
+                  onClick={() => {
+                    SetSelectedEdges([]);
+                    SetColor(themeColor("yellow"));
+                  }}
+                  className="h-6 w-6 rounded ring-1 ring-black/10"
+                >
+                  <span className="block cursor-pointer h-full w-full rounded bg-yellow-300" />
+                </button>
+
+                <button
+                  onClick={() => {
+                    SetSelectedEdges([]);
+                    SetColor(themeColor("sky"));
+                  }}
+                  className="h-6 w-6 rounded ring-1 ring-black/10"
+                >
+                  <span className="block cursor-pointer h-full w-full rounded bg-purple-500" />
+                </button>
+
+                <button
+                  onClick={() => {
+                    SetSelectedEdges([]);
+                    DeleteColor();
+                  }}
+                  title="حذف رنگ"
+                  className="ml-1 p-1 cursor-pointer rounded text-textColor transition"
+                >
+                  <svg
+                    width="24"
+                    height="24"
+                    viewBox="0 0 32 32"
+                    fill="currentColor"
+                    className=""
+                  >
+                    <path
+                      d="M174,1050 L162,1050 C161.448,1050 161,1050.45 161,1051 C161,1051.55 161.448,1052 162,1052 L174,1052 C174.552,1052 175,1051.55 175,1051 C175,1050.45 174.552,1050 174,1050 L174,1050 Z M182,1063 C182,1064.1 181.104,1065 180,1065 L156,1065 C154.896,1065 154,1064.1 154,1063 L154,1039 C154,1037.9 154.896,1037 156,1037 L180,1037 C181.104,1037 182,1037.9 182,1039 L182,1063 L182,1063 Z M180,1035 L156,1035 C153.791,1035 152,1036.79 152,1039 L152,1063 C152,1065.21 153.791,1067 156,1067 L180,1067 C182.209,1067 184,1065.21 184,1063 L184,1039 C184,1036.79 182.209,1035 180,1035 L180,1035 Z"
+                      transform="translate(-152 -1035)"
+                    />
+                  </svg>
+                </button>
+              </div>
+            </div>
+
+            {/* راهنما */}
+            <div className="mt-3 px-2">
+              <button
+                onClick={() => SetShowGuides(true)}
+                className="hover:bg-bgPrimary cursor-pointer flex items-center gap-2 w-full px-2 py-2 rounded-md transition text-textColor"
+              >
+                <svg width="20" height="20" viewBox="0 0 16 16" fill="none">
+                  <path
+                    fill="currentColor"
+                    fillRule="evenodd"
+                    clipRule="evenodd"
+                    d="M1.25 2C.56 2 0 2.56 0 3.25v8.5C0 12.44.56 13 1.25 13H5c.896 0 1.475.205 1.809.448.317.23.441.51.441.802a.75.75 0 001.5 0c0-.292.124-.572.441-.802.334-.243.913-.448 1.809-.448h3.75c.69 0 1.25-.56 1.25-1.25v-8.5C16 2.56 15.44 2 14.75 2H11c-1.154 0-2.106.354-2.772 1-.081.08-.157.161-.228.246A3.131 3.131 0 007.772 3C7.106 2.354 6.154 2 5 2H1.25zm7.5 9.967c.61-.309 1.372-.467 2.25-.467h3.5v-8H11c-.846 0-1.394.253-1.728.577-.335.325-.522.787-.522 1.34v6.55zm-1.5 0v-6.55c0-.553-.187-1.015-.522-1.34C6.394 3.753 5.846 3.5 5 3.5H1.5v8H5c.878 0 1.64.158 2.25.467z"
+                  />
+                </svg>
+                <span className="text-textColor">راهنما</span>
+              </button>
+            </div>
+          </div>
+        </div>
       </div>
-
       {/* راهنما */}
       {/* <Modal
         isOpen={ShowGuides}
@@ -1139,7 +1538,6 @@ const Page = () => {
         </ModalBody>
       </Modal> */}
 
-      
       {/* تغییر شبکه */}
       {/* <Modal
         isOpen={ChangeNetworkBox}

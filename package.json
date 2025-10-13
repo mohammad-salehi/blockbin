@@ -25,6 +25,7 @@
     "react": "19.1.0",
     "react-dom": "19.1.0",
     "react-hot-toast": "^2.6.0",
+    "react-select": "^5.10.2",
     "react-transition-group": "^4.4.5",
     "vis": "^4.21.0"
   },

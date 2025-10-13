@@ -1012,9 +1012,7 @@ const AddressBox = ({ Data, SetData, AddressSelectedData, Reload, SetReload }) =
 
     SetData(GetData)
     SetReload(!Reload)
-
     RemoveTxChecker(GetData)
-
   }
 
   const columns = [
@@ -1037,7 +1035,7 @@ const AddressBox = ({ Data, SetData, AddressSelectedData, Reload, SetReload }) =
     ...(Networks.find((item) => item.symbole === network)?.type === "account"
       ? [
         {
-          header: "موجودیت",
+          header: "طرف مقابل",
           cell: (row) => CounterParty(row),
         },
       ]
