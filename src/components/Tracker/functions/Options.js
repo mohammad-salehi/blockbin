@@ -23,8 +23,8 @@ export const Options = {
             background: "white",
         },
         color: {
-            color: 'blue',
-            highlight: 'blue'
+            color: 'rgb(50, 87, 155)',
+            highlight: 'rgb(50, 87, 155)'
         },
         chosen: {
             edge: function (values, id, selected, hovering) {
@@ -63,13 +63,13 @@ export const Options = {
         transaction: {
             shape: 'dot',
             size: 6,
-            font: { size: 13, family: "Arial", color: 'blue' },
+            font: { size: 13, family: "Arial", color: 'rgb(50, 87, 155)' },
             color: {
-                border: 'blue',
-                background: 'blue',
+                border: 'rgb(50, 87, 155)',
+                background: 'rgb(50, 87, 155)',
                 highlight: {
-                    background: 'blue',
-                    border: 'blue'
+                    background: 'rgb(50, 87, 155)',
+                    border: 'rgb(50, 87, 155)'
                 }
             },
             borderWidth: 0,
@@ -85,7 +85,7 @@ export const Options = {
             font: { 
                 size: 13, 
                 face: "Vazir", 
-                color: 'blue', 
+                color: 'rgb(50, 87, 155)', 
                 align: 'left' 
             },
             borderWidth: 2,
@@ -98,7 +98,7 @@ export const Options = {
             font: { 
                 size: 12, 
                 face: "Vazir", 
-                color: 'blue', 
+                color: 'rgb(50, 87, 155)', 
                 align: 'left' 
             },
             borderWidth: 0, // حذف border
@@ -140,7 +140,7 @@ export const Options = {
             font: { 
                 size: 10, 
                 face: "Vazir", 
-                color: 'blue', 
+                color: 'rgb(50, 87, 155)', 
                 align: 'left' 
             },
             borderWidth: 2,

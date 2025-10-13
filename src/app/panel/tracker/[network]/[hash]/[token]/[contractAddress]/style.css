@@ -1,5 +1,5 @@
 #myGraphDiv{
-    background-image: url('/public/images/Graph_BG.png');
+    background-image: url('/images/light_graph_bg.png');
     background-repeat: no-repeat;
     background-position: center;
     height: calc(100vh - 60px);

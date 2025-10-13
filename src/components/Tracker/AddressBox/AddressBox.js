@@ -2,29 +2,24 @@ import React, { useState, useEffect } from 'react'
 import { DataTable } from 'primereact/datatable';
 import { Column } from 'primereact/column';
 import { Paginator } from 'primereact/paginator';
-import NoData from '../../../../components/NoData/NoData';
-import { IsAccountBase } from '../../../dashboard/functions/functions';
-import { NewMiladiCalendar } from '../../../../newProcessors/NewCalendar';
-import { formatSmallNumber } from '../../../../newProcessors/SmallNumber';
+// import NoData from '../../../../components/NoData/NoData';
+import { Networks } from '@/functions/Networks';
+import { MiladiCalendar } from '@/functions/miladiCalendar';
+import { formatSmallNumber } from '@/functions/formatSmallNumber';
 import Switch from "@mui/material/Switch";
-import { Card, Input, Label, Row, Col, Button } from "reactstrap";
-import { useParams } from "react-router-dom";
-import { getSymbole } from '../../../../newProcessors/NetworksData';
-import { serverAddress } from '../../../../address';
-import { GetRequest } from '../../../../newProcessors/GetRequest';
-import { Crop, UserCheck, Circle, Aperture } from 'react-feather'
+// import { Card, Input, Label, Row, Col, Button } from "reactstrap";
+import { useParams } from 'next/navigation'
+import { serverAddress } from '@/functions/ServerAddress';
+import { GetRequest } from '@/functions/GetRequest';
 import AddBoxIcon from '@mui/icons-material/AddBox';
 import IndeterminateCheckBoxIcon from '@mui/icons-material/IndeterminateCheckBox';
-import { AddressFormat } from '../../../../components/AddressFormat/AddressFormat';
+import { AddressFormat } from '@/components/AddressFormat/AddressFormat';
 import CircularProgress from '@mui/material/CircularProgress';
 import toast from 'react-hot-toast'
-import { JalaliCalendar } from '../../../../processors/jalaliCalendar';
-import { MiladiCalendar } from '../../../../processors/MiladiCalendar';
-import LocalLoading from '../../../../components/localLoading/localLoading';
-import { Account_Token_Address } from '../../../../exploreHeart/Account_Token_Address';
-import SkeletonLoading from '../../../../components/SkeletonLoading/SkeletonLoading';
-import { Account_Address } from '../../../../exploreHeart/Account_Address';
-import { UTXO_Address } from '../../../../exploreHeart/UTXO_Address';
+import { JalaliCalendar } from '@/functions/jalaliCalendar';
+import { Account_Token_Address } from '@/functions/NetworksProcessor/Account_Token_Address';
+import { Account_Address } from '@/functions/NetworksProcessor/Account_Address';
+import { UTXO_Address } from '@/functions/NetworksProcessor/UTXO_Address';
 
 const AddressBox = ({ Data, SetData, AddressSelectedData, Reload, SetReload }) => {
   const { network } = useParams();
@@ -112,7 +107,7 @@ const AddressBox = ({ Data, SetData, AddressSelectedData, Reload, SetReload }) =
         .then((response) => {
           setTableLoading(false)
 
-          if (IsAccountBase(network)) {
+          if (Networks.find(item => item.symbole === network).type === 'account') {
 
             const getData = (Account_Address(response.data.data, AddressSelectedData.id, network, 0))
             const getTransactions = []
@@ -426,7 +421,7 @@ const AddressBox = ({ Data, SetData, AddressSelectedData, Reload, SetReload }) =
     }
 
     //اگر اکانت بیس بود، آدرس هم اصافه کنه
-    if (IsAccountBase(network)) {
+    if (Networks.find(item => item.symbole === network).type === 'account') {
       if (!ProccessData.some(item => item.id === row.address)) {
         let x = AddressSelectedData.x
         let y = AddressSelectedData.y
@@ -667,12 +662,12 @@ const AddressBox = ({ Data, SetData, AddressSelectedData, Reload, SetReload }) =
             marginTop: "-8px",
             fontWeight: "bold",
           }}
-        >{`${digitsEnToFa(NewMiladiCalendar(row.date).year)}/${digitsEnToFa(
-          NewMiladiCalendar(row.date).month
-        )}/${digitsEnToFa(NewMiladiCalendar(row.date).day)}`}</p>
-        <small style={{ fontSize: "12px", color: "gray" }}>{`${digitsEnToFa(
-          NewMiladiCalendar(row.date).hour
-        )}:${digitsEnToFa(NewMiladiCalendar(row.date).minute)}`}</small>
+        >{`${(MiladiCalendar(row.date).year)}/${(
+          MiladiCalendar(row.date).month
+        )}/${(MiladiCalendar(row.date).day)}`}</p>
+        <small style={{ fontSize: "12px", color: "gray" }}>{`${(
+          MiladiCalendar(row.date).hour
+        )}:${(MiladiCalendar(row.date).minute)}`}</small>
       </div>
     );
   };
@@ -786,7 +781,7 @@ const AddressBox = ({ Data, SetData, AddressSelectedData, Reload, SetReload }) =
     setTableLoading(true)
     GetRequest(address)
       .then((response) => {
-        if (IsAccountBase(network)) {
+        if (Networks.find(item => item.symbole === network).type === 'account') {
           if (network === token) {
             const getData = (Account_Address(response.data.data, AddressSelectedData.id, network, 0))
             const getTransactions = []
@@ -1027,50 +1022,61 @@ const AddressBox = ({ Data, SetData, AddressSelectedData, Reload, SetReload }) =
 
   return (
     <div>
-      <h6 className='p-3 pb-0'>
+      <h6 className="p-3 pb-0">
         <span>
-          مشخصات آدرس {getSymbole(network).name}
+          مشخصات آدرس {Networks.find((item) => item.symbole === network).name}
         </span>
-        <span style={{ float: 'left' }}>
-
-          {AddressSelectedData.risk !== null ? AddressSelectedData.risk + '%' : 'نامشخص'}
-          <ion-icon style={{ color: 'white', padding: '4px', borderRadius: '50%', marginBottom: '-6px', marginRight: '4px', background: AddressSelectedData.risk <= 25 ? "green" : AddressSelectedData.risk <= 50 ? 'blue' : AddressSelectedData.risk < 70 ? 'orange' : 'red', fontSize: "16px" }} name="flash"></ion-icon>
-
+        <span className="float-left">
+          {AddressSelectedData.risk !== null ? AddressSelectedData.risk + "%" : "نامشخص"}
+          <ion-icon
+            style={{
+              color: "white",
+              padding: "4px",
+              borderRadius: "50%",
+              marginBottom: "-6px",
+              marginRight: "4px",
+              background:
+                AddressSelectedData.risk <= 25
+                  ? "green"
+                  : AddressSelectedData.risk <= 50
+                  ? "blue"
+                  : AddressSelectedData.risk < 70
+                  ? "orange"
+                  : "red",
+              fontSize: "16px",
+            }}
+            name="flash"
+          ></ion-icon>
         </span>
       </h6>
-
+  
+      {/* کارت آدرس */}
       <div
-        style={{
-          background: "rgb(240,240,240)",
-          width: "100%",
-          padding: "15px",
-          borderRadius: "0px",
-          marginRight: "0px",
-          boxShadow: 'none',
-          borderStyle: 'none',
-          borderWidth: '0px'
-        }}
+        className="w-full p-[15px] mr-0 shadow-none border-0 rounded-none"
+        style={{ background: "rgb(240,240,240)" }}
       >
-        <div style={{ borderStyle: 'none' }}>
+        <div className="border-0">
           <div>
-
             <a>{AddressSelectedData.id}</a>
-            <a href={`/researcher/${network}/${AddressSelectedData.id}/address`} style={{ color: 'inherit' }}>
-              <ion-icon name="open-outline" style={{
-                fontSize: '20px',
-                marginRight: '4px',
-                marginBottom: '-4px'
-              }} title="نمایش آدرس"></ion-icon>
+            <a
+              href={`/researcher/${network}/${AddressSelectedData.id}/address`}
+              style={{ color: "inherit" }}
+            >
+              <ion-icon
+                name="open-outline"
+                style={{ fontSize: "20px", marginRight: "4px", marginBottom: "-4px" }}
+                title="نمایش آدرس"
+              ></ion-icon>
             </a>
-
+  
             <ion-icon
               title="کپی آدرس"
               name="copy-outline"
               style={{
-                fontSize: '20px',
-                marginRight: '4px',
-                marginBottom: '-4px',
-                cursor: 'pointer'
+                fontSize: "20px",
+                marginRight: "4px",
+                marginBottom: "-4px",
+                cursor: "pointer",
               }}
               onClick={() => {
                 navigator.clipboard.writeText(AddressSelectedData.id);
@@ -1079,14 +1085,15 @@ const AddressBox = ({ Data, SetData, AddressSelectedData, Reload, SetReload }) =
                 });
               }}
             ></ion-icon>
+  
             <ion-icon
               name="trash-outline"
               title="حذف آدرس"
               style={{
-                fontSize: '20px',
-                marginRight: '4px',
-                marginBottom: '-4px',
-                cursor:'pointer'
+                fontSize: "20px",
+                marginRight: "4px",
+                marginBottom: "-4px",
+                cursor: "pointer",
               }}
               onClick={() => {
                 RemoveAddress(AddressSelectedData.id);
@@ -1095,269 +1102,119 @@ const AddressBox = ({ Data, SetData, AddressSelectedData, Reload, SetReload }) =
           </div>
         </div>
       </div>
-
-      <div className="container-fluid m-0 mt-0 p-0">
-        {
-          ActivityLoading ?
-            <div className='pt-5' style={{
-              background: 'rgb(240,240,240)',
-            }}>
-
-              <LocalLoading />
+  
+      {/* وضعیت فعالیت و مشخصات */}
+      <div className="m-0 mt-0 p-0 w-full">
+        {ActivityLoading ? (
+          <div className="pt-5" style={{ background: "rgb(240,240,240)" }}>
+            loading...
+          </div>
+        ) : (
+          <div
+            className="m-0 p-3 pb-0"
+            style={{ background: "rgb(240,240,240)" }}
+          >
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 m-0 p-0">
+              <div className="m-0 p-0">
+                <p className="text-[13px] text-gray-500 mb-0">مالک</p>
+                {AddressSelectedData.entity !== null ? (
+                  <a className="bg-[rgb(47,163,221)] text-white px-3 py-0.5 rounded">
+                    {AddressSelectedData.entity.name}
+                  </a>
+                ) : (
+                  <p className="font-bold">نامشخص</p>
+                )}
+              </div>
+  
+              <div className="m-0 p-0">
+                <p className="text-[13px] text-gray-500 mb-0">موجودی</p>
+                <p className="font-bold">
+                  {Balance}
+                  <small className="ml-1">{token}</small>
+                </p>
+              </div>
+  
+              <div className="m-0 p-0">
+                <p className="text-[13px] text-gray-500 mb-0">اولین فعالیت</p>
+                <p className="font-bold">{MiladiFirstActivity}</p>
+              </div>
+  
+              <div className="m-0 p-0">
+                <p className="text-[13px] text-gray-500 mb-0">آخرین فعالیت</p>
+                <p className="font-bold">{MiladiLastActivity}</p>
+              </div>
             </div>
-            :
-            <Row className="m-0 p-3 pb-0 " style={{
-              background: 'rgb(240,240,240)',
-            }}>
-              <Col className="m-0 mt-0 p-0 " md={6}>
-                <p style={{ fontSize: '13px', color: 'gray', marginBottom: '0px' }}>
-                  مالک
-                </p>
-                {
-                  AddressSelectedData.entity !== null ?
-                    <a
-                      style={{
-                        background: "rgb(47, 163, 221)",
-                        color: 'white',
-                        padding: '1px 12px',
-                        borderRadius: '4px'
-                      }}
-                    >
-                      {AddressSelectedData.entity.name}
-                    </a>
-                    :
-                    <p style={{ fontWeight: 'bold' }}>
-                      <UserCheck size={15} style={{ color: "rgb(150,150,150)", marginLeft: "4px" }} />
-                      نامشخص
-                    </p>
-                }
-
-              </Col>
-              <Col className="m-0 mt-0 p-0 " md={6}>
-                <p style={{ fontSize: '13px', color: 'gray', marginBottom: '0px' }}>
-                  موجودی
-                </p>
-                <p style={{ fontWeight: 'bold' }}>
-                  <Crop size={15} style={{ color: "rgb(150,150,150)", marginLeft: "4px", marginTop: "-6px", transform: "rotate(90deg)" }} />
-
-                  {Balance}<small style={{ marginLeft: '4px' }}>{token}</small>
-                </p>
-              </Col>
-              <Col className="m-0 mt-0 p-0 " md={6}>
-                <p style={{ fontSize: '13px', color: 'gray', marginBottom: '0px' }}>
-                  اولین فعالیت
-                </p>
-                <p style={{ fontWeight: 'bold' }}>
-                  <Circle size={15} style={{ color: "rgb(150,150,150)", marginLeft: "4px", marginTop: "-6px" }} />
-                  {MiladiFirstActivity}
-                </p>
-              </Col>
-              <Col className="m-0 mt-0 p-0 " md={6}>
-                <p style={{ fontSize: '13px', color: 'gray', marginBottom: '0px' }}>
-                  آخرین فعالیت
-                </p>
-                <p style={{ fontWeight: 'bold' }}>
-                  <Aperture size={15} style={{ color: "rgb(150,150,150)", marginLeft: "4px", marginTop: "-6px" }} />
-                  {MiladiLastActivity}
-                </p>
-              </Col>
-            </Row>
-        }
-
+          </div>
+        )}
       </div>
-
-      <h6 className='p-3 pb-0 mb-0'>تنظیمات</h6>
-
-      <div className="container-fluid m-0 mt-0 p-0">
-        <Row className="m-0 p-0 me-1">
-          <Col className="m-0 mt-0 p-0" md={6}>
+  
+      {/* تنظیمات */}
+      <h6 className="p-3 pb-0 mb-0">تنظیمات</h6>
+      <div className="m-0 mt-0 p-0 w-full">
+        <div className="m-0 p-0 pr-1 grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div className="flex items-center gap-2">
             <Switch
               checked={ShowUSD}
-              id='ShowPriceCheckbox'
-              onChange={(e) => { setShowUSD(e.target.checked) }}
+              id="ShowPriceCheckbox"
+              onChange={(e) => {
+                setShowUSD(e.target.checked);
+              }}
             />
-            <Label for={"ShowPriceCheckbox"} style={{ cursor: 'pointer' }} className="mt-0">نمایش قیمت</Label>
-          </Col>
-          {
-            IsAccountBase(network) ?
-              <Col className="m-0 mt-0 p-0" md={6}>
-                <Switch
-                  checked={ShowAddress}
-                  id='ShowAddressCheckbox'
-                  onChange={(e) => { setShowAddress(e.target.checked) }}
-                />
-                <Label for={"ShowAddressCheckbox"} style={{ cursor: 'pointer' }} className="mt-0">نمایش آدرس مقابل</Label>
-              </Col>
-              :
-              null
-          }
-
-        </Row>
-      </div>
-
-      {/* <h6 className='p-3 pb-0 mb-0'>مرتب‌سازی براساس</h6>
-      <div className="container-fluid m-0 mt-0 p-0">
-        <Row className="m-0 p-0 me-3">
-          <Col className="m-0 mt-0 p-0" md={6}>
-            <Input
-              type="radio"
-              name="sortParameter"
-              id="TimeOption"
-              checked={sort_field === 'time'}
-              onChange={
-                (e) => {
-                  if (e.target.checked) {
-                    Setsort_field('time')
-                  }
-                }
-              }
-            />
-            <Label style={{ marginRight: "4px", cursor: 'pointer' }} for="TimeOption">زمان</Label>
-            <br />
-            <Input
-              type="radio"
-              name="sortParameter"
-              checked={sort_field === 'value'}
-              id="ValueOption"
-              onChange={
-                (e) => {
-                  if (e.target.checked) {
-                    Setsort_field('value')
-                  }
-                }
-              }
-            />
-            <Label style={{ marginRight: "4px", cursor: 'pointer' }} for="ValueOption">حجم</Label>
-          </Col>
-          <Col className="m-0 mt-0 p-0" md={6}>
-            <Input
-              type="radio"
-              name="sortType"
-              id="DecreaseOption"
-              checked={sort_order === 'descending'}
-              onChange={
-                (e) => {
-                  if (e.target.checked) {
-                    Setsort_order('descending')
-                  }
-                }
-              }
-            />
-            <Label style={{ marginRight: "4px", cursor: 'pointer' }} for="DecreaseOption">نزولی</Label>
-            <br />
-            <Input
-              type="radio"
-              name="sortType"
-              id="IncreaseOption"
-              checked={sort_order === 'ascending'}
-              onChange={
-                (e) => {
-                  if (e.target.checked) {
-                    Setsort_order('ascending')
-                  }
-                }
-              }
-            />
-            <Label style={{ marginRight: "4px", cursor: 'pointer' }} for="IncreaseOption">صعودی</Label>
-          </Col>
-        </Row>
-      </div> */}
-      {/* 
-      <h6 className='p-3 pb-0 mb-0'>فیلترها</h6>
-      <div className="m-0 mt-0 p-0">
-        <Row className="m-0 p-0 me-3 mt-1">
-          <Col className="m-0 mt-0 p-1 pe-0" >
-            <Input
-              style={{ width: '100%' }}
-              type="number"
-              placeholder={'کمترین مقدار'}
-              id="startVolume"
-            />
-          </Col>
-          <Col className="m-0 mt-0 p-1 ps-0" >
-            <Input
-              style={{ width: '100%' }}
-              placeholder={'بیشترین مقدار'}
-              type="number"
-              id="endVolume"
-            />
-          </Col>
-        </Row>
-
-        <Row className="m-0 p-0 me-3 mt-3">
-          <Col className="m-0 mt-0 p-1 pe-0" >
-            <Button onClick={() => {
-
-              setfrom_volume(Number(document.getElementById('startVolume').value))
-              setend_volume(Number(document.getElementById('endVolume').value))
-
-            }} style={{ width: '100%' }}>اعمال</Button>
-          </Col>
-          <Col className="m-0 mt-0 p-1 ps-0" >
-            <Button className='' onClick={() => {
-
-              setfrom_volume(false)
-              setend_volume(false)
-
-            }} style={{ width: '100%' }}>حذف</Button>
-          </Col>
-        </Row>
-      </div> */}
-
-      <div className='mt-3' style={{
-        borderColor: 'rgb(240,240,240)',
-        borderTopStyle: 'solid',
-        borderBottomStyle: 'solid',
-        borderWidth: '2px'
-      }}>
-        {
-          !TableLoading ?
-            AddressTransactions.length > 0 ?
-              <DataTable
-                value={AddressTransactions}
-                className="custom-data-table no-row-background GraphAddresBoxTable"
-                sortable
-                style={{
-                  borderRadius: "0px",
-                  borderStyle: "none",
-                  boxShadow: "none",
+            <label htmlFor="ShowPriceCheckbox" className="mt-0 cursor-pointer">
+              نمایش قیمت
+            </label>
+          </div>
+  
+          {Networks.find((item) => item.symbole === network).type === "account" ? (
+            <div className="flex items-center gap-2">
+              <Switch
+                checked={ShowAddress}
+                id="ShowAddressCheckbox"
+                onChange={(e) => {
+                  setShowAddress(e.target.checked);
                 }}
-              >
-                <Column
-                  body={addOrRemove}
-                  bodyStyle={{ textAlign: "right", userSelect: "text" }}
-                ></Column>
-                <Column
-                  body={DateField}
-                  bodyStyle={{ textAlign: "right", userSelect: "text" }}
-                  header={<div style={{}}>تاریخ</div>}
-                ></Column>
-                <Column
-                  body={TrHash}
-                  bodyStyle={{ textAlign: "right", userSelect: "text" }}
-                  header="آدرس تراکنش"
-                ></Column>
-                <Column
-                  body={TrValue}
-                  bodyStyle={{ textAlign: "right", userSelect: "text" }}
-                  header={<div style={{}}>حجم تراکنش</div>}
-                ></Column>
-                {IsAccountBase('TRX') ? (
-                  <Column
-                    body={CounterParty}
-                    bodyStyle={{ textAlign: "right", userSelect: "text" }}
-                    header="طرف مقابل"
-                  ></Column>
-                ) : null}
-              </DataTable>
-              :
-              <NoData />
-            :
-            <SkeletonLoading />
-        }
-
+              />
+              <label htmlFor="ShowAddressCheckbox" className="mt-0 cursor-pointer">
+                نمایش آدرس مقابل
+              </label>
+            </div>
+          ) : null}
+        </div>
+      </div>
+  
+      {/* جدول تراکنش‌ها */}
+      <div
+        className="mt-3 border-y-2"
+        style={{ borderColor: "rgb(240,240,240)" }}
+      >
+        {!TableLoading ? (
+          AddressTransactions.length > 0 ? (
+            <DataTable
+              value={AddressTransactions}
+              className="custom-data-table no-row-background GraphAddresBoxTable"
+              style={{
+                borderRadius: "0px",
+                borderStyle: "none",
+                boxShadow: "none",
+              }}
+            >
+              <Column body={addOrRemove} bodyStyle={{ textAlign: "right", userSelect: "text" }} />
+              <Column body={DateField} bodyStyle={{ textAlign: "right", userSelect: "text" }} header={<div>تاریخ</div>} />
+              <Column body={TrHash} bodyStyle={{ textAlign: "right", userSelect: "text" }} header="آدرس تراکنش" />
+              <Column body={TrValue} bodyStyle={{ textAlign: "right", userSelect: "text" }} header={<div>حجم تراکنش</div>} />
+              {Networks.find((item) => item.symbole === network).type === "account" ? (
+                <Column body={CounterParty} bodyStyle={{ textAlign: "right", userSelect: "text" }} header="طرف مقابل" />
+              ) : null}
+            </DataTable>
+          ) : (
+            "no data"
+          )
+        ) : (
+          "loading"
+        )}
+  
         <Paginator
-          className='paginator-table no-row-background'
+          className="paginator-table no-row-background"
           first={first}
           rows={10}
           totalRecords={TrNumber}
@@ -1367,9 +1224,9 @@ const AddressBox = ({ Data, SetData, AddressSelectedData, Reload, SetReload }) =
           currentPageReportTemplate="{totalRecords} تراکنش"
         />
       </div>
-
     </div>
-  )
+  );
+  
 }
 
 export default AddressBox

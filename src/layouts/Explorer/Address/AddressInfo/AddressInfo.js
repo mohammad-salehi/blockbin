@@ -48,11 +48,10 @@ const AddressInfo = () => {
             .then((response) => {
                 if (response.status === 200) {
                     SetRisk(response.data.risk_score)
-                    SetLoading2(false)
                 }
+                SetLoading2(false)
             })
             .catch((err) => { console.log(err), SetLoading2(false) })
-
     }, [])
 
     const AddLabel = () => {
