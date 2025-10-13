@@ -4,9 +4,7 @@ import React, { useState, useEffect } from "react";
 import { useParams } from "next/navigation";
 import axios from "axios";
 import Cookies from "js-cookie";
-import "./style.css";
-// import SearchTokens from "./components/TokenSelection/SearchTokens";
-// import LoadingButton from "../../components/loadinButton/LoadingButton";
+import "../style.css";
 import toast from "react-hot-toast";
 import Switch from '@mui/material/Switch';
 // import ReportModal from "./components/ReportBox/ReportBox";
@@ -23,11 +21,12 @@ import FullPageLoading from "@/components/FullPageLoading/FullPageLoading";
 import Select, { components } from 'react-select'
 
 const Page = () => {
-  const { id } = useParams();
-  const { hash } = useParams();
-  const { network } = useParams();
-  const { token } = useParams();
-  const { contractAddress } = useParams();
+  const params = useParams();
+  const { network, hash } = params;
+  const rest = Array.isArray(params.rest) ? params.rest : [];
+  const token = rest[0];            
+  const contractAddress = rest[1];  
+  const id = rest[2];               
 
   //actions
   const [Reload, SetReload] = useState(false);
@@ -112,7 +111,7 @@ const Page = () => {
 
     if (GraphName !== "" || id !== undefined) {
       if (Data.length > 0) {
-        if (id !== undefined) {
+        if (id !== null) {
           SetLoading(true);
           //Error Done
           axios
@@ -1109,10 +1108,6 @@ const Page = () => {
     }
     SetGraphTokens(tokenOptions);
   }, [Tokens]);
-
-
-
-
 
   const themeColor = (key) => {
     const isDark = document.documentElement.classList.contains("dark");

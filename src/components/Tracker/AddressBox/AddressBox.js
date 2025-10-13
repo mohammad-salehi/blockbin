@@ -20,11 +20,12 @@ import ExploreTopBoxLoading from '@/components/ExploreTopBoxLoading/ExploreTopBo
 import SkeletonLoading from '@/components/SkeletonLoading/SkeletonLoading';
 
 const AddressBox = ({ Data, SetData, AddressSelectedData, Reload, SetReload }) => {
-  const { network } = useParams();
-  const { token } = useParams();
-  const { contractAddress } = useParams();
-  const { address } = useParams();
-
+  const params = useParams();
+  const { network, hash } = params;
+  const rest = Array.isArray(params.rest) ? params.rest : [];
+  const token = rest[0];            
+  const contractAddress = rest[1];  
+  const id = rest[2]; 
   const [AddressTransactions, SetAddressTransactions] = useState([])
 
   const [from_volume, setfrom_volume] = useState(false);
@@ -383,7 +384,7 @@ const AddressBox = ({ Data, SetData, AddressSelectedData, Reload, SetReload }) =
               metadata: null,
               x: x,
               y: y,
-              main: row.hash === address,
+              main: row.hash === hash,
               inputs: row.mode === 'out' ? [
                 {
                   id: AddressSelectedData.id,
@@ -517,7 +518,7 @@ const AddressBox = ({ Data, SetData, AddressSelectedData, Reload, SetReload }) =
                   metadata: null,
                   x: x,
                   y: y,
-                  main: row.hash === address,
+                  main: row.hash === hash,
                   inputs: row.mode === 'out' ? [
                     {
                       id: row.hash,
