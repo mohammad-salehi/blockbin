@@ -17,7 +17,7 @@ export function AddressFormat(str, number = 8, type, network, showCopy = true) {
                     null
             }
 
-            <a style={{ textDecoration: 'none' }} className='text-primary' href={`/panel/dashboard/${type}/${network}/${str}/`}>{str}</a>
+            <a style={{ textDecoration: 'none' }} className='text-primary outline-none border-none' href={`/panel/dashboard/${type}/${network}/${str}/`}>{str}</a>
 
         </>);
     }
@@ -36,7 +36,7 @@ export function AddressFormat(str, number = 8, type, network, showCopy = true) {
                 :
                 null
         }
-        <a style={{ textDecoration: 'none' }} className='text-primary' href={`/panel/dashboard/${type}/${network}/${str}/`}>{firstPart + '...' + lastPart}</a>
+        <a style={{ textDecoration: 'none' }} className='text-primary outline-none border-none' href={`/panel/dashboard/${type}/${network}/${str}/`}>{firstPart + '...' + lastPart}</a>
 
     </div>);
 }

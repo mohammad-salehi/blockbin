@@ -1,13 +1,9 @@
 import React, { useState, useEffect } from 'react'
-import { DataTable } from 'primereact/datatable';
-import { Column } from 'primereact/column';
-import { Paginator } from 'primereact/paginator';
-// import NoData from '../../../../components/NoData/NoData';
+import Pagination from '@/components/Pagination/Pagination';
 import { Networks } from '@/functions/Networks';
 import { MiladiCalendar } from '@/functions/miladiCalendar';
 import { formatSmallNumber } from '@/functions/formatSmallNumber';
 import Switch from "@mui/material/Switch";
-// import { Card, Input, Label, Row, Col, Button } from "reactstrap";
 import { useParams } from 'next/navigation'
 import { serverAddress } from '@/functions/ServerAddress';
 import { GetRequest } from '@/functions/GetRequest';
@@ -15,11 +11,13 @@ import AddBoxIcon from '@mui/icons-material/AddBox';
 import IndeterminateCheckBoxIcon from '@mui/icons-material/IndeterminateCheckBox';
 import { AddressFormat } from '@/components/AddressFormat/AddressFormat';
 import CircularProgress from '@mui/material/CircularProgress';
-import toast from 'react-hot-toast'
 import { JalaliCalendar } from '@/functions/jalaliCalendar';
 import { Account_Token_Address } from '@/functions/NetworksProcessor/Account_Token_Address';
 import { Account_Address } from '@/functions/NetworksProcessor/Account_Address';
 import { UTXO_Address } from '@/functions/NetworksProcessor/UTXO_Address';
+import ExpandableTable from '@/components/ExpandableTable/ExpandableTable';
+import ExploreTopBoxLoading from '@/components/ExploreTopBoxLoading/ExploreTopBoxLoading';
+import SkeletonLoading from '@/components/SkeletonLoading/SkeletonLoading';
 
 const AddressBox = ({ Data, SetData, AddressSelectedData, Reload, SetReload }) => {
   const { network } = useParams();
@@ -35,7 +33,7 @@ const AddressBox = ({ Data, SetData, AddressSelectedData, Reload, SetReload }) =
   const [sort_order, Setsort_order] = useState('descending');
   const [sort_field, Setsort_field] = useState('time');
   const [ShowAddress, setShowAddress] = useState(false);
-  const [first, setFirst] = useState(0);
+  const [first, setFirst] = useState(1);
   const [TrNumber, SetTrNumber] = useState(0);
   const [TableLoading, setTableLoading] = useState(false);
   const [CanAdd, setCanAdd] = useState(true);
@@ -79,9 +77,10 @@ const AddressBox = ({ Data, SetData, AddressSelectedData, Reload, SetReload }) =
   const GetMoreData = (page) => {
     setTableLoading(true)
     let address = `${serverAddress}/explorer/search/?query=${AddressSelectedData.id}&network=${network}`
+    address = address + `&page_number=${page}&page_size=10`
 
     if (token !== network) {
-      address = address + `&type=token-20&contractAddress=${contractAddress}`
+      address = address + `&type=token-20&contract_address=${contractAddress}`
     }
 
     // if (from_volume) {
@@ -96,7 +95,6 @@ const AddressBox = ({ Data, SetData, AddressSelectedData, Reload, SetReload }) =
     // if (sort_field) {
     //   address = address + `$sort_field=${sort_field}`
     // }
-    address = address + `&page_number=${page}&page_size=10`
 
     if (token === network) {
       setTableLoading(true)
@@ -271,9 +269,8 @@ const AddressBox = ({ Data, SetData, AddressSelectedData, Reload, SetReload }) =
   }
 
   const handlePagination = (page) => {
-    console.log(page)
-    setFirst(page.page * 10);
-    GetMoreData(page.page + 1);
+    setFirst(page);
+    GetMoreData(page);
   };
 
   const removeSelectedData = (row) => {
@@ -621,9 +618,9 @@ const AddressBox = ({ Data, SetData, AddressSelectedData, Reload, SetReload }) =
             style={{
               fontSize: "28px",
               marginBottom: "0px",
-              color: "rgb(255,120,120)",
               cursor: "pointer",
             }}
+            className='text-TextRed'
             onClick={() => {
               removeSelectedData(row)
             }}
@@ -635,9 +632,9 @@ const AddressBox = ({ Data, SetData, AddressSelectedData, Reload, SetReload }) =
             style={{
               fontSize: "28px",
               marginBottom: "0px",
-              color: "green",
               cursor: CanAdd ? "pointer" : 'inherit',
             }}
+            className='text-TextGreen'
             onClick={() => {
               if (CanAdd) {
                 addSelectedData(row)
@@ -683,8 +680,8 @@ const AddressBox = ({ Data, SetData, AddressSelectedData, Reload, SetReload }) =
   const TrValue = (row) => {
     return (
       <p
+        className={row.mode === 'in' ? ` text-TextGreen` : ` text-TextRed`}
         style={{
-          color: row.mode === "in" ? "green" : "red",
           direction: "ltr",
           fontSize: "13px",
           marginTop: "-12px",
@@ -713,9 +710,9 @@ const AddressBox = ({ Data, SetData, AddressSelectedData, Reload, SetReload }) =
           }}
         >
           <span
+            className={row.mode === 'in' ? `bg-BgGreen text-TextGreen` : `bg-BgRed text-TextRed`}
             style={{
-              background: "rgb(47, 163, 221)",
-              color: 'white',
+
               padding: '1px 12px',
               borderRadius: '4px'
             }}
@@ -723,10 +720,10 @@ const AddressBox = ({ Data, SetData, AddressSelectedData, Reload, SetReload }) =
             {row.entity.name}
           </span>
           {ShowAddress ? (
-            <>
+            <div>
               <br />
               {AddressFormat(row.address, 4, 'transaction', network)}
-            </>
+            </div>
           ) : null}
         </p>
       );
@@ -776,7 +773,7 @@ const AddressBox = ({ Data, SetData, AddressSelectedData, Reload, SetReload }) =
 
   //Get Data
   useEffect(() => {
-    setFirst(0)
+    setFirst(1)
     let address = createAddress()
     setTableLoading(true)
     GetRequest(address)
@@ -985,7 +982,7 @@ const AddressBox = ({ Data, SetData, AddressSelectedData, Reload, SetReload }) =
         .catch((err) => { SetActivityLoading(false) })
     }
 
-  }, [,AddressSelectedData])
+  }, [, AddressSelectedData])
 
   //transaction number
   useEffect(() => {
@@ -1020,134 +1017,144 @@ const AddressBox = ({ Data, SetData, AddressSelectedData, Reload, SetReload }) =
 
   }
 
+  const columns = [
+    {
+      header: "",
+      cell: (row) => addOrRemove(row),
+    },
+    {
+      header: "تاریخ",
+      cell: (row) => DateField(row),
+    },
+    {
+      header: "آدرس تراکنش",
+      cell: (row) => TrHash(row),
+    },
+    {
+      header: "حجم تراکنش",
+      cell: (row) => TrValue(row),
+    },
+    ...(Networks.find((item) => item.symbole === network)?.type === "account"
+      ? [
+        {
+          header: "موجودیت",
+          cell: (row) => CounterParty(row),
+        },
+      ]
+      : []),
+  ];
+
   return (
-    <div>
+    <div className='text-textColor'>
       <h6 className="p-3 pb-0">
         <span>
+          <img src={`/images/${network}.png`} className='w-8 inline-block ' />
           مشخصات آدرس {Networks.find((item) => item.symbole === network).name}
         </span>
         <span className="float-left">
-          {AddressSelectedData.risk !== null ? AddressSelectedData.risk + "%" : "نامشخص"}
-          <ion-icon
-            style={{
-              color: "white",
-              padding: "4px",
-              borderRadius: "50%",
-              marginBottom: "-6px",
-              marginRight: "4px",
-              background:
-                AddressSelectedData.risk <= 25
-                  ? "green"
-                  : AddressSelectedData.risk <= 50
-                  ? "blue"
-                  : AddressSelectedData.risk < 70
-                  ? "orange"
-                  : "red",
-              fontSize: "16px",
-            }}
-            name="flash"
-          ></ion-icon>
+
+          {AddressFormat(AddressSelectedData.id, 10, 'transaction', network)}
+          <svg width="20" height="20" xmlns="http://www.w3.org/2000/svg" className='inline-block cursor-pointer mr-2' onClick={() => { RemoveAddress(AddressSelectedData.id) }}>
+            <path fill="currentColor" d="M14,3 C14.5522847,3 15,3.44771525 15,4 C15,4.55228475 14.5522847,5 14,5 L13.846,5 L13.1420511,14.1534404 C13.0618518,15.1954311 12.1930072,16 11.1479,16 L4.85206,16 C3.80698826,16 2.93809469,15.1953857 2.8579545,14.1533833 L2.154,5 L2,5 C1.44771525,5 1,4.55228475 1,4 C1,3.44771525 1.44771525,3 2,3 L5,3 L5,2 C5,0.945642739 5.81588212,0.0818352903 6.85073825,0.00548576453 L7,0 L9,0 C10.0543573,0 10.9181647,0.815882118 10.9945142,1.85073825 L11,2 L11,3 L14,3 Z M11.84,5 L4.159,5 L4.85206449,14.0000111 L11.1479,14.0000111 L11.84,5 Z M9,2 L7,2 L7,3 L9,3 L9,2 Z" />
+          </svg>
         </span>
       </h6>
-  
-      {/* کارت آدرس */}
-      <div
-        className="w-full p-[15px] mr-0 shadow-none border-0 rounded-none"
-        style={{ background: "rgb(240,240,240)" }}
-      >
-        <div className="border-0">
-          <div>
-            <a>{AddressSelectedData.id}</a>
-            <a
-              href={`/researcher/${network}/${AddressSelectedData.id}/address`}
-              style={{ color: "inherit" }}
-            >
-              <ion-icon
-                name="open-outline"
-                style={{ fontSize: "20px", marginRight: "4px", marginBottom: "-4px" }}
-                title="نمایش آدرس"
-              ></ion-icon>
-            </a>
-  
-            <ion-icon
-              title="کپی آدرس"
-              name="copy-outline"
-              style={{
-                fontSize: "20px",
-                marginRight: "4px",
-                marginBottom: "-4px",
-                cursor: "pointer",
-              }}
-              onClick={() => {
-                navigator.clipboard.writeText(AddressSelectedData.id);
-                return toast.success("آدرس مورد نظر در کلیپ‌بورد کپی شد.", {
-                  position: "bottom-left",
-                });
-              }}
-            ></ion-icon>
-  
-            <ion-icon
-              name="trash-outline"
-              title="حذف آدرس"
-              style={{
-                fontSize: "20px",
-                marginRight: "4px",
-                marginBottom: "-4px",
-                cursor: "pointer",
-              }}
-              onClick={() => {
-                RemoveAddress(AddressSelectedData.id);
-              }}
-            ></ion-icon>
-          </div>
-        </div>
-      </div>
-  
+
       {/* وضعیت فعالیت و مشخصات */}
-      <div className="m-0 mt-0 p-0 w-full">
+      <div className="m-0 mt-4 p-0 w-full ">
         {ActivityLoading ? (
-          <div className="pt-5" style={{ background: "rgb(240,240,240)" }}>
-            loading...
+          <div className="p-2  bg-TableBorder" >
+            <ExploreTopBoxLoading/>
           </div>
         ) : (
           <div
-            className="m-0 p-3 pb-0"
-            style={{ background: "rgb(240,240,240)" }}
+            className="m-0 p-3 pb-3 bg-TableBorder"
           >
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 m-0 p-0">
               <div className="m-0 p-0">
-                <p className="text-[13px] text-gray-500 mb-0">مالک</p>
+                <p className="text-[13px] text-textTitleColor mb-0">مالک</p>
                 {AddressSelectedData.entity !== null ? (
-                  <a className="bg-[rgb(47,163,221)] text-white px-3 py-0.5 rounded">
+                  <a className="bg-BgGreen text-TextGreen px-3 py-0.5 rounded">
                     {AddressSelectedData.entity.name}
                   </a>
                 ) : (
                   <p className="font-bold">نامشخص</p>
                 )}
               </div>
-  
+
               <div className="m-0 p-0">
-                <p className="text-[13px] text-gray-500 mb-0">موجودی</p>
+                <p className="text-[13px] text-textTitleColor mb-0">ریسک</p>
+                {AddressSelectedData.risk !== null ? (
+                  <p className="font-bold">
+                    <svg fill={AddressSelectedData.risk === null ? 'currentColor' : AddressSelectedData.risk < 25 ? 'green' : AddressSelectedData.risk < 50 ? 'blue' : AddressSelectedData.risk < 70 ? 'orange' : 'red'} height="20px" width="20px" version="1.1" id="Layer_1" className='inline-block ml-1'
+                      viewBox="0 0 512 512" >
+                      <g>
+                        <g>
+                          <path d="M507.494,426.066L282.864,53.537c-5.677-9.415-15.87-15.172-26.865-15.172c-10.995,0-21.188,5.756-26.865,15.172
+			L4.506,426.066c-5.842,9.689-6.015,21.774-0.451,31.625c5.564,9.852,16.001,15.944,27.315,15.944h449.259
+			c11.314,0,21.751-6.093,27.315-15.944C513.508,447.839,513.336,435.755,507.494,426.066z M256.167,167.227
+			c12.901,0,23.817,7.278,23.817,20.178c0,39.363-4.631,95.929-4.631,135.292c0,10.255-11.247,14.554-19.186,14.554
+			c-10.584,0-19.516-4.3-19.516-14.554c0-39.363-4.63-95.929-4.63-135.292C232.021,174.505,242.605,167.227,256.167,167.227z
+			 M256.498,411.018c-14.554,0-25.471-11.908-25.471-25.47c0-13.893,10.916-25.47,25.471-25.47c13.562,0,25.14,11.577,25.14,25.47
+			C281.638,399.11,270.06,411.018,256.498,411.018z"/>
+                        </g>
+                      </g>
+                    </svg>
+                    <span className="ml-1">{AddressSelectedData.risk}%</span>
+                  </p>
+                ) : (
+                  <p className="font-bold">نامشخص</p>
+                )}
+              </div>
+
+              <div className="m-0 p-0">
+                <p className="text-[13px] text-textTitleColor mb-0">اولین فعالیت</p>
                 <p className="font-bold">
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" className='inline-block ml-1'>
+                    <path d="M12 12V7M21 12C21 16.9706 16.9706 21 12 21C7.02944 21 3 16.9706 3 12C3 7.02944 7.02944 3 12 3C16.9706 3 21 7.02944 21 12Z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                  </svg>
+                  {MiladiFirstActivity}</p>
+              </div>
+
+              <div className="m-0 p-0">
+                <p className="text-[13px] text-textTitleColor mb-0">آخرین فعالیت</p>
+                <p className="font-bold">
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" className='inline-block ml-1'>
+                    <path d="M12 12V17M21 12C21 16.9706 16.9706 21 12 21C7.02944 21 3 16.9706 3 12C3 7.02944 7.02944 3 12 3C16.9706 3 21 7.02944 21 12Z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                  </svg>
+                  {MiladiLastActivity}</p>
+              </div>
+
+              <div className="m-0 p-0">
+                <p className="text-[13px] text-textTitleColor mb-0">موجودی</p>
+
+                <p className="font-bold">
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" className='ml-1 inline-block'>
+                    <path d="M6 8H10" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+                    <path d="M22 10.5C22 10.4226 22 9.96726 21.9977 9.9346C21.9623 9.43384 21.5328 9.03496 20.9935 9.00214C20.9583 9 20.9167 9 20.8333 9H18.2308C16.4465 9 15 10.3431 15 12C15 13.6569 16.4465 15 18.2308 15H20.8333C20.9167 15 20.9583 15 20.9935 14.9979C21.5328 14.965 21.9623 14.5662 21.9977 14.0654C22 14.0327 22 13.5774 22 13.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+                    <circle cx="18" cy="12" r="1" fill="currentColor" />
+                    <path d="M13 4C16.7712 4 18.6569 4 19.8284 5.17157C20.6366 5.97975 20.8873 7.1277 20.965 9M10 20H13C16.7712 20 18.6569 20 19.8284 18.8284C20.6366 18.0203 20.8873 16.8723 20.965 15M9 4.00093C5.8857 4.01004 4.23467 4.10848 3.17157 5.17157C2 6.34315 2 8.22876 2 12C2 15.7712 2 17.6569 3.17157 18.8284C3.82475 19.4816 4.69989 19.7706 6 19.8985" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+                  </svg>
                   {Balance}
                   <small className="ml-1">{token}</small>
                 </p>
               </div>
-  
+
               <div className="m-0 p-0">
-                <p className="text-[13px] text-gray-500 mb-0">اولین فعالیت</p>
-                <p className="font-bold">{MiladiFirstActivity}</p>
-              </div>
-  
-              <div className="m-0 p-0">
-                <p className="text-[13px] text-gray-500 mb-0">آخرین فعالیت</p>
-                <p className="font-bold">{MiladiLastActivity}</p>
+                <p className="text-[13px] text-textTitleColor mb-0">تعداد تراکنش‌ها</p>
+
+                <p className="font-bold">
+                  <svg fill="currentColor" width="20" height="20" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" className='inline-block ml-1'>
+                    <path d="M17.0020048,13 C17.5542895,13 18.0020048,13.4477153 18.0020048,14 C18.0020048,14.5128358 17.6159646,14.9355072 17.1186259,14.9932723 L17.0020048,15 L5.41700475,15 L8.70911154,18.2928932 C9.0695955,18.6533772 9.09732503,19.2206082 8.79230014,19.6128994 L8.70911154,19.7071068 C8.34862757,20.0675907 7.78139652,20.0953203 7.38910531,19.7902954 L7.29489797,19.7071068 L2.29489797,14.7071068 C1.69232289,14.1045317 2.07433707,13.0928192 2.88837381,13.0059833 L3.00200475,13 L17.0020048,13 Z M16.6128994,4.20970461 L16.7071068,4.29289322 L21.7071068,9.29289322 C22.3096819,9.8954683 21.9276677,10.9071808 21.1136309,10.9940167 L21,11 L7,11 C6.44771525,11 6,10.5522847 6,10 C6,9.48716416 6.38604019,9.06449284 6.88337887,9.00672773 L7,9 L18.585,9 L15.2928932,5.70710678 C14.9324093,5.34662282 14.9046797,4.77939176 15.2097046,4.38710056 L15.2928932,4.29289322 C15.6533772,3.93240926 16.2206082,3.90467972 16.6128994,4.20970461 Z" />
+                  </svg>
+                  {TrNumber}
+                </p>
               </div>
             </div>
           </div>
         )}
       </div>
-  
+
       {/* تنظیمات */}
       <h6 className="p-3 pb-0 mb-0">تنظیمات</h6>
       <div className="m-0 mt-0 p-0 w-full">
@@ -1164,7 +1171,7 @@ const AddressBox = ({ Data, SetData, AddressSelectedData, Reload, SetReload }) =
               نمایش قیمت
             </label>
           </div>
-  
+
           {Networks.find((item) => item.symbole === network).type === "account" ? (
             <div className="flex items-center gap-2">
               <Switch
@@ -1181,52 +1188,33 @@ const AddressBox = ({ Data, SetData, AddressSelectedData, Reload, SetReload }) =
           ) : null}
         </div>
       </div>
-  
+
       {/* جدول تراکنش‌ها */}
       <div
-        className="mt-3 border-y-2"
-        style={{ borderColor: "rgb(240,240,240)" }}
+        className="mt-3 mb-4 "
       >
         {!TableLoading ? (
-          AddressTransactions.length > 0 ? (
-            <DataTable
-              value={AddressTransactions}
-              className="custom-data-table no-row-background GraphAddresBoxTable"
-              style={{
-                borderRadius: "0px",
-                borderStyle: "none",
-                boxShadow: "none",
-              }}
-            >
-              <Column body={addOrRemove} bodyStyle={{ textAlign: "right", userSelect: "text" }} />
-              <Column body={DateField} bodyStyle={{ textAlign: "right", userSelect: "text" }} header={<div>تاریخ</div>} />
-              <Column body={TrHash} bodyStyle={{ textAlign: "right", userSelect: "text" }} header="آدرس تراکنش" />
-              <Column body={TrValue} bodyStyle={{ textAlign: "right", userSelect: "text" }} header={<div>حجم تراکنش</div>} />
-              {Networks.find((item) => item.symbole === network).type === "account" ? (
-                <Column body={CounterParty} bodyStyle={{ textAlign: "right", userSelect: "text" }} header="طرف مقابل" />
-              ) : null}
-            </DataTable>
-          ) : (
-            "no data"
-          )
+          <ExpandableTable
+            data={AddressTransactions}          // ← فقط دیتای فیلترشده را بده
+            columns={columns}
+            rowDetailsMode="row"
+            rowDetailsClassName="rounded-xl p-3"
+          />
+
         ) : (
-          "loading"
+          <SkeletonLoading />
         )}
-  
-        <Paginator
-          className="paginator-table no-row-background"
-          first={first}
-          rows={10}
-          totalRecords={TrNumber}
-          rowsPerPageOptions={10}
+        <Pagination
+          rtl
+          totalItems={TrNumber}
+          pageSize={10}
+          currentPage={first}
           onPageChange={handlePagination}
-          template="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport RowsPerPageDropdown"
-          currentPageReportTemplate="{totalRecords} تراکنش"
         />
       </div>
     </div>
   );
-  
+
 }
 
 export default AddressBox

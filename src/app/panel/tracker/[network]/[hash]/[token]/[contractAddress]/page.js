@@ -19,9 +19,9 @@ import { Account_Token_Address } from "@/functions/NetworksProcessor/Account_Tok
 import { Account_transaction } from "@/functions/NetworksProcessor/Account_transaction";
 import { UTXO_Transaction } from "@/functions/NetworksProcessor/UTXO_Transaction";
 import FuckingGraph_V2 from "@/components/Tracker/graph/Graph";
+import FullPageLoading from "@/components/FullPageLoading/FullPageLoading";
 
 const Page = () => {
-
 
   const { id } = useParams()
   const { hash } = useParams()
@@ -986,7 +986,7 @@ const Page = () => {
             PaintedEdges={PaintedEdges}
           />
 
-        ) : null}
+        ) : <FullPageLoading/>}
       </div>
       <div style={{
         position: 'absolute',

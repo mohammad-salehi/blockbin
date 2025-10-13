@@ -1,6 +1,6 @@
 import React, { useRef, useEffect, useState } from "react";
 import { DataSet, Network } from "vis";
-import { Options } from "../functions/Options";
+import { buildOptions } from "../functions/Options";
 import { SetEdgesData } from "./SetEdgesData";
 import AddressBox from "../AddressBox/AddressBox";
 import { useParams } from "next/navigation";
@@ -30,6 +30,18 @@ const FuckingGraph_V2 = ({
   SetSelectedEdges,
   PaintedEdges,
 }) => {
+
+  const [isDarkMode, setIsDark] = useState(false);
+
+  useEffect(() => {
+    const el = document.documentElement;
+    const update = () => setIsDark(el.classList.contains("dark"));
+    update(); 
+    const obs = new MutationObserver(update);
+    obs.observe(el, { attributes: true, attributeFilter: ["class"] });
+    return () => obs.disconnect();
+  }, []);
+
   const containerRef = useRef(null);
 
   // vis refs
@@ -81,7 +93,7 @@ const FuckingGraph_V2 = ({
     const instance = new Network(
       containerRef.current,
       { nodes: nodesRef.current, edges: edgesRef.current },
-      Options
+      buildOptions(!!isDarkMode)
     );
     networkInstanceRef.current = instance;
     initializedRef.current = true;
@@ -268,7 +280,7 @@ const FuckingGraph_V2 = ({
     };
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [, isDarkMode]);
 
   // ---------- Effect 2: آپدیت داده‌ها و موقعیت/زوم ----------
   useEffect(() => {
@@ -303,6 +315,8 @@ const FuckingGraph_V2 = ({
       ...Data.filter((d) => !NewPositions.some((p) => p.id === d.id)),
     ];
 
+    const baseBlue = isDarkMode ? "#93c5fd" : "rgb(50, 87, 155)";
+
     // ایجاد نودهای address/transaction
     const newPositionsWork = [...NewPositions];
     for (let i = 0; i < newGraphData.length; i++) {
@@ -322,6 +336,7 @@ const FuckingGraph_V2 = ({
         y: Number(item.y),
         group: item.type,
         selectable: true,
+
         color: {
           border:
             item.risk !== null
@@ -329,8 +344,8 @@ const FuckingGraph_V2 = ({
                 ? "red"
                 : item.risk >= 50
                   ? "orange"
-                  : "rgb(50, 87, 155)"
-              : "rgb(50, 87, 155)",
+                  : baseBlue
+              : baseBlue,
         },
         address: item.text,
         image:
@@ -503,7 +518,12 @@ const FuckingGraph_V2 = ({
     // اگر لازم شد می‌توانی اینجا یک sync سبک انجام بدهی
     // (در عمل، درگ eventها همزمان کار می‌کنند)
 
-  }, [Data, Reload, ShowValues, ShowTimes, ShowPrice, PaintedEdges]);
+  }, [Data, Reload, ShowValues, ShowTimes, ShowPrice, PaintedEdges, isDarkMode]);
+
+  useEffect(() => {
+    if (!networkInstanceRef.current) return;
+    networkInstanceRef.current.setOptions(buildOptions(!!isDarkMode));
+  }, [isDarkMode]);
 
   // شروع اولیه: یک بار ریلود
   useEffect(() => {
@@ -527,15 +547,26 @@ const FuckingGraph_V2 = ({
     <div
       id="myGraphDiv"
       ref={containerRef}
-      style={{ minWidth: "100%", transition: "0.3s" }}
+      
+      style={{ minWidth: "100%", transition: "0.3s", backgroundImage: isDarkMode ? "" : "url('/images/light_graph_bg.png')" }}
     >
       <Modal
         open={OpenAddressModal}
         onClose={() => SetOpenAddressModal(false)}
-        className="sidebar-lg p-0 kuft"
+        className="p-0"
       >
         <Modal.Backdrop />
-        <Modal.Panel className="w-full max-w-xl rounded-lg bg-white dark:bg-bgColor-dark shadow-lg mt-[200px] text-titleText dark:text-titleText-dark">
+
+        <Modal.Panel
+          className="
+      fixed left-[33px] top-[73px] h-[calc(100vh-60px)] 
+      w-full max-w-2xl 
+      bg-boxColor dark:bg-bgColor-dark 
+      shadow-lg rounded-none
+      text-titleText dark:text-titleText-dark
+      overflow-y-auto
+    "
+        >
           <AddressBox
             Reload={Reload}
             SetReload={SetReload}
@@ -547,6 +578,7 @@ const FuckingGraph_V2 = ({
           />
         </Modal.Panel>
       </Modal>
+
 
       {/* اگر بعداً TxBox خواستی، با API جدید Modal (open/onClose) فعالش کن */}
       {/* <Modal open={OpenTxModal} onClose={() => SetOpenTxModal(false)} className="sidebar-lg p-0 kuft">
