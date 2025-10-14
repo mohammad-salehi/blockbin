@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Button, Label } from 'reactstrap';
+import { Button } from "@heathmont/moon-core-tw";
 import { saveAs } from 'file-saver';
 import * as XLSX from 'xlsx';
 
@@ -11,7 +11,7 @@ const ReportModal = ({ Data, PaintedEdges }) => {
     const [ShowLabel, setShowLabel] = useState(true);
     const [ShowOwner, setShowOwner] = useState(true);
     const [ShowTxHash, setShowTxHash] = useState(true);
-    
+
 
     function extractAndOrderPaths(array1, array2) {
         const idMap = array1.reduce((map, item) => {
@@ -89,10 +89,10 @@ const ReportModal = ({ Data, PaintedEdges }) => {
     const exportToExcel = (data) => {
         const wb = XLSX.utils.book_new();
         const ws_data = [];
-    
+
         // اضافه کردن عناوین ستون‌ها (سطر اول)
         const headers = [
-            'آدرس مبدا', 
+            'آدرس مبدا',
             ShowLabel ? 'برچسب آدرس مبدا' : '',
             ShowOwner ? 'مالک آدرس مبدا' : '',
             'آدرس مقصد',
@@ -104,22 +104,22 @@ const ReportModal = ({ Data, PaintedEdges }) => {
             'مجموع حجم تراکنش‌ها'
         ];
         ws_data.push(headers.filter(header => header !== ''));
-    
+
         // اضافه کردن مقادیر برای هر تراکنش در سطرهای بعدی
         data.forEach(item => {
             const transactionRows = []; // برای ذخیره ردیف‌های تراکنش‌ها
             let totalTransactionVolume = 0; // برای جمع کردن حجم تراکنش‌ها
-    
+
             item.transactions.forEach((tx, index) => {
                 const transactionVolume = item.fromAddress.outputs
                     .filter(output => tx.id === output.id)
                     .map(output => output.value)
                     .reduce((sum, value) => sum + value, 0); // جمع حجم تراکنش‌ها
-    
+
                 const token = tx.token || item.transactions[0].token; // اگر برای تراکنش نام توکن موجود بود از آن استفاده کن
-    
+
                 totalTransactionVolume += transactionVolume; // افزودن به مجموع
-    
+
                 const row = [
                     index === 0 ? item.fromAddress.id : '',  // فقط در اولین تراکنش آدرس مبدا
                     ShowLabel ? (index === 0 ? item.fromAddress.label : '') : '', // برچسب فقط برای اولین تراکنش
@@ -132,19 +132,19 @@ const ReportModal = ({ Data, PaintedEdges }) => {
                     ShowTxHash ? `${transactionVolume.toLocaleString()} ${token}` : '',  // حجم تراکنش به همراه توکن
                     ''  // اینجا مجموع حجم تراکنش‌ها را به طور موقت خالی می‌گذاریم
                 ];
-    
+
                 transactionRows.push(row);
             });
-    
+
             // برای اولین تراکنش، مجموع حجم تراکنش‌ها را وارد می‌کنیم
             transactionRows[0][9] = `${totalTransactionVolume.toLocaleString()} ${item.transactions[0].token}`;  // ستون مجموع حجم تراکنش‌ها به همراه توکن
-    
+
             // اضافه کردن ردیف‌های تراکنش‌ها به داده‌ها
             ws_data.push(...transactionRows);
         });
-    
+
         const ws = XLSX.utils.aoa_to_sheet(ws_data);
-    
+
         // فعال کردن wrapText برای خطوط جدید در سلول
         const range = ws['!rows'] || [];
         range.forEach((row, idx) => {
@@ -156,13 +156,13 @@ const ReportModal = ({ Data, PaintedEdges }) => {
                 }
             }
         });
-    
+
         XLSX.utils.book_append_sheet(wb, ws, 'گزارش تراکنش‌ها');
-    
+
         const excelBuffer = XLSX.write(wb, { bookType: 'xlsx', type: 'array' });
         saveAs(new Blob([excelBuffer]), 'Transaction_Report.xlsx');
     };
-    
+
     const GetReport = () => {
         const filtredData = [];
         for (let i = 0; i < PaintedEdges.length; i++) {
@@ -182,16 +182,17 @@ const ReportModal = ({ Data, PaintedEdges }) => {
                 گزارش براساس کدام رنگ از مسیرهای گراف ایجاد شود؟
             </h6>
             <div>
-                <div onClick={() => { SetColor('red') }} style={{ borderWidth: '5px', borderColor: 'black', borderStyle: Color === "red" ? "solid" : "none", borderRadius: '4px', width: '32px', marginRight: '0px', height: '32px', background: 'red', display: 'inline-block', cursor: 'pointer' }}></div>
-                <div onClick={() => { SetColor('green') }} style={{ borderWidth: '5px', borderColor: 'black', borderStyle: Color === "green" ? "solid" : "none", borderRadius: '4px', width: '32px', marginRight: '4px', height: '32px', background: 'green', display: 'inline-block', cursor: 'pointer' }}></div>
-                <div onClick={() => { SetColor('orange') }} style={{ borderWidth: '5px', borderColor: 'black', borderStyle: Color === "orange" ? "solid" : "none", borderRadius: '4px', width: '32px', marginRight: '4px', height: '32px', background: 'orange', display: 'inline-block', cursor: 'pointer' }}></div>
-                <div onClick={() => { SetColor('purple') }} style={{ borderWidth: '5px', borderColor: 'black', borderStyle: Color === "purple" ? "solid" : "none", borderRadius: '4px', width: '32px', marginRight: '4px', height: '32px', background: 'purple', display: 'inline-block', cursor: 'pointer' }}></div>
-                <div onClick={() => { SetColor('rgb(173, 216, 230)') }} style={{ borderWidth: '5px', borderColor: 'black', borderStyle: Color === "rgb(173, 216, 230)" ? "solid" : "none", borderRadius: '4px', width: '32px', marginRight: '4px', height: '32px', background: 'rgb(173, 216, 230)', display: 'inline-block', cursor: 'pointer' }}></div>
+                <div onClick={() => { SetColor('#ff0000') }} style={{ borderWidth: '5px', borderColor: 'black', borderStyle: Color === "#ff0000" ? "solid" : "none", borderRadius: '4px', width: '32px', marginRight: '0px', height: '32px', background: '#ff0000', display: 'inline-block', cursor: 'pointer' }}></div>
+                <div onClick={() => { SetColor('#16a34a') }} style={{ borderWidth: '5px', borderColor: 'black', borderStyle: Color === "#16a34a" ? "solid" : "none", borderRadius: '4px', width: '32px', marginRight: '4px', height: '32px', background: '#16a34a', display: 'inline-block', cursor: 'pointer' }}></div>
+                <div onClick={() => { SetColor('#f59e0b') }} style={{ borderWidth: '5px', borderColor: 'black', borderStyle: Color === "#f59e0b" ? "solid" : "none", borderRadius: '4px', width: '32px', marginRight: '4px', height: '32px', background: '#f59e0b', display: 'inline-block', cursor: 'pointer' }}></div>
+                <div onClick={() => { SetColor('#FFFF00') }} style={{ borderWidth: '5px', borderColor: 'black', borderStyle: Color === "#FFFF00" ? "solid" : "none", borderRadius: '4px', width: '32px', marginRight: '4px', height: '32px', background: '#FFFF00', display: 'inline-block', cursor: 'pointer' }}></div>
+                <div onClick={() => { SetColor('#9132a8') }} style={{ borderWidth: '5px', borderColor: 'black', borderStyle: Color === "#9132a8" ? "solid" : "none", borderRadius: '4px', width: '32px', marginRight: '4px', height: '32px', background: '#9132a8', display: 'inline-block', cursor: 'pointer' }}></div>
             </div>
             <small>
                 * تنها درصورتی که آدرس ورودی و خروجی یک تراکنش هردو به یک رنگ باشند، آن تراکنش در گزارش لحاظ خواهد شد
             </small>
             <Button
+                className='bg-boxBorderColor border border-boxBorderColor rounded-lg text-textColor w-full py-1 cursor-pointer mt-4'
                 color='secondary'
                 style={{ width: '100%' }}
                 onClick={GetReport}

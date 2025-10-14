@@ -753,7 +753,7 @@ const AddressBox = ({ Data, SetData, AddressSelectedData, Reload, SetReload }) =
     let address = `${serverAddress}/explorer/search/?query=${AddressSelectedData.id}&network=${network}`
 
     if (token !== network) {
-      address = address + `&type=token-20&contractAddress=${contractAddress}`
+      address = address + `&type=token-20&contract_address=${contractAddress}`
     }
 
     // if (from_volume) {

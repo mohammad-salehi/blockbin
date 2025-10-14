@@ -16,6 +16,7 @@
     "@heathmont/moon-themes-tw": "^10.22.2",
     "@mui/icons-material": "^7.3.4",
     "axios": "^1.12.2",
+    "file-saver": "^2.0.5",
     "html2canvas": "^1.4.1",
     "jalali-moment": "^3.3.11",
     "js-cookie": "^3.0.5",
@@ -27,7 +28,8 @@
     "react-hot-toast": "^2.6.0",
     "react-select": "^5.10.2",
     "react-transition-group": "^4.4.5",
-    "vis": "^4.21.0"
+    "vis": "^4.21.0",
+    "xlsx": "^0.18.5"
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4",

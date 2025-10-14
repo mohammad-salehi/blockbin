@@ -19,14 +19,18 @@ import { UTXO_Transaction } from "@/functions/NetworksProcessor/UTXO_Transaction
 import FuckingGraph_V2 from "@/components/Tracker/graph/Graph";
 import FullPageLoading from "@/components/FullPageLoading/FullPageLoading";
 import Select, { components } from 'react-select'
+import { Dropdown, MenuItem } from "@heathmont/moon-core-tw";
+import { Modal, Button, Label, Input } from "@heathmont/moon-core-tw";
+import CircularProgress from '@mui/material/CircularProgress';
+import ReportModal from "@/components/Tracker/ReportBox/ReportBox";
 
 const Page = () => {
   const params = useParams();
   const { network, hash } = params;
   const rest = Array.isArray(params.rest) ? params.rest : [];
-  const token = rest[0];            
-  const contractAddress = rest[1];  
-  const id = rest[2];               
+  const token = rest[0];
+  const contractAddress = rest[1];
+  const id = rest[2];
 
   //actions
   const [Reload, SetReload] = useState(false);
@@ -110,8 +114,9 @@ const Page = () => {
     GraphDescription = document.getElementById("GraphDescription").value;
 
     if (GraphName !== "" || id !== undefined) {
+      console.log(id)
       if (Data.length > 0) {
-        if (id !== null) {
+        if (id !== undefined) {
           SetLoading(true);
           //Error Done
           axios
@@ -175,7 +180,7 @@ const Page = () => {
               }
             });
         } else {
-          SetLoading(false);
+          SetLoading(true);
           //Error Done
           axios
             .post(
@@ -203,10 +208,11 @@ const Page = () => {
               SetLoading(false);
               if (response.status === 201) {
                 SetOpenSaveBox(false);
+                toast.success("با موفقیت ذخیره شد.", {
+                  position: "bottom-left",
+                });
                 window.location.assign(
-                  `/tracker2/load/${network}/${response.data.id}/${token}/${
-                    contractAddress !== undefined ? contractAddress : ""
-                  }`
+                  `/panel/tracker/${network}/${hash}/${token}/${contractAddress !== undefined ? contractAddress : ""}/${response.data.id}`
                 );
               } else {
                 return toast.error("ناموفق", {
@@ -438,8 +444,8 @@ const Page = () => {
                               text: getData.FromLabel
                                 ? getData.FromLabel
                                 : getData.FromEntity
-                                ? getData.FromEntity.name
-                                : getData.from,
+                                  ? getData.FromEntity.name
+                                  : getData.from,
                               DollarValue: getData.valueInDollar,
                               value: getData.value,
                               time: getData.timestamp,
@@ -453,8 +459,8 @@ const Page = () => {
                               text: getData.ToLabel
                                 ? getData.ToLabel
                                 : getData.ToEntity
-                                ? getData.ToEntity.name
-                                : getData.to,
+                                  ? getData.ToEntity.name
+                                  : getData.to,
                               DollarValue: getData.valueInDollar,
                               value: getData.value,
                               time: getData.timestamp,
@@ -621,8 +627,8 @@ const Page = () => {
                                   text: getData.logs[i].FromLabel
                                     ? getData.logs[i].FromLabel
                                     : getData.logs[i].FromEntity
-                                    ? getData.logs[i].FromEntity.name
-                                    : getData.logs[i].from,
+                                      ? getData.logs[i].FromEntity.name
+                                      : getData.logs[i].from,
                                   DollarValue: getData.logs[i].valueInDollar,
                                   value: getData.logs[i].value,
                                   time: getData.timestamp,
@@ -636,8 +642,8 @@ const Page = () => {
                                   text: getData.logs[i].ToLabel
                                     ? getData.logs[i].ToLabel
                                     : getData.logs[i].ToEntity
-                                    ? getData.logs[i].ToEntity.name
-                                    : getData.logs[i].to,
+                                      ? getData.logs[i].ToEntity.name
+                                      : getData.logs[i].to,
                                   DollarValue: getData.logs[i].valueInDollar,
                                   value: getData.logs[i].value,
                                   time: getData.timestamp,
@@ -1108,6 +1114,16 @@ const Page = () => {
     }
     SetGraphTokens(tokenOptions);
   }, [Tokens]);
+  const [selectedValue, setSelectedValue] = useState(
+    GraphTokens.find((item) => item.value === token) || null
+  );
+
+  useEffect(() => {
+    // وقتی token از بیرون تغییر کرد (مثلاً بعد از fetch)
+    const found = GraphTokens.find((item) => item.value === token);
+    setSelectedValue(found || null);
+  }, [token, GraphTokens]);
+
 
   const themeColor = (key) => {
     const isDark = document.documentElement.classList.contains("dark");
@@ -1115,8 +1131,8 @@ const Page = () => {
       red: isDark ? "#ff0000" : "#ff0000",  // blue-400 / blue-600
       success: isDark ? "#16a34a" : "#16a34a",  // green-400 / green-600
       warning: isDark ? "#f59e0b" : "#f59e0b",  // amber-400 / amber-500
-      yellow:  isDark ? "#FFFF00" : "#FFFF00",  // violet-300 / violet-700
-      sky:     isDark ? "#9132a8" : "#9132a8",  // blue-300 / sky-400
+      yellow: isDark ? "#FFFF00" : "#FFFF00",  // violet-300 / violet-700
+      sky: isDark ? "#9132a8" : "#9132a8",  // blue-300 / sky-400
     };
     return map[key];
   };
@@ -1164,6 +1180,7 @@ const Page = () => {
         }}
       ></div>
 
+      {/* آکاردیون */}
       <div className="fixed top-[80px] right-0 h-[calc(100vh-60px)] flex items-start justify-end z-50">
         {/* دکمه باز و بسته شدن */}
         <button
@@ -1175,9 +1192,8 @@ const Page = () => {
 
         {/* محتوای آکاردیون */}
         <div
-          className={`bg-boxColor text-textColor shadow-lg border-l transition-all duration-500 overflow-hidden p-2 ${
-            open ? "w-[400px] opacity-100" : "w-0 opacity-0"
-          }`}
+          className={`bg-boxColor text-textColor shadow-lg  transition-all duration-500 overflow-hidden p-2 ${open ? "w-[400px] opacity-100" : "w-0 opacity-0"
+            }`}
         >
           <div className="w-full m-0 p-0">
             {/* دکمه گزارش (فقط برای اکانت بیس) */}
@@ -1273,21 +1289,79 @@ const Page = () => {
             {/* سوییچر شبکه/توکن */}
             <div className="mt-3 px-2">
               <label className="block mb-1">ترسیم بر اساس</label>
-              <Select
-                id="networkSwitch"
-                isClearable={false}
-                closeMenuOnSelect={false}
-                // theme={selectThemeColors}
-                placeholder=""
-                value={GraphTokens.find((item) => item.value === token)}
-                options={GraphTokens}
-                className="react-select"
-                classNamePrefix="select"
-                onChange={(e) => {
-                  setAddselectedToken({ value: e.value, contract: e.contract });
-                  setChangeNetworkBox(true);
-                }}
-              />
+
+              <Dropdown
+                // مقدار ثابت نگه داشته می‌شود
+                value={selectedValue?.value}
+                // onChange خنثی می‌شود تا Moon Dropdown چیزی تغییر ندهد
+                onChange={() => { }}
+              >
+                <Dropdown.Trigger className="w-full">
+                  <Button
+                    as="span"
+                    role="button"
+                    variant="ghost"
+                    className="flex items-center justify-between w-full px-10 py-2 cursor-pointer
+        text-gray-700 border border-boxBorderColor
+        rounded-lg dark:border-buttonBorderColor-dark focus:outline-none 
+        dark:text-gray-100 appearance-none relative"
+                  >
+                    {selectedValue ? (
+                      <span className="text-textColor flex items-center">
+                        <img
+                          src={`/images/${selectedValue.value}.png`}
+                          alt={selectedValue.value}
+                          className="w-5 h-5 inline-block ml-2"
+                        />
+                        {selectedValue.label || selectedValue.value}
+                      </span>
+                    ) : (
+                      <span className="text-textColor opacity-70">Select token...</span>
+                    )}
+                  </Button>
+                </Dropdown.Trigger>
+
+                <Dropdown.Options
+                  className="absolute right-0 mt-2 w-72 px-2 py-1
+      text-gray-700 bg-bgColor dark:bg-buttonColor-dark
+      border border-boxBorderColor dark:border-buttonBorderColor-dark 
+      rounded-lg dark:text-gray-100 appearance-none z-50
+      max-h-60 overflow-y-auto"
+                >
+                  {GraphTokens.map((item, index) => (
+                    <Dropdown.Option value={item.value} key={index}>
+                      {({ active }) => (
+                        <MenuItem
+                          isActive={active}
+                          // اینجا انتخاب ظاهری انجام نمی‌شود
+                          isSelected={false}
+                          onClick={() => {
+                            // فقط این منطق اجرا می‌شود:
+                            setAddselectedToken({ value: item.value, contract: item.contract });
+                            setChangeNetworkBox(true);
+                            // Dropdown بسته شود:
+                            document.activeElement?.blur();
+                          }}
+                          className={`border mt-2 mb-1 rounded-md border-gray-100 dark:border-buttonBorderColor-dark ${selectedValue?.value === item.value
+                            ? "bg-boxColor border-boxBorderColor dark:bg-gray-700"
+                            : "border-boxBorderColor"
+                            } text-textColor`}
+                        >
+                          <MenuItem.Title>
+                            <img
+                              src={`/images/${item.value}.png`}
+                              alt={item.value}
+                              className="w-5 h-5 inline-block ml-2"
+                            />
+                            {item.label || item.value}
+                          </MenuItem.Title>
+                        </MenuItem>
+                      )}
+                    </Dropdown.Option>
+                  ))}
+                </Dropdown.Options>
+              </Dropdown>
+
             </div>
 
             {/* افزودن رنگ (تم‌محور) */}
@@ -1392,70 +1466,151 @@ const Page = () => {
           </div>
         </div>
       </div>
+
       {/* راهنما */}
-      {/* <Modal
-        isOpen={ShowGuides}
-        toggle={() => {
-          SetShowGuides(false)
-        }}
-        className="modal-dialog-centered"
-        modalClassName={"modal-danger"}
-        style={{ minWidth: "40%", padding: "0px" }}
+      <Modal
+        open={ShowGuides}
+        onClose={() => SetShowGuides(false)}
+        className="p-0"
       >
-        <ModalBody
-          style={{ padding: "12px", borderRadius: "12px", overflow: "hidden" }}
-        >
-          <h5>
-            راهنمای کار با ردیابی
-          </h5>
-          <div className="pe-3">
-            <h6 className="mt-3">
-              علامت و نشانه‌ها
-            </h6>
+        <Modal.Backdrop />
+        <div className="fixed inset-0 flex z-50 backdrop-blur-sm bg-white/10">
+          <Modal.Panel className="w-full max-w-xl rounded-lg bg-boxColor  shadow-lg mt-[50px] text-textColor p-4">
+            <h5>
+              راهنمای کار با ردیابی
+            </h5>
+            <div className="pe-3">
+              <h6 className="mt-3 mb-3 font-bold">
+                علامت و نشانه‌ها
+              </h6>
 
 
-            <img style={{ width: '30px', height: '30px' }} src="/images/address.PNG" /> <Label>آدرس</Label>
+              <img className="inline-block" style={{ width: '30px', height: '30px' }} src="/images/address.PNG" /> <Label className="inline-block">آدرس</Label>
+              <br />
+              <img className="inline-block" style={{ width: '30px', height: '30px' }} src="/images/tr.PNG" /> <Label className="inline-block">تراکنش</Label>
+              <br />
+              <img className="inline-block" style={{ width: '30px', height: '30px' }} src="/images/start.PNG" /> <Label className="inline-block">آدرس شروع کننده گراف</Label>
+              <br />
+              <h6 className=" font-bold">
+                نوشته بالای آدرس ها
+              </h6>
+              مشخص کننده نوع کیف پول
+
+              <h6 className="mt-3 font-bold">
+                عدد ریسک
+              </h6>
+
+              از 70 به بالا: قرمز
+              <br />
+              از 50 تا 70: نارنجی
+              <br />
+              کمتر از 50: آبی
+
+              <br />
+
+              <h6 className="mt-3 font-bold">
+                مشخص کردن مسیرها با رنگ های متفاوت
+              </h6>
+
+              <p>
+                ابتدا با نگه‌داشتن کلید ctrl، یال های مورد نظر را انتخاب کرده و سپس با کلیک بر روی رنگ مورد نظر در بخش تنظیمات، رنگ یال های انتخاب شده را تغییر دهید.
+              </p>
+
+              <h6 className="mt-3 font-bold">
+                برچسب تراکنش‌ها
+              </h6>
+
+              <p>
+                بر روی هر یالی که بین یک تراکنش و یک آدرس قرار گرفته است، برچسبی شامل اطلاعات تراکنش از جمله زمان و حجم آن درج شده است.  <br />در بخش تنظیمات، کاربران امکان انتخاب نمایش یا پنهان‌سازی اطلاعات حجم و زمان تراکنش را دارند. <br /> همچنین کاربران می‌توانند قیمت دلاری تراکنش را نیز مشاهده کنند.
+              </p>
+
+              <h6 className="mt-3 font-bold">
+                دانلود اطلاعات گراف
+              </h6>
+
+              <p>
+                کاربران با افزودن رنگ به مسیر های گراف و انتخاب رنگ مورد نظر، می‌توانند اطلاعات آدرس و تراکنش های مسیر انتخاب شده را به صورت فایل اکسل دریافت کنند
+              </p>
+            </div>
+          </Modal.Panel>
+        </div>
+      </Modal>
+
+      {/* ذخیره */}
+      <Modal
+        open={OpenSaveBox}
+        onClose={() => SetOpenSaveBox(false)}
+        className="p-0"
+      >
+        <Modal.Backdrop />
+        <div className="fixed inset-0 flex z-50 backdrop-blur-sm bg-white/10">
+          <Modal.Panel className="w-full max-w-xl rounded-lg bg-boxColor  shadow-lg mt-[50px] text-textColor p-4">
+            <>
+              <h6>ذخیره گراف</h6>
+              <Input className='border border-boxBorderColor rounded-md mt-4' placeholder='عنوان گراف' id='GraphName' defaultValue={Name} />
+              <Input className='border border-boxBorderColor rounded-md mt-4'
+                id='GraphDescription'
+                name='text'
+                defaultValue={Description}
+                placeholder='توضیحات'
+              />
+            </>
+            <Button onClick={() => {
+              SetName(document.getElementById('GraphName').value)
+              SetDescription(document.getElementById('GraphDescription').value)
+              saveGraph()
+            }}
+              className='bg-boxBorderColor border border-boxBorderColor rounded-lg text-textColor w-full py-1 cursor-pointer mt-4'
+              color={'secondary'} style={{ height: '37px', width: '100%' }} >
+              {
+                Loading ?
+                  // <LoadingButton />
+                  <CircularProgress style={{ width: '25px', height: '25px', marginBottom: '-4px' }} />
+                  :
+                  <span>ذخیره</span>
+              }
+            </Button>
+          </Modal.Panel>
+        </div>
+      </Modal>
+
+      {/* گزارش */}
+      <Modal
+        open={ReportBox}
+        onClose={() => SetReportBox(false)}
+        className="p-0"
+      >
+        <Modal.Backdrop />
+        <div className="fixed inset-0 flex z-50 backdrop-blur-sm bg-white/10">
+          <Modal.Panel className="w-full max-w-xl rounded-lg bg-boxColor  shadow-lg mt-[50px] text-textColor p-4">
+            <ReportModal Data={Data} PaintedEdges={PaintedEdges} />
+          </Modal.Panel>
+        </div>
+      </Modal>
+
+      {/* تغییر شبکه */}
+      <Modal
+        open={ChangeNetworkBox}
+        onClose={() => setChangeNetworkBox(false)}
+        className="p-0"
+      >
+        <Modal.Backdrop />
+        <div className="fixed inset-0 flex z-50 backdrop-blur-sm bg-white/10">
+          <Modal.Panel className="w-full max-w-xl rounded-lg bg-boxColor  shadow-lg mt-[50px] text-textColor p-4">
+            <h6> آیا از تغییر شبکه مورد نظر مطمئن هستید؟</h6>
+            <small className="font-bold"> در صورتی که گراف ذخیره نشده باشد، اطلاعات مورد نظرتان از بین خواهد رفت</small>
             <br />
-            <img style={{ width: '30px', height: '30px' }} src="/images/tr.PNG" /> <Label>تراکنش</Label>
-            <br />
-            <img style={{ width: '30px', height: '30px' }} src="/images/hotWallet.PNG" /> <Label>هات‌ولت</Label>
-            <br />
-            <img style={{ width: '30px', height: '30px' }} src="/images/start.PNG" /> <Label>آدرس شروع کننده گراف</Label>
-            <br />
-
-            <h6 className="mt-3">
-              عدد ریسک
-            </h6>
-
-            از 70 به بالا: قرمز
-            <br />
-            از 50 تا 70: نارنجی
-            <br />
-            کمتر از 50: آبی
-
-            <br />
-
-            <h6 className="mt-3">
-              مشخص کردن مسیرها با رنگ های متفاوت
-            </h6>
-
-            <p>
-              ابتدا با نگه‌داشتن کلید ctrl، یال های مورد نظر را انتخاب کرده و سپس با کلیک بر روی رنگ مورد نظر در بخش تنظیمات، رنگ یال های انتخاب شده را تغییر دهید.
-            </p>
-
-            <h6 className="mt-3">
-              برچسب تراکنش‌ها
-            </h6>
-
-            <p>
-              بر روی هر یالی که بین یک تراکنش و یک آدرس قرار گرفته است، برچسبی شامل اطلاعات تراکنش از جمله زمان و حجم آن درج شده است.  <br />در بخش تنظیمات، کاربران امکان انتخاب نمایش یا پنهان‌سازی اطلاعات حجم و زمان تراکنش را دارند. <br /> همچنین کاربران می‌توانند قیمت دلاری تراکنش را نیز مشاهده کنند.
-            </p>
-          </div>
-
-
-        </ModalBody>
-      </Modal> */}
-
+            <Button color={'warning'} style={{ height: '37px', width: '100%', marginRight: '4px' }}
+              className='bg-boxBorderColor border border-boxBorderColor rounded-lg text-textColor w-full py-1 cursor-pointer mt-4'
+              onClick={() => {
+                window.location.assign(`/panel/tracker/${network}/${hash}/${selectedToken.value}/${selectedToken.contract !== undefined ? selectedToken.contract : ''}`)
+              }}
+            >
+              تغییر
+            </Button>
+          </Modal.Panel>
+        </div>
+      </Modal>
       {/* انتخاب توکن */}
       {/* <Modal
         isOpen={SelectTokenBox}
@@ -1478,89 +1633,6 @@ const Page = () => {
         </ModalBody>
       </Modal> */}
 
-      {/* ذخیره گراف */}
-      {/* <Modal
-        isOpen={OpenSaveBox}
-        className='modal-dialog-centered'
-        toggle={() => { SetOpenSaveBox(false) }}
-        modalClassName={'modal-danger'}
-      >
-        <ModalBody>
-
-          <>
-            <h6>ذخیره گراف</h6>
-            <Input placeholder='عنوان گراف' id='GraphName' defaultValue={Name} />
-            <Input
-              id='GraphDescription'
-              type='textarea'
-              name='text'
-              defaultValue={Description}
-              className='mt-3'
-              placeholder='توضیحات'
-              style={{ minHeight: '100px' }}
-            />
-          </>
-          <Button onClick={() => {
-            SetName(document.getElementById('GraphName').value)
-            SetDescription(document.getElementById('GraphDescription').value)
-            saveGraph()
-          }}
-            color={'secondary'} style={{ height: '37px', width: '100%' }} className={"mt-3"}>
-            {
-              Loading ?
-                <LoadingButton />
-                :
-                <span>ذخیره</span>
-            }
-          </Button>
-        </ModalBody>
-      </Modal> */}
-
-      {/* گزارش */}
-      {/* <Modal
-        isOpen={ReportBox}
-        toggle={() => {
-          SetReportBox(false)
-        }}
-        className="modal-dialog-centered"
-        modalClassName={"modal-danger"}
-        style={{ minWidth: "20%", padding: "0px" }}
-      >
-        <ModalBody
-          style={{ padding: "12px", borderRadius: "12px", overflow: "hidden" }}
-        >
-          <ReportModal Data={Data} PaintedEdges={PaintedEdges} />
-        </ModalBody>
-      </Modal> */}
-
-      {/* تغییر شبکه */}
-      {/* <Modal
-        isOpen={ChangeNetworkBox}
-        className='modal-dialog-centered'
-        modalClassName={'modal-danger'}
-        toggle={() => setChangeNetworkBox(!ChangeNetworkBox)}
-      >
-        <ModalBody>
-          <h6>گراف ذخیره نشده است. آیا از تغییر شبکه مورد نظر مطمئن هستید؟</h6>
-          <br/>
-          <Button color={'secondary'} style={{height:'37px', width:'calc(50% - 5px)',marginLeft:'4px'}} onClick={
-            () => {
-              setSavedLink(`/tracker2/${network}/${hash}/${selectedToken.value}/${selectedToken.contract !== undefined ? selectedToken.contract : ''}`)
-              SetOpenSaveBox(!OpenSaveBox)
-            }
-          }>
-            ذخیره
-          </Button>
-          <Button color={'warning'} style={{height:'37px', width:'calc(50% - 5px)',marginRight:'4px'}}
-            onClick={() => {
-              window.location.assign(`/tracker2/${network}/${hash}/${selectedToken.value}/${selectedToken.contract !== undefined ? selectedToken.contract : ''}`)
-            }}
-          >
-            تغییر
-          </Button>
-        </ModalBody>
-
-      </Modal> */}
     </div>
   );
 };
