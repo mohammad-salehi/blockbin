@@ -7,9 +7,7 @@ import Cookies from "js-cookie";
 import "../style.css";
 import toast from "react-hot-toast";
 import Switch from '@mui/material/Switch';
-// import ReportModal from "./components/ReportBox/ReportBox";
 import { Networks } from "@/functions/Networks";
-// import { selectThemeColors } from '@utils'
 import { GetRequest } from "@/functions/GetRequest";
 import { serverAddress } from "@/functions/ServerAddress";
 import { Account_Address } from "@/functions/NetworksProcessor/Account_Address";
@@ -18,11 +16,11 @@ import { Account_transaction } from "@/functions/NetworksProcessor/Account_trans
 import { UTXO_Transaction } from "@/functions/NetworksProcessor/UTXO_Transaction";
 import FuckingGraph_V2 from "@/components/Tracker/graph/Graph";
 import FullPageLoading from "@/components/FullPageLoading/FullPageLoading";
-import Select, { components } from 'react-select'
 import { Dropdown, MenuItem } from "@heathmont/moon-core-tw";
 import { Modal, Button, Label, Input } from "@heathmont/moon-core-tw";
 import CircularProgress from '@mui/material/CircularProgress';
 import ReportModal from "@/components/Tracker/ReportBox/ReportBox";
+import ExploreTopBoxLoading from "@/components/ExploreTopBoxLoading/ExploreTopBoxLoading";
 
 const Page = () => {
   const params = useParams();
@@ -271,8 +269,10 @@ const Page = () => {
           Networks.find((item) => item.symbole === network).type === "account"
         ) {
           SetSelectTokenBox(true);
+          SetLoading(false)
+          SetShowGraph(true)
         } else {
-          window.location.assign(`/tracker2/${network}/${hash}/${network}`);
+          window.location.assign(`/panel/tracker/${network}/${hash}/${network}`);
         }
       } else {
         //Get Trs data
@@ -1076,9 +1076,10 @@ const Page = () => {
   const [selectedToken, setAddselectedToken] = useState(null);
   const [GraphTokens, SetGraphTokens] = useState([]);
   const [Tokens, SetTokens] = useState([]);
-  const [SavedLink, setSavedLink] = useState(null);
+  const [TokenSelectionLoading, setTokenSelectionLoading] = useState(false);
   useEffect(() => {
     if (hash !== undefined) {
+      setTokenSelectionLoading(true)
       GetRequest(
         `${serverAddress}/explorer/token-transfer-list/?query=${hash}&network=${network}`
       )
@@ -1091,9 +1092,11 @@ const Page = () => {
             getTokens.push(response.data[i]);
           }
           SetTokens(getTokens);
+          setTokenSelectionLoading(false)
         })
         .catch((err) => {
           console.log(err);
+          setTokenSelectionLoading(false)
         });
     }
   }, []);
@@ -1141,34 +1144,39 @@ const Page = () => {
   return (
     <div>
       <div id="tracker">
-        {ShowGraph ? (
-          <FuckingGraph_V2
-            Data={Data}
-            SetReload={SetReload}
-            Reload={Reload}
-            SetData={SetData}
-            SetNodesPosition={SetNodesPosition}
-            NodesPosition={NodesPosition}
-            Distance={Distance}
-            SetSavedPositions={SetSavedPositions}
-            SavedPositions={SavedPositions}
-            SetScale={SetScale}
-            Scale={Scale}
-            SetXPosition={SetXPosition}
-            XPosition={XPosition}
-            SetYPosition={SetYPosition}
-            YPosition={YPosition}
-            ShowTimes={ShowTimes}
-            ShowValues={ShowValues}
-            TakeSceenShot={TakeSceenShot}
-            ShowPrice={ShowPrice}
-            SetSelectedEdges={SetSelectedEdges}
-            SelectedEdges={SelectedEdges}
-            PaintedEdges={PaintedEdges}
-          />
-        ) : (
-          <FullPageLoading />
-        )}
+        {ShowGraph ?
+          !SelectTokenBox ?
+            (
+              <FuckingGraph_V2
+                Data={Data}
+                SetReload={SetReload}
+                Reload={Reload}
+                SetData={SetData}
+                SetNodesPosition={SetNodesPosition}
+                NodesPosition={NodesPosition}
+                Distance={Distance}
+                SetSavedPositions={SetSavedPositions}
+                SavedPositions={SavedPositions}
+                SetScale={SetScale}
+                Scale={Scale}
+                SetXPosition={SetXPosition}
+                XPosition={XPosition}
+                SetYPosition={SetYPosition}
+                YPosition={YPosition}
+                ShowTimes={ShowTimes}
+                ShowValues={ShowValues}
+                TakeSceenShot={TakeSceenShot}
+                ShowPrice={ShowPrice}
+                SetSelectedEdges={SetSelectedEdges}
+                SelectedEdges={SelectedEdges}
+                PaintedEdges={PaintedEdges}
+              />
+            )
+            :
+            null
+          : (
+            <FullPageLoading />
+          )}
       </div>
       <div
         style={{
@@ -1333,13 +1341,10 @@ const Page = () => {
                       {({ active }) => (
                         <MenuItem
                           isActive={active}
-                          // اینجا انتخاب ظاهری انجام نمی‌شود
                           isSelected={false}
                           onClick={() => {
-                            // فقط این منطق اجرا می‌شود:
                             setAddselectedToken({ value: item.value, contract: item.contract });
                             setChangeNetworkBox(true);
-                            // Dropdown بسته شود:
                             document.activeElement?.blur();
                           }}
                           className={`border mt-2 mb-1 rounded-md border-gray-100 dark:border-buttonBorderColor-dark ${selectedValue?.value === item.value
@@ -1611,28 +1616,72 @@ const Page = () => {
           </Modal.Panel>
         </div>
       </Modal>
-      {/* انتخاب توکن */}
-      {/* <Modal
-        isOpen={SelectTokenBox}
-        
-        className="modal-dialog-centered"
-        modalClassName={"modal-danger"}
-        style={{ minWidth: "30%", padding: "0px" }}
-      >
-        <ModalBody
-          style={{ padding: "0px", borderRadius: "12px", overflow: "hidden", padding:'8px'}}
-        >
-          <SearchTokens SetData={SetData} />
-          <Button onClick={() => {
-            window.history.back()
-          }} style={{
-            width:'100%',
-          }}>
-            بازگشت
-          </Button>
-        </ModalBody>
-      </Modal> */}
 
+      {/* انتخاب توکن */}
+      <Modal
+        open={SelectTokenBox}
+        onClose={() => { }}
+        className="p-0"
+      >
+        <Modal.Backdrop />
+        <div className="fixed inset-0 flex z-50 backdrop-blur-sm bg-white/10">
+          <Modal.Panel className="w-full max-w-xl rounded-lg bg-boxColor  shadow-lg mt-[50px] text-textColor p-4">
+            <h6> توکن مورد نظرتان را انتخاب کنید</h6>
+
+            {
+              TokenSelectionLoading ?
+                <ExploreTopBoxLoading />
+                :
+                <div className={`relative `}>
+                  {/* منوی همیشه باز - همون کلاس‌های Options */}
+                  <div
+                    className=" right-0 mt-2 w-full
+        text-textColor  dark:bg-buttonColor-dark
+         dark:border-buttonBorderColor-dark 
+        rounded-lg dark:text-gray-100 appearance-none z-50
+        max-h-60 overflow-y-auto"
+                  >
+                    {GraphTokens.map((item, index) => (
+                      <div key={index} className="w-full">
+                        {/* همون استایل MenuItem در Dropdown.Option */}
+                        <MenuItem
+                          isActive={false}
+                          isSelected={false} // ظاهراً انتخاب‌شده نگه نمی‌داریم
+                          onClick={() => {
+
+                          }}
+                          className={`border mt-2 mb-1 rounded-md border-gray-100 dark:border-buttonBorderColor-dark 
+                ${selectedValue?.value === item.value
+                              ? "bg-boxColor border-boxBorderColor dark:bg-gray-700" // اگر خواستی هایلایت
+                              : "border-boxBorderColor"
+                            } text-textColor`}
+                        >
+                          <MenuItem.Title>
+                            <img
+                              src={`/images/${item.value}.png`}
+                              alt={item.value}
+                              className="w-5 h-5 inline-block ml-2"
+                            />
+                            {item.label || item.value}
+                          </MenuItem.Title>
+                        </MenuItem>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+            }
+
+            <Button color={'warning'} style={{ height: '37px', width: '100%' }}
+              className='bg-boxBorderColor border border-boxBorderColor rounded-lg text-textColor w-full cursor-pointer mt-4 outline-none shadow-none border-none'
+              onClick={() => {
+                window.location.assign(`/panel/dashboard`)
+              }}
+            >
+              بازگشت به کاوشگر
+            </Button>
+          </Modal.Panel>
+        </div>
+      </Modal>
     </div>
   );
 };
