@@ -1642,30 +1642,33 @@ const Page = () => {
         max-h-60 overflow-y-auto"
                   >
                     {GraphTokens.map((item, index) => (
-                      <div key={index} className="w-full">
-                        {/* همون استایل MenuItem در Dropdown.Option */}
-                        <MenuItem
-                          isActive={false}
-                          isSelected={false} // ظاهراً انتخاب‌شده نگه نمی‌داریم
-                          onClick={() => {
+                      <a href={`/panel/tracker/${network}/${hash}/${network}/${item.contract !== undefined ? item.contract : ''}`}>
+                        <div key={index} className="w-full">
+                          {/* همون استایل MenuItem در Dropdown.Option */}
+                          <MenuItem
+                            isActive={false}
+                            isSelected={false} // ظاهراً انتخاب‌شده نگه نمی‌داریم
+                            onClick={() => {
 
-                          }}
-                          className={`border mt-2 mb-1 rounded-md border-gray-100 dark:border-buttonBorderColor-dark 
+                            }}
+                            className={`border mt-2 mb-1 rounded-md border-gray-100 dark:border-buttonBorderColor-dark 
                 ${selectedValue?.value === item.value
-                              ? "bg-boxColor border-boxBorderColor dark:bg-gray-700" // اگر خواستی هایلایت
-                              : "border-boxBorderColor"
-                            } text-textColor`}
-                        >
-                          <MenuItem.Title>
-                            <img
-                              src={`/images/${item.value}.png`}
-                              alt={item.value}
-                              className="w-5 h-5 inline-block ml-2"
-                            />
-                            {item.label || item.value}
-                          </MenuItem.Title>
-                        </MenuItem>
-                      </div>
+                                ? "bg-boxColor border-boxBorderColor dark:bg-gray-700" // اگر خواستی هایلایت
+                                : "border-boxBorderColor"
+                              } text-textColor`}
+                          >
+                            <MenuItem.Title>
+                              <img
+                                src={`/images/${item.value}.png`}
+                                alt={item.value}
+                                className="w-5 h-5 inline-block ml-2"
+                              />
+                              {item.label || item.value}
+                            </MenuItem.Title>
+                          </MenuItem>
+                        </div>
+                      </a>
+
                     ))}
                   </div>
                 </div>
