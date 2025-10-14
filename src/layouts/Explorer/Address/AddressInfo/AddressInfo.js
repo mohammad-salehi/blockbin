@@ -272,7 +272,11 @@ const AddressInfo = () => {
                         </div>
                         <div className='grid grid-cols-1 md:grid-cols-2 gap-4 text-textColor p-3'>
                             <div className='flex items-center w-full'>
-                                <button className='border border-primary rounded-lg bg-primary text-white w-full py-2 cursor-pointer'>
+                                <button className='border border-primary rounded-lg bg-primary text-white w-full py-2 cursor-pointer'
+                                    onClick={() => {
+                                        window.location.assign(`/panel/tracker/${network}/${hash}`)
+                                    }}
+                                >
                                     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" className='inline-block ml-1'>
                                         <path d="M9 6C9 7.65685 7.65685 9 6 9C4.34315 9 3 7.65685 3 6C3 4.34315 4.34315 3 6 3C7.65685 3 9 4.34315 9 6Z" stroke="currentColor" strokeWidth="2" />
                                         <path d="M21 18C21 19.6569 19.6569 21 18 21C16.3431 21 15 19.6569 15 18C15 16.3431 16.3431 15 18 15C19.6569 15 21 16.3431 21 18Z" stroke="currentColor" strokeWidth="2" />

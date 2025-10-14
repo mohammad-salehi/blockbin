@@ -14,7 +14,7 @@ import { GetMyTime } from '@/functions/getMyTime';
 import { timeSince } from '@/functions/timeSince';
 import moment from 'jalali-moment'
 
-const TransactionInfo = ({ TotalUSDValue , SetTotalUSDValue }) => {
+const TransactionInfo = ({ TotalUSDValue, SetTotalUSDValue }) => {
 
     const params = useParams()
 
@@ -52,10 +52,10 @@ const TransactionInfo = ({ TotalUSDValue , SetTotalUSDValue }) => {
                     if (response.status == 200) {
                         let sum = 0
                         for (let i = 0; i < response.data.data.outputs.length; i++) {
-                          sum = sum + response.data.data.outputs[i].ValueInDollar
+                            sum = sum + response.data.data.outputs[i].ValueInDollar
                         }
                         SetTotalUSDValue(sum)
-                      }
+                    }
                 }
 
             })
@@ -310,20 +310,24 @@ const TransactionInfo = ({ TotalUSDValue , SetTotalUSDValue }) => {
                                         <path d="M7 10H17M7 14H12M7 3V5M17 3V5M6.2 21H17.8C18.9201 21 19.4802 21 19.908 20.782C20.2843 20.5903 20.5903 20.2843 20.782 19.908C21 19.4802 21 18.9201 21 17.8V8.2C21 7.07989 21 6.51984 20.782 6.09202C20.5903 5.71569 20.2843 5.40973 19.908 5.21799C19.4802 5 18.9201 5 17.8 5H6.2C5.0799 5 4.51984 5 4.09202 5.21799C3.71569 5.40973 3.40973 5.71569 3.21799 6.09202C3 6.51984 3 7.07989 3 8.2V17.8C3 18.9201 3 19.4802 3.21799 19.908C3.40973 20.2843 3.71569 20.5903 4.09202 20.782C4.51984 21 5.07989 21 6.2 21Z" stroke="currentColor" />
                                     </svg>
                                     <span>
-                                            {
-                                                Time !== null ?
+                                        {
+                                            Time !== null ?
 
-                                                    <span style={{ margin: "0px" }}>{(GetMyTime(Time).hour + ':' + GetMyTime(Time).minute + ' - ' + moment(GetMyTime(Time).year + '-' + GetMyTime(Time).month + '-' + GetMyTime(Time).day, 'YYYY/MM/DD').locale('fa').format('YYYY/MM/DD'))} ({timeSince(Time)})</span>
-                                                    :
-                                                    'نامشخص'
-                                            }
+                                                <span style={{ margin: "0px" }}>{(GetMyTime(Time).hour + ':' + GetMyTime(Time).minute + ' - ' + moment(GetMyTime(Time).year + '-' + GetMyTime(Time).month + '-' + GetMyTime(Time).day, 'YYYY/MM/DD').locale('fa').format('YYYY/MM/DD'))} ({timeSince(Time)})</span>
+                                                :
+                                                'نامشخص'
+                                        }
 
                                     </span>
                                 </p>
                             </div>
 
                             <div className='flex items-center w-full'>
-                                <button className='border border-primary rounded-lg  text-primary w-full py-2 cursor-pointer'>
+                                <button className='border border-primary rounded-lg  text-primary w-full py-2 cursor-pointer'
+                                    onClick={() => {
+                                        window.location.assign(`/panel/tracker/${network}/${hash}`)
+                                    }}
+                                >
                                     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" className='inline-block ml-1'>
                                         <path d="M9 6C9 7.65685 7.65685 9 6 9C4.34315 9 3 7.65685 3 6C3 4.34315 4.34315 3 6 3C7.65685 3 9 4.34315 9 6Z" stroke="currentColor" strokeWidth="2" />
                                         <path d="M21 18C21 19.6569 19.6569 21 18 21C16.3431 21 15 19.6569 15 18C15 16.3431 16.3431 15 18 15C19.6569 15 21 16.3431 21 18Z" stroke="currentColor" strokeWidth="2" />

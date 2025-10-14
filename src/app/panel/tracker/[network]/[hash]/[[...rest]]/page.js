@@ -1633,7 +1633,6 @@ const Page = () => {
                 <ExploreTopBoxLoading />
                 :
                 <div className={`relative `}>
-                  {/* منوی همیشه باز - همون کلاس‌های Options */}
                   <div
                     className=" right-0 mt-2 w-full
         text-textColor  dark:bg-buttonColor-dark
@@ -1644,10 +1643,9 @@ const Page = () => {
                     {GraphTokens.map((item, index) => (
                       <a href={`/panel/tracker/${network}/${hash}/${network}/${item.contract !== undefined ? item.contract : ''}`}>
                         <div key={index} className="w-full">
-                          {/* همون استایل MenuItem در Dropdown.Option */}
                           <MenuItem
                             isActive={false}
-                            isSelected={false} // ظاهراً انتخاب‌شده نگه نمی‌داریم
+                            isSelected={false} 
                             onClick={() => {
 
                             }}
