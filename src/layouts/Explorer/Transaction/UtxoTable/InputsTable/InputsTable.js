@@ -38,7 +38,7 @@ const InputsTable = ({ SetTotalUSDValue }) => {
       header: "آدرس مبدا",
       cell: (row) => (
         <div>
-          {AddressFormat(row.address, 8, "address", "TRX", true)}
+          {AddressFormat(row.address, 8, "address", network, true)}
           <span>
             {row.Entity !== null ? (
               <span className="mr-1 bg-BgGreen text-TextGreen px-2 rounded-lg cursor-pointer">

@@ -1285,9 +1285,12 @@ const Page = () => {
                           isActive={active}
                           isSelected={false}
                           onClick={() => {
-                            setAddselectedToken({ value: item.value, contract: item.contract });
-                            setChangeNetworkBox(true);
+                            if (Networks.find(item => item.symbole === network).type === 'account') {
+                              setAddselectedToken({ value: item.value, contract: item.contract });
+                              setChangeNetworkBox(true);
+                            }
                             document.activeElement?.blur();
+
                           }}
                           className={`border mt-2 mb-1 rounded-md border-gray-100 dark:border-buttonBorderColor-dark ${selectedValue?.value === item.value
                             ? "bg-boxColor border-boxBorderColor dark:bg-gray-700"

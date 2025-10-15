@@ -38,7 +38,7 @@ const OutputsTable = ({ SetTotalUSDValue }) => {
       header: "آدرس مقصد",
       cell: (row) => (
         <div>
-          {AddressFormat(row.address, 8, "address", "TRX", true)}
+          {AddressFormat(row.address, 8, "address", network, true)}
           <span>
             {row.Entity !== null ? (
               <span className="mr-1 bg-BgRed text-TextRed px-2 rounded-lg cursor-pointer">

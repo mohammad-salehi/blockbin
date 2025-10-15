@@ -3,7 +3,6 @@ import { DataSet, Network } from "vis";
 import { buildOptions } from "../functions/Options";
 import { SetEdgesData } from "./SetEdgesData";
 import AddressBox from "../AddressBox/AddressBox";
-import { useParams } from "next/navigation";
 import { MiladiCalendar } from "@/functions/miladiCalendar";
 import html2canvas from "html2canvas";
 import { Modal } from "@heathmont/moon-core-tw";
@@ -81,27 +80,6 @@ const FuckingGraph_V2 = ({
     });
   };
 
-  // const downloadPng = (fileName = "graph.png") => {
-  //   const net = networkInstanceRef.current;
-  //   if (!net || !net.canvas || !net.canvas.frame || !net.canvas.frame.canvas) return;
-  
-  //   try {
-  //     const canvas = net.canvas.frame.canvas; // بوم اصلی vis
-  //     // کیفیت بهتر: به جای toDataURL از toBlob استفاده می‌کنیم
-  //     canvas.toBlob((blob) => {
-  //       if (!blob) return;
-  //       const url = URL.createObjectURL(blob);
-  //       const a = document.createElement("a");
-  //       a.href = url;
-  //       a.download = fileName;
-  //       a.click();
-  //       URL.revokeObjectURL(url);
-  //     }, "image/png");
-  //   } catch (err) {
-  //     console.error("Export failed:", err);
-  //     alert("خروجی گرفتن از گراف ممکن نشد. احتمالاً به خاطر تصاویر cross-origin است.");
-  //   }
-  // };
   // ---------- Effect 1: ساخت اولیه شبکه فقط یک‌بار ----------
   useEffect(() => {
     if (!containerRef.current || initializedRef.current) return;
@@ -511,7 +489,7 @@ const FuckingGraph_V2 = ({
           x,
           y,
           group: "Arrow",
-          image: "/images/Arrow.png",
+          image: isDarkMode ? '/images/arrow_dark.png' : "/images/Arrow.png",
           label: ``,
           selectable: false,
         });
@@ -568,7 +546,7 @@ const FuckingGraph_V2 = ({
       id="myGraphDiv"
       ref={containerRef}
 
-      style={{ minWidth: "100%", transition: "0.3s", backgroundImage: isDarkMode ? "" : "url('/images/light_graph_bg.png')" }}
+      style={{ minWidth: "100%", transition: "0.3s", backgroundImage: isDarkMode ? "url('/images/dark_graph_bg.png')" : "url('/images/light_graph_bg.png')" }}
     >
       <Modal
         open={OpenAddressModal}

@@ -95,7 +95,20 @@ export const buildOptions = (isDark) => {
           align: "horizontal",
           shape: "circularImage",
         },
-  
+        address: {
+          shape: "circularImage",
+          icon: { face: "FontAwesome", code: "\uf007", size: 50, color: "black" },
+          font: { size: 13, face: "Vazir", color: palette.edge, align: "left" },
+          borderWidth: 2,
+          borderColor: "#FF5733",
+          color: {
+            background: "#ffffff",
+          },
+          shapeProperties: {
+            useBorderWithImage: true,
+          },
+          align: "horizontal",
+        },
         hotWallet: {
           shape: "text",
           font: { size: 12, face: "Vazir", color: palette.edge, align: "left" },
@@ -126,7 +139,7 @@ export const buildOptions = (isDark) => {
         Arrow: {
           font: { size: 10, face: "Vazir", color: palette.edge, align: "left" },
           borderWidth: 2,
-          borderColor: "#FF5733",
+          borderColor: palette.edge,
           align: "horizontal",
           shape: "circularImage",
           color: {
