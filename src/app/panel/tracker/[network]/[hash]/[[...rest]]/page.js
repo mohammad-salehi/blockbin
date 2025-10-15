@@ -1204,62 +1204,6 @@ const Page = () => {
             }`}
         >
           <div className="w-full m-0 p-0">
-            {/* دکمه گزارش (فقط برای اکانت بیس) */}
-            {Networks.find(item => item.symbole === network).type === 'account' && (
-              <div className="m-0 p-0">
-                <button
-                  onClick={() => SetReportBox(true)}
-                  className="hover:bg-bgPrimary cursor-pointer flex items-center gap-2 w-full px-2 py-2 rounded-md transition text-textColor"
-                >
-                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
-                    <path
-                      d="M8 12H9M16 12H12"
-                      stroke="currentColor"
-                      strokeWidth="1.5"
-                      strokeLinecap="round"
-                    />
-                    <path
-                      d="M16 8H15M12 8H8"
-                      stroke="currentColor"
-                      strokeWidth="1.5"
-                      strokeLinecap="round"
-                    />
-                    <path
-                      d="M8 16H13"
-                      stroke="currentColor"
-                      strokeWidth="1.5"
-                      strokeLinecap="round"
-                    />
-                    <path
-                      d="M3 14V10C3 6.22876 3 4.34315 4.17157 3.17157C5.34315 2 7.22876 2 11 2H13C16.7712 2 18.6569 2 19.8284 3.17157C20.4816 3.82476 20.7706 4.69989 20.8985 6M21 10V14C21 17.7712 21 19.6569 19.8284 20.8284C18.6569 22 16.7712 22 13 22H11C7.22876 22 5.34315 22 4.17157 20.8284C3.51839 20.1752 3.22937 19.3001 3.10149 18"
-                      stroke="currentColor"
-                      strokeWidth="1.5"
-                      strokeLinecap="round"
-                    />
-                  </svg>
-                  <span className="text-textColor">دریافت گزارش</span>
-                </button>
-              </div>
-            )}
-
-            {/* ذخیره */}
-            <div className="m-0 p-0 mt-2">
-              <button
-                onClick={() => SetOpenSaveBox(true)}
-                className="hover:bg-bgPrimary cursor-pointer flex items-center gap-2 w-full px-2 py-2 rounded-md transition text-textColor"
-              >
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
-                  <path
-                    d="M15 8H8.6C8.03995 8 7.75992 8 7.54601 7.89101C7.35785 7.79513 7.20487 7.64215 7.10899 7.45399C7 7.24008 7 6.96005 7 6.4V3M17 21V14.6C17 14.0399 17 13.7599 16.891 13.546C16.7951 13.3578 16.6422 13.2049 16.454 13.109C16.2401 13 15.9601 13 15.4 13H8.6C8.03995 13 7.75992 13 7.54601 13.109C7.35785 13.2049 7.20487 13.3578 7.10899 13.546C7 13.7599 7 14.0399 7 14.6V21M21 9.32548V16.2C21 17.8802 21 18.7202 20.673 19.362C20.3854 19.9265 19.9265 20.3854 19.362 20.673C18.7202 21 17.8802 21 16.2 21H7.8C6.11984 21 5.27976 21 4.63803 20.673C4.07354 20.3854 3.6146 19.9265 3.32698 19.362C3 18.7202 3 17.8802 3 16.2V7.8C3 6.11984 3 5.27976 3.32698 4.63803C3.6146 4.07354 4.07354 3.6146 4.63803 3.32698C5.27976 3 6.11984 3 7.8 3H14.6745C15.1637 3 15.4083 3 15.6385 3.05526C15.8425 3.10425 16.0376 3.18506 16.2166 3.29472C16.4184 3.4184 16.5914 3.59135 16.9373 3.93726L20.0627 7.06274C20.4086 7.40865 20.5816 7.5816 20.7053 7.78343C20.8149 7.96237 20.8957 8.15746 20.9447 8.36154C21 8.59171 21 8.8363 21 9.32548Z"
-                    stroke="currentColor"
-                    strokeWidth="2"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  />
-                </svg>
-                <span className="text-textColor">ذخیره</span>
-              </button>
-            </div>
 
             {/* سوئیچ‌ها */}
             <div className="mt-3 space-y-2">
@@ -1299,9 +1243,7 @@ const Page = () => {
               <label className="block mb-1">ترسیم بر اساس</label>
 
               <Dropdown
-                // مقدار ثابت نگه داشته می‌شود
-                value={selectedValue?.value}
-                // onChange خنثی می‌شود تا Moon Dropdown چیزی تغییر ندهد
+                value={selectedValue?.value || ""}
                 onChange={() => { }}
               >
                 <Dropdown.Trigger className="w-full">
@@ -1451,95 +1393,66 @@ const Page = () => {
               </div>
             </div>
 
-            {/* راهنما */}
-            <div className="mt-3 px-2">
+                        {/* دکمه گزارش (فقط برای اکانت بیس) */}
+                        {Networks.find(item => item.symbole === network).type === 'account' && (
+              <div className="m-0 p-0 mt-4">
+                <button
+                  onClick={() => SetReportBox(true)}
+                  className="hover:bg-bgPrimary cursor-pointer flex items-center gap-2 w-full px-2 py-2 rounded-md transition text-textColor"
+                >
+                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                    <path
+                      d="M8 12H9M16 12H12"
+                      stroke="currentColor"
+                      strokeWidth="1.5"
+                      strokeLinecap="round"
+                    />
+                    <path
+                      d="M16 8H15M12 8H8"
+                      stroke="currentColor"
+                      strokeWidth="1.5"
+                      strokeLinecap="round"
+                    />
+                    <path
+                      d="M8 16H13"
+                      stroke="currentColor"
+                      strokeWidth="1.5"
+                      strokeLinecap="round"
+                    />
+                    <path
+                      d="M3 14V10C3 6.22876 3 4.34315 4.17157 3.17157C5.34315 2 7.22876 2 11 2H13C16.7712 2 18.6569 2 19.8284 3.17157C20.4816 3.82476 20.7706 4.69989 20.8985 6M21 10V14C21 17.7712 21 19.6569 19.8284 20.8284C18.6569 22 16.7712 22 13 22H11C7.22876 22 5.34315 22 4.17157 20.8284C3.51839 20.1752 3.22937 19.3001 3.10149 18"
+                      stroke="currentColor"
+                      strokeWidth="1.5"
+                      strokeLinecap="round"
+                    />
+                  </svg>
+                  <span className="text-textColor">دریافت گزارش</span>
+                </button>
+              </div>
+            )}
+
+            {/* ذخیره */}
+            <div className="m-0 p-0 mt-2">
               <button
-                onClick={() => SetShowGuides(true)}
+                onClick={() => SetOpenSaveBox(true)}
                 className="hover:bg-bgPrimary cursor-pointer flex items-center gap-2 w-full px-2 py-2 rounded-md transition text-textColor"
               >
-                <svg width="20" height="20" viewBox="0 0 16 16" fill="none">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
                   <path
-                    fill="currentColor"
-                    fillRule="evenodd"
-                    clipRule="evenodd"
-                    d="M1.25 2C.56 2 0 2.56 0 3.25v8.5C0 12.44.56 13 1.25 13H5c.896 0 1.475.205 1.809.448.317.23.441.51.441.802a.75.75 0 001.5 0c0-.292.124-.572.441-.802.334-.243.913-.448 1.809-.448h3.75c.69 0 1.25-.56 1.25-1.25v-8.5C16 2.56 15.44 2 14.75 2H11c-1.154 0-2.106.354-2.772 1-.081.08-.157.161-.228.246A3.131 3.131 0 007.772 3C7.106 2.354 6.154 2 5 2H1.25zm7.5 9.967c.61-.309 1.372-.467 2.25-.467h3.5v-8H11c-.846 0-1.394.253-1.728.577-.335.325-.522.787-.522 1.34v6.55zm-1.5 0v-6.55c0-.553-.187-1.015-.522-1.34C6.394 3.753 5.846 3.5 5 3.5H1.5v8H5c.878 0 1.64.158 2.25.467z"
+                    d="M15 8H8.6C8.03995 8 7.75992 8 7.54601 7.89101C7.35785 7.79513 7.20487 7.64215 7.10899 7.45399C7 7.24008 7 6.96005 7 6.4V3M17 21V14.6C17 14.0399 17 13.7599 16.891 13.546C16.7951 13.3578 16.6422 13.2049 16.454 13.109C16.2401 13 15.9601 13 15.4 13H8.6C8.03995 13 7.75992 13 7.54601 13.109C7.35785 13.2049 7.20487 13.3578 7.10899 13.546C7 13.7599 7 14.0399 7 14.6V21M21 9.32548V16.2C21 17.8802 21 18.7202 20.673 19.362C20.3854 19.9265 19.9265 20.3854 19.362 20.673C18.7202 21 17.8802 21 16.2 21H7.8C6.11984 21 5.27976 21 4.63803 20.673C4.07354 20.3854 3.6146 19.9265 3.32698 19.362C3 18.7202 3 17.8802 3 16.2V7.8C3 6.11984 3 5.27976 3.32698 4.63803C3.6146 4.07354 4.07354 3.6146 4.63803 3.32698C5.27976 3 6.11984 3 7.8 3H14.6745C15.1637 3 15.4083 3 15.6385 3.05526C15.8425 3.10425 16.0376 3.18506 16.2166 3.29472C16.4184 3.4184 16.5914 3.59135 16.9373 3.93726L20.0627 7.06274C20.4086 7.40865 20.5816 7.5816 20.7053 7.78343C20.8149 7.96237 20.8957 8.15746 20.9447 8.36154C21 8.59171 21 8.8363 21 9.32548Z"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
                   />
                 </svg>
-                <span className="text-textColor">راهنما</span>
+                <span className="text-textColor">ذخیره</span>
               </button>
             </div>
+
           </div>
         </div>
       </div>
-
-      {/* راهنما */}
-      <Modal
-        open={ShowGuides}
-        onClose={() => SetShowGuides(false)}
-        className="p-0"
-      >
-        <Modal.Backdrop />
-        <div className="fixed inset-0 flex z-50 backdrop-blur-sm bg-white/10">
-          <Modal.Panel className="w-full max-w-xl rounded-lg bg-boxColor  shadow-lg mt-[50px] text-textColor p-4">
-            <h5>
-              راهنمای کار با ردیابی
-            </h5>
-            <div className="pe-3">
-              <h6 className="mt-3 mb-3 font-bold">
-                علامت و نشانه‌ها
-              </h6>
-
-
-              <img className="inline-block" style={{ width: '30px', height: '30px' }} src="/images/address.PNG" /> <Label className="inline-block">آدرس</Label>
-              <br />
-              <img className="inline-block" style={{ width: '30px', height: '30px' }} src="/images/tr.PNG" /> <Label className="inline-block">تراکنش</Label>
-              <br />
-              <img className="inline-block" style={{ width: '30px', height: '30px' }} src="/images/start.PNG" /> <Label className="inline-block">آدرس شروع کننده گراف</Label>
-              <br />
-              <h6 className=" font-bold">
-                نوشته بالای آدرس ها
-              </h6>
-              مشخص کننده نوع کیف پول
-
-              <h6 className="mt-3 font-bold">
-                عدد ریسک
-              </h6>
-
-              از 70 به بالا: قرمز
-              <br />
-              از 50 تا 70: نارنجی
-              <br />
-              کمتر از 50: آبی
-
-              <br />
-
-              <h6 className="mt-3 font-bold">
-                مشخص کردن مسیرها با رنگ های متفاوت
-              </h6>
-
-              <p>
-                ابتدا با نگه‌داشتن کلید ctrl، یال های مورد نظر را انتخاب کرده و سپس با کلیک بر روی رنگ مورد نظر در بخش تنظیمات، رنگ یال های انتخاب شده را تغییر دهید.
-              </p>
-
-              <h6 className="mt-3 font-bold">
-                برچسب تراکنش‌ها
-              </h6>
-
-              <p>
-                بر روی هر یالی که بین یک تراکنش و یک آدرس قرار گرفته است، برچسبی شامل اطلاعات تراکنش از جمله زمان و حجم آن درج شده است.  <br />در بخش تنظیمات، کاربران امکان انتخاب نمایش یا پنهان‌سازی اطلاعات حجم و زمان تراکنش را دارند. <br /> همچنین کاربران می‌توانند قیمت دلاری تراکنش را نیز مشاهده کنند.
-              </p>
-
-              <h6 className="mt-3 font-bold">
-                دانلود اطلاعات گراف
-              </h6>
-
-              <p>
-                کاربران با افزودن رنگ به مسیر های گراف و انتخاب رنگ مورد نظر، می‌توانند اطلاعات آدرس و تراکنش های مسیر انتخاب شده را به صورت فایل اکسل دریافت کنند
-              </p>
-            </div>
-          </Modal.Panel>
-        </div>
-      </Modal>
 
       {/* ذخیره */}
       <Modal
@@ -1645,7 +1558,7 @@ const Page = () => {
                         <div key={index} className="w-full">
                           <MenuItem
                             isActive={false}
-                            isSelected={false} 
+                            isSelected={false}
                             onClick={() => {
 
                             }}

@@ -7,6 +7,7 @@ import { useParams } from "next/navigation";
 import { MiladiCalendar } from "@/functions/miladiCalendar";
 import html2canvas from "html2canvas";
 import { Modal } from "@heathmont/moon-core-tw";
+import TxBox from "../TxBox/TxBox";
 
 const mainURL = process.env.NEXT_PUBLIC_API_URL;
 
@@ -36,7 +37,7 @@ const FuckingGraph_V2 = ({
   useEffect(() => {
     const el = document.documentElement;
     const update = () => setIsDark(el.classList.contains("dark"));
-    update(); 
+    update();
     const obs = new MutationObserver(update);
     obs.observe(el, { attributes: true, attributeFilter: ["class"] });
     return () => obs.disconnect();
@@ -68,9 +69,6 @@ const FuckingGraph_V2 = ({
   const [IsStart, SetIsStart] = useState(false);
   const [ScreenShot, SetScreenShot] = useState(TakeSceenShot);
 
-  const { network } = useParams();
-  const { token } = useParams();
-
   const takeScreenshot = () => {
     const el = document.getElementById("myGraphDiv");
     if (!el || !el.isConnected) return;
@@ -83,6 +81,27 @@ const FuckingGraph_V2 = ({
     });
   };
 
+  const downloadPng = (fileName = "graph.png") => {
+    const net = networkInstanceRef.current;
+    if (!net || !net.canvas || !net.canvas.frame || !net.canvas.frame.canvas) return;
+  
+    try {
+      const canvas = net.canvas.frame.canvas; // بوم اصلی vis
+      // کیفیت بهتر: به جای toDataURL از toBlob استفاده می‌کنیم
+      canvas.toBlob((blob) => {
+        if (!blob) return;
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = fileName;
+        a.click();
+        URL.revokeObjectURL(url);
+      }, "image/png");
+    } catch (err) {
+      console.error("Export failed:", err);
+      alert("خروجی گرفتن از گراف ممکن نشد. احتمالاً به خاطر تصاویر cross-origin است.");
+    }
+  };
   // ---------- Effect 1: ساخت اولیه شبکه فقط یک‌بار ----------
   useEffect(() => {
     if (!containerRef.current || initializedRef.current) return;
@@ -330,6 +349,7 @@ const FuckingGraph_V2 = ({
               ? item.entity.name
               : `...${item.text.substring(0, 7)}`;
 
+              
       const node = {
         id: item.id,
         x: Number(item.x),
@@ -547,7 +567,7 @@ const FuckingGraph_V2 = ({
     <div
       id="myGraphDiv"
       ref={containerRef}
-      
+
       style={{ minWidth: "100%", transition: "0.3s", backgroundImage: isDarkMode ? "" : "url('/images/light_graph_bg.png')" }}
     >
       <Modal
@@ -567,6 +587,7 @@ const FuckingGraph_V2 = ({
       overflow-y-auto
     "
         >
+          <button onClick={() => downloadPng()}>دانلود اسکرین‌شات</button>
           <AddressBox
             Reload={Reload}
             SetReload={SetReload}
@@ -580,10 +601,23 @@ const FuckingGraph_V2 = ({
       </Modal>
 
 
-      {/* اگر بعداً TxBox خواستی، با API جدید Modal (open/onClose) فعالش کن */}
-      {/* <Modal open={OpenTxModal} onClose={() => SetOpenTxModal(false)} className="sidebar-lg p-0 kuft">
+      <Modal
+        open={OpenTxModal}
+        onClose={() => SetOpenTxModal(false)}
+        className="p-0"
+      >
         <Modal.Backdrop />
-        <Modal.Panel className="w-full max-w-xl rounded-lg bg-white dark:bg-bgColor-dark shadow-lg mt-[200px] text-titleText dark:text-titleText-dark">
+
+        <Modal.Panel
+          className="
+      fixed left-[33px] top-[73px] h-[calc(100vh-60px)] 
+      w-full max-w-2xl 
+      bg-boxColor dark:bg-bgColor-dark 
+      shadow-lg rounded-none
+      text-titleText dark:text-titleText-dark
+      overflow-y-auto
+    "
+        >
           <TxBox
             Reload={Reload}
             SetReload={SetReload}
@@ -594,7 +628,8 @@ const FuckingGraph_V2 = ({
             AddressSelectedData={AddressSelectedData}
           />
         </Modal.Panel>
-      </Modal> */}
+      </Modal>
+
     </div>
   );
 };

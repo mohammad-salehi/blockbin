@@ -407,8 +407,8 @@ const AddressBox = ({ Data, SetData, AddressSelectedData, Reload, SetReload }) =
                   color: false
                 },
               ] : [],
-              network: "TRX",
-              token: "USDT",
+              network: network,
+              token: token,
             }
           )
 
@@ -490,8 +490,8 @@ const AddressBox = ({ Data, SetData, AddressSelectedData, Reload, SetReload }) =
                       color: false
                     },
                   ] : [],
-                  network: "TRX",
-                  token: "USDT",
+                  network: network,
+                  token: token,
                 }
               )
 
@@ -541,8 +541,8 @@ const AddressBox = ({ Data, SetData, AddressSelectedData, Reload, SetReload }) =
                       color: false
                     },
                   ] : [],
-                  network: "TRX",
-                  token: "USDT",
+                  network: network,
+                  token: token,
                 }
               )
               const tmp2 = AddressTransactions.map(item => ({ ...item }));
@@ -1059,7 +1059,6 @@ const AddressBox = ({ Data, SetData, AddressSelectedData, Reload, SetReload }) =
         </span>
       </h6>
 
-      {/* وضعیت فعالیت و مشخصات */}
       <div className="m-0 mt-4 p-0 w-full ">
         {ActivityLoading ? (
           <div className="p-2  bg-TableBorder" >
@@ -1134,7 +1133,7 @@ const AddressBox = ({ Data, SetData, AddressSelectedData, Reload, SetReload }) =
                     <circle cx="18" cy="12" r="1" fill="currentColor" />
                     <path d="M13 4C16.7712 4 18.6569 4 19.8284 5.17157C20.6366 5.97975 20.8873 7.1277 20.965 9M10 20H13C16.7712 20 18.6569 20 19.8284 18.8284C20.6366 18.0203 20.8873 16.8723 20.965 15M9 4.00093C5.8857 4.01004 4.23467 4.10848 3.17157 5.17157C2 6.34315 2 8.22876 2 12C2 15.7712 2 17.6569 3.17157 18.8284C3.82475 19.4816 4.69989 19.7706 6 19.8985" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
                   </svg>
-                  {Balance}
+                  {Balance.toLocaleString()}
                   <small className="ml-1">{token}</small>
                 </p>
               </div>
@@ -1154,7 +1153,6 @@ const AddressBox = ({ Data, SetData, AddressSelectedData, Reload, SetReload }) =
         )}
       </div>
 
-      {/* تنظیمات */}
       <h6 className="p-3 pb-0 mb-0">تنظیمات</h6>
       <div className="m-0 mt-0 p-0 w-full">
         <div className="m-0 p-0 pr-1 grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -1188,13 +1186,12 @@ const AddressBox = ({ Data, SetData, AddressSelectedData, Reload, SetReload }) =
         </div>
       </div>
 
-      {/* جدول تراکنش‌ها */}
       <div
         className="mt-3 mb-4 "
       >
         {!TableLoading ? (
           <ExpandableTable
-            data={AddressTransactions}          // ← فقط دیتای فیلترشده را بده
+            data={AddressTransactions}          
             columns={columns}
             rowDetailsMode="row"
             rowDetailsClassName="rounded-xl p-3"
