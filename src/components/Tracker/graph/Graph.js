@@ -81,27 +81,27 @@ const FuckingGraph_V2 = ({
     });
   };
 
-  const downloadPng = (fileName = "graph.png") => {
-    const net = networkInstanceRef.current;
-    if (!net || !net.canvas || !net.canvas.frame || !net.canvas.frame.canvas) return;
+  // const downloadPng = (fileName = "graph.png") => {
+  //   const net = networkInstanceRef.current;
+  //   if (!net || !net.canvas || !net.canvas.frame || !net.canvas.frame.canvas) return;
   
-    try {
-      const canvas = net.canvas.frame.canvas; // بوم اصلی vis
-      // کیفیت بهتر: به جای toDataURL از toBlob استفاده می‌کنیم
-      canvas.toBlob((blob) => {
-        if (!blob) return;
-        const url = URL.createObjectURL(blob);
-        const a = document.createElement("a");
-        a.href = url;
-        a.download = fileName;
-        a.click();
-        URL.revokeObjectURL(url);
-      }, "image/png");
-    } catch (err) {
-      console.error("Export failed:", err);
-      alert("خروجی گرفتن از گراف ممکن نشد. احتمالاً به خاطر تصاویر cross-origin است.");
-    }
-  };
+  //   try {
+  //     const canvas = net.canvas.frame.canvas; // بوم اصلی vis
+  //     // کیفیت بهتر: به جای toDataURL از toBlob استفاده می‌کنیم
+  //     canvas.toBlob((blob) => {
+  //       if (!blob) return;
+  //       const url = URL.createObjectURL(blob);
+  //       const a = document.createElement("a");
+  //       a.href = url;
+  //       a.download = fileName;
+  //       a.click();
+  //       URL.revokeObjectURL(url);
+  //     }, "image/png");
+  //   } catch (err) {
+  //     console.error("Export failed:", err);
+  //     alert("خروجی گرفتن از گراف ممکن نشد. احتمالاً به خاطر تصاویر cross-origin است.");
+  //   }
+  // };
   // ---------- Effect 1: ساخت اولیه شبکه فقط یک‌بار ----------
   useEffect(() => {
     if (!containerRef.current || initializedRef.current) return;
@@ -587,7 +587,6 @@ const FuckingGraph_V2 = ({
       overflow-y-auto
     "
         >
-          <button onClick={() => downloadPng()}>دانلود اسکرین‌شات</button>
           <AddressBox
             Reload={Reload}
             SetReload={SetReload}
