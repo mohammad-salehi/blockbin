@@ -54,7 +54,6 @@ const Page = () => {
                         SetEntitieNumber(response.data.count)
                         if (response.status === 200) {
                             SetData(response.data.results)
-                            console.log(response.data.results)
                         } else if (response.status === 204) {
                             SetData([])
                             SetEntitieNumber(0)
