@@ -10,7 +10,7 @@ import TxBox from "../TxBox/TxBox";
 
 const mainURL = process.env.NEXT_PUBLIC_API_URL;
 
-const FuckingGraph_V2 = ({
+const Blockbin_graph_engine = ({
   Data,
   NodesPosition,
   SetNodesPosition,
@@ -611,4 +611,4 @@ const FuckingGraph_V2 = ({
   );
 };
 
-export default FuckingGraph_V2;
+export default Blockbin_graph_engine;

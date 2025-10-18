@@ -74,7 +74,7 @@ const Main = ({ SetLoading }) => {
             </h1>
 
             <div className='mt-4'>
-                <MainInput SetInputText={SetInputText} inputText={inputText} onSubmit={onSubmit} />
+                <MainInput SetInputText={SetInputText} inputText={inputText} onSubmit={onSubmit} placeholder={"آدرس یا شناسه تراکنش..."}/>
             </div>
 
             <h1 className='text-md  text-textColor mt-4'>

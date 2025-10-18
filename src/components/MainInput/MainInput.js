@@ -1,7 +1,7 @@
 "use client";
 import React from "react";
 
-export default function MainInput({ onSubmit, inputText, SetInputText }) {
+export default function MainInput({ onSubmit, inputText, SetInputText, placeholder }) {
     const handleSubmit = (e) => {
         e.preventDefault();
         const q = new FormData(e.currentTarget).get("q")?.toString() ?? "";
@@ -21,7 +21,7 @@ export default function MainInput({ onSubmit, inputText, SetInputText }) {
                     value={inputText}
                     type="text"
                     name="q"
-                    placeholder="آدرس یا شناسه تراکنش..."
+                    placeholder={placeholder}
                     className="flex-1  outline-none border px-4 py-3 text-sm font-iranSans placeholder-gray-400 text-textColor bg-boxColor rounded-full border-boxColor "
                 />
                 {/* دکمه جستجو */}

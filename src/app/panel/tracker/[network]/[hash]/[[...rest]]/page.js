@@ -14,7 +14,7 @@ import { Account_Address } from "@/functions/NetworksProcessor/Account_Address";
 import { Account_Token_Address } from "@/functions/NetworksProcessor/Account_Token_Address";
 import { Account_transaction } from "@/functions/NetworksProcessor/Account_transaction";
 import { UTXO_Transaction } from "@/functions/NetworksProcessor/UTXO_Transaction";
-import FuckingGraph_V2 from "@/components/Tracker/graph/Graph";
+import Blockbin_graph_engine from "@/components/Tracker/graph/Graph";
 import FullPageLoading from "@/components/FullPageLoading/FullPageLoading";
 import { Dropdown, MenuItem } from "@heathmont/moon-core-tw";
 import { Modal, Button, Label, Input } from "@heathmont/moon-core-tw";
@@ -1147,7 +1147,7 @@ const Page = () => {
         {ShowGraph ?
           !SelectTokenBox ?
             (
-              <FuckingGraph_V2
+              <Blockbin_graph_engine
                 Data={Data}
                 SetReload={SetReload}
                 Reload={Reload}
@@ -1200,8 +1200,7 @@ const Page = () => {
 
         {/* محتوای آکاردیون */}
         <div
-          className={`bg-boxColor text-textColor shadow-lg  transition-all duration-500 overflow-hidden p-2 ${open ? "w-[400px] opacity-100" : "w-0 opacity-0"
-            }`}
+          className={`bg-boxColor text-textColor shadow-lg transition-all duration-500 overflow-hidden p-2 ${open ? "w-[400px] opacity-100 overflow-visible" : "w-0 opacity-0 overflow-hidden"}`}
         >
           <div className="w-full m-0 p-0">
 
@@ -1396,8 +1395,8 @@ const Page = () => {
               </div>
             </div>
 
-                        {/* دکمه گزارش (فقط برای اکانت بیس) */}
-                        {Networks.find(item => item.symbole === network).type === 'account' && (
+            {/* دکمه گزارش (فقط برای اکانت بیس) */}
+            {Networks.find(item => item.symbole === network).type === 'account' && (
               <div className="m-0 p-0 mt-4">
                 <button
                   onClick={() => SetReportBox(true)}
@@ -1557,7 +1556,7 @@ const Page = () => {
         max-h-60 overflow-y-auto"
                   >
                     {GraphTokens.map((item, index) => (
-                      <a href={`/panel/tracker/${network}/${hash}/${network}/${item.contract !== undefined ? item.contract : ''}`}>
+                      <a href={`/panel/tracker/${network}/${hash}/${item.value}/${item.contract !== undefined ? item.contract : ''}`}>
                         <div key={index} className="w-full">
                           <MenuItem
                             isActive={false}
