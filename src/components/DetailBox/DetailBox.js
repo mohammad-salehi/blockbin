@@ -21,11 +21,15 @@ const DetailBox = ({ data }) => {
                         <h3 className="text-xl font-semibold mb-4 bg-boxBorderColor dark:bg-boxColor-dark text-textColor p-2 text-center">
                             {section.title}
                         </h3>
-                        <ul className="px-4 bg-boxColor">
+                        <ul className="px-4 bg-boxColor ">
                             {section.content.map((item, index) => (
                                 <li
                                     key={index}
-                                    className="py-2 flex justify-between items-center bg-boxColor text-textColor"
+                                    className={`py-2 flex items-center bg-boxColor text-textColor
+                                        ${sectionIndex === data.length - 1
+                                          ? 'justify-center text-center'
+                                          : 'justify-between'}
+                                      `}
                                 >
                                     {item.image ? (
                                         <div className="flex items-center gap-2 min-w-0">
@@ -34,8 +38,8 @@ const DetailBox = ({ data }) => {
                                                 <div className="flex items-center gap-1">
                                                     <strong className="break-words">{item.title}</strong>
                                                 </div>
-                                                <div className="flex items-center gap-1">
-                                                    <span className="whitespace-normal break-words">
+                                                <div className="flex items-center gap-1 ">
+                                                    <span className="whitespace-normal break-words ">
                                                         {item.content}
                                                     </span>
                                                     {sectionIndex < 2 ? (
