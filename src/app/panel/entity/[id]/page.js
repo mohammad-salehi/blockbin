@@ -19,6 +19,7 @@ const Page = () => {
   const params = useParams()
   const id = params.id
 
+  const [Balance, setBalance] = useState(0)
   const [Data, SetData] = useState(null)
   const [Transactions, SetTransactions] = useState([])
   const [Start, SetStart] = useState(false)
@@ -49,8 +50,6 @@ const Page = () => {
   };
   const [balanceMap, setBalanceMap] = useState({});
   const inFlightBalance = useRef(new Set()); // اختیاری برای جلوگیری از دابل‌فچ
-  const [metadataMap, setMetadataMap] = useState({});
-  const inFlight = useRef(new Set()); // prevent duplicate concurrent fetches
   const [invoiceData, setInvoiceData] = useState([
     {
       id: 1,
@@ -87,6 +86,12 @@ const Page = () => {
       ],
     },
   ]);
+
+
+  const [SourceMap, setSourceMap] = useState({});
+  const [metadataMap, setMetadataMap] = useState({});
+  const [statusMap, setStatusMap] = useState({}); // { [address]: 'loading' | 'loaded' }
+  const inFlight = useRef(new Set());
 
   useEffect(() => {
     SetLoading(true)
@@ -204,14 +209,24 @@ const Page = () => {
 
   useEffect(() => {
     SetFirst(1)
-  },[networkSelected])
+  }, [networkSelected])
 
   const columns = [
     {
       header: "آدرس",
       accessorKey: "logo",
       cell: (row) => (
-        <div>{AddressFormat(row.address, 24, 'transaction', 'TRX', true)}</div>
+        <div>{AddressFormat(row.address, 24, 'address', networkSelected, true)}</div>
+      ),
+    },
+    {
+      header: "شناسایی توسط", accessorKey: "hash",
+
+      cell: (row) => (
+        <div>
+          {/*  */}
+          <SourceAddress address={row.address} />
+        </div>
       ),
     },
     {
@@ -236,7 +251,9 @@ const Page = () => {
       ),
     },
     {
-      header: "موجودی", accessorKey: "TokenInfo",
+      header: `موجودی 
+      
+      `, accessorKey: "TokenInfo",
       cell: (row) => (
         <div className='p-0'>
           <AddressBalance key={row.address} address={row.address} />
@@ -248,20 +265,31 @@ const Page = () => {
   const fetchMetadata = async (address) => {
     if (!address) return;
     if (inFlight.current.has(address)) return;
-
+    if (statusMap[address] === 'loaded') return; // قبلاً لود شده
+  
     inFlight.current.add(address);
+    setStatusMap(prev => ({ ...prev, [address]: 'loading' }));
+  
     try {
       const response = await GetRequest(`${serverAddress}/explorer/address-detail/?query=${address}`);
       if (response.status === 200) {
-        setMetadataMap(prev => ({
-          ...prev,
-          [address]: response.data?.address_detail?.metadata ?? {}
-        }));
+        const meta = response.data?.address_detail?.metadata ?? {};
+  
+        // نرمال‌سازی label
+        const rawLabel = response.data?.address_detail?.address_label[0];
+        const normalizedLabel =
+          typeof rawLabel === 'string'
+            ? rawLabel
+            : (typeof rawLabel?.label === 'string' ? rawLabel.label : '');
+  
+        setMetadataMap(prev => ({ ...prev, [address]: meta }));
+        setSourceMap(prev => ({ ...prev, [address]: { label: normalizedLabel } }));
       }
     } catch (err) {
       console.log(err);
     } finally {
       inFlight.current.delete(address);
+      setStatusMap(prev => ({ ...prev, [address]: 'loaded' }));
     }
   };
   // NEW: real component so Hooks order stays stable
@@ -277,10 +305,27 @@ const Page = () => {
 
     return label !== undefined ? (
       <span style={{
-        padding: '2px 16px',
         borderRadius: '16px',
+        padding: '2px 16px',
         fontSize: '14px'
       }} className='bg-BgGreen text-TextGreen'>
+        {label}
+      </span>
+    ) : (
+      <span> نامشخص </span>
+    );
+  });
+
+  const SourceAddress = React.memo(function TypeAddress({ address }) {
+
+    const label = SourceMap[address]?.label;
+
+    return label !== undefined ? (
+      <span style={{
+        
+        borderRadius: '16px',
+        fontSize: '14px'
+      }}>
         {label}
       </span>
     ) : (
@@ -327,6 +372,18 @@ const Page = () => {
       <span> نامشخص </span>
     );
   });
+
+  // useEffect(() => {
+  //   GetRequest(`${serverAddress}/entity/entity-balance/?entityuid=${id}&network=${networkSelected}`)
+  //     .then((response) => {
+  //       if (response.status === 200) {
+  //         setBalance(response.data.balance)
+  //       }
+  //     })
+  //     .catch((err) => {
+  //       console.log(err)
+  //     })
+  // }, [networkSelected])
   return (
 
     <div>
