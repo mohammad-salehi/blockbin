@@ -7,7 +7,7 @@ export const Networks = [
     { symbole2 : 'XRP', symbole: 'XRP', name: 'ریپل', color: '#000000', id: 10, type: 'account' },
     { symbole2 : 'TON', symbole: 'TON', name: 'تون', color: '#0098ea', id: 100, type: 'account' },
     { symbole2 : 'SOL', symbole: 'SOL', name: 'سولانا', color: '#7b80d6', id: 101, type: 'account' },
-    { symbole2 : 'BSC', symbole: 'BSC', name: 'بایننس‌اسمارت‌چین', color: '#f3ba2f', id: 5, type: 'account' },
+    { symbole2 : 'BNB', symbole: 'BSC', name: 'بایننس‌اسمارت‌چین', color: '#f3ba2f', id: 5, type: 'account' },
     { symbole2 : 'ETH', symbole: 'ETH', name: 'اتریوم', color: '#627eea', id: 4, type: 'account' },
     { symbole2 : 'TRON', symbole: 'TRX', name: 'ترون', color: '#ff060a', id: 11, type: 'account' },
   ];
