@@ -38,7 +38,7 @@ const EntityTypes = (props) => {
             className="animated-border-box bg-gradient-main shadow-none font-iranSans text-sm h-full"
             style={{ "--dynamic-color": props.NetworkColor }}
         >
-            <a className="cursor-pointer"  href={`/panel/entity/type/${props.symbol}`}>
+            <a className="cursor-pointer"  href={`/panel/entity/types/${props.symbol}`}>
                 {/* Row 1 */}
                 <div className="flex flex-wrap items-center">
                     {/* Col */}
