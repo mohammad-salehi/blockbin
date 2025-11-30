@@ -18,7 +18,6 @@ const reloadToken = async () => {
       window.location.assign('/');
       return false;
     }
-    console.log(response.data.access)
     Cookies.set('access', response.data.access);
     return true;
   } catch (err) {
