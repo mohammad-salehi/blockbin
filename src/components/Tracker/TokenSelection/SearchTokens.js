@@ -26,7 +26,6 @@ const SearchTokens = ({SetData}) => {
               GetRequest(`${serverAddress}/explorer/token-transfer-list/?query=${hash}&network=${network}`)
                 .then((response) => {
                   if (response.status === 200) {
-                    console.log(response)
                     const getTokens = []
                     for (let i = 0; i < response.data.length; i++) {
                       if (!getTokens.some(item => item.symbol === response.data[i].symbol)) {
