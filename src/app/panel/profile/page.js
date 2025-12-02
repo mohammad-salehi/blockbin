@@ -8,6 +8,7 @@ import UserList from '@/components/Profile/UserList/UserList';
 import AddUser from '@/components/Profile/AddUser/AddUser';
 import SavedLabel from '@/components/Profile/SavedLabel/SavedLabel';
 import SavedGraph from '@/components/Profile/SavedGraph/SavedGrapg';
+import Setting from '@/components/Profile/Setting/Setting';
 
 function CustomTabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -74,6 +75,9 @@ const Page = () => {
       </CustomTabPanel>
       <CustomTabPanel value={value} index={3}>
         <SavedGraph/>
+      </CustomTabPanel>
+      <CustomTabPanel value={value} index={4}>
+        <Setting/>
       </CustomTabPanel>
     </Box>
   );
