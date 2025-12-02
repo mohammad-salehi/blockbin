@@ -114,7 +114,6 @@ const Page = () => {
     GraphDescription = document.getElementById("GraphDescription").value;
 
     if (GraphName !== "" || id !== undefined) {
-      console.log(id)
       if (Data.length > 0) {
         if (id !== undefined) {
           SetLoading(true);
@@ -136,6 +135,7 @@ const Page = () => {
                   network,
                   token,
                   contractAddress,
+                  hash
                 },
                 title: GraphName,
               },
@@ -199,6 +199,7 @@ const Page = () => {
                   network,
                   token,
                   contractAddress,
+                  hash
                 },
                 title: GraphName,
               },
@@ -264,6 +265,8 @@ const Page = () => {
 
   //start Drawing Graph
   useEffect(() => {
+    console.log(id)
+    console.log(token)
     // token selection checker
     if (id === undefined) {
       if (token === undefined) {

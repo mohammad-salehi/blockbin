@@ -7,7 +7,7 @@ import axios from 'axios';
 import Cookies from "js-cookie";
 import toast from 'react-hot-toast';
 
-const FolderList = ({ address, network, type, setFolderIsOpen, Description='', title='' }) => {
+const FolderList = ({ address, network, type, setFolderIsOpen, Description = '', title = '' }) => {
     const [folders, Setfolders] = useState([])
     const [Loading, SetLoading] = useState(false)
     const [ButtonLoading, SetButtonLoading] = useState(false)
@@ -69,6 +69,35 @@ const FolderList = ({ address, network, type, setFolderIsOpen, Description='', t
                     hash: address,
                     case: id,
                     network: network,
+                },
+                {
+                    headers: {
+                        Authorization: `Bearer ${Cookies.get("access")}`,
+                    },
+                }
+            )
+                .then((response) => {
+                    SetButtonLoading(false)
+                    toast.success('باموفقیت افزوده شد', {
+                        position: 'bottom-left'
+                    })
+                    setFolderIsOpen(false)
+                })
+                .catch((err) => {
+                    console.log(err);
+                    SetButtonLoading(false)
+                });
+        } else if (type === 'graph') {
+            SetButtonLoading(true)
+            axios.post(`${serverAddress}/case/graph-list/`,
+                {
+                    graph_detail: {
+                        id:address,
+                        network,
+                        title,
+                        Description
+                    },
+                    case: id,
                 },
                 {
                     headers: {
