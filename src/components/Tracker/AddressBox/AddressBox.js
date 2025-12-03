@@ -84,19 +84,6 @@ const AddressBox = ({ Data, SetData, AddressSelectedData, Reload, SetReload }) =
       address = address + `&type=token-20&contract_address=${contractAddress}`
     }
 
-    // if (from_volume) {
-    //   address = address + `$from_volume=${from_volume}`
-    // }
-    // if (end_volume) {
-    //   address = address + `$end_volume=${end_volume}`
-    // }
-    // if (sort_order) {
-    //   address = address + `$sort_order=${sort_order}`
-    // }
-    // if (sort_field) {
-    //   address = address + `$sort_field=${sort_field}`
-    // }
-
     if (token === network) {
       setTableLoading(true)
 
@@ -710,7 +697,8 @@ const AddressBox = ({ Data, SetData, AddressSelectedData, Reload, SetReload }) =
             fontSize: "12px",
           }}
         >
-          <span
+          <a
+            href={`/panel/entity/${row.entity.uuid}`}
             className={row.mode === 'in' ? `bg-BgGreen text-TextGreen` : `bg-BgRed text-TextRed`}
             style={{
 
@@ -719,7 +707,7 @@ const AddressBox = ({ Data, SetData, AddressSelectedData, Reload, SetReload }) =
             }}
           >
             {row.entity.name}
-          </span>
+          </a>
           {ShowAddress ? (
             <div>
               <br />
@@ -755,20 +743,6 @@ const AddressBox = ({ Data, SetData, AddressSelectedData, Reload, SetReload }) =
     if (token !== network) {
       address = address + `&type=token-20&contract_address=${contractAddress}`
     }
-
-    // if (from_volume) {
-    //   address = address + `$from_volume=${from_volume}`
-    // }
-    // if (end_volume) {
-    //   address = address + `$end_volume=${end_volume}`
-    // }
-    // if (sort_order) {
-    //   address = address + `$sort_order=${sort_order}`
-    // }
-    // if (sort_field) {
-    //   address = address + `$sort_field=${sort_field}`
-    // }
-
     return address
   }
 
@@ -1072,7 +1046,7 @@ const AddressBox = ({ Data, SetData, AddressSelectedData, Reload, SetReload }) =
               <div className="m-0 p-0">
                 <p className="text-[13px] text-textTitleColor mb-0">مالک</p>
                 {AddressSelectedData.entity !== null ? (
-                  <a className="bg-BgGreen text-TextGreen px-3 py-0.5 rounded">
+                  <a className="bg-BgGreen text-TextGreen px-3 py-0.5 rounded" href={`/panel/entity/${AddressSelectedData.entity.uuid}`}>
                     {AddressSelectedData.entity.name}
                   </a>
                 ) : (
