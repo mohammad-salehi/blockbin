@@ -65,10 +65,10 @@ const AddressPage = () => {
                 }
             </div>
             <div className="w-full grid grid-cols-1 xl:grid-cols-2 2xl:grid-cols-2 mt-4">
-                <div className='pl-2'>
+                <div className='py-1 xl:pl-2'>
                     <AddressInfo />
                 </div>
-                <div className='pr-2'>
+                <div className='py-1 xl:pr-2 mt-2 xl:mt-0'>
                     <AdressActivity
                         SetTokenSelected={SetTokenSelected}
                         TokenSelected={TokenSelected}

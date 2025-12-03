@@ -373,17 +373,6 @@ const Page = () => {
     );
   });
 
-  // useEffect(() => {
-  //   GetRequest(`${serverAddress}/entity/entity-balance/?entityuid=${id}&network=${networkSelected}`)
-  //     .then((response) => {
-  //       if (response.status === 200) {
-  //         setBalance(response.data.balance)
-  //       }
-  //     })
-  //     .catch((err) => {
-  //       console.log(err)
-  //     })
-  // }, [networkSelected])
   return (
 
     <div>

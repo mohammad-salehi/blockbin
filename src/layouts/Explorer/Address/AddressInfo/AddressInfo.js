@@ -35,7 +35,6 @@ const AddressInfo = () => {
         GetRequest(`${serverAddress}/explorer/address-detail?query=${hash}`)
             .then((response) => {
                 if (response.status === 200) {
-                    console.log(response.data.address_detail.entity)
                     SetOwner(response.data.address_detail.entity)
                     SetLabel(response.data.address_detail.labels)
                     SetMetadata(response.data.address_detail.metadata.label)
@@ -134,14 +133,14 @@ const AddressInfo = () => {
     }
     return (
         <div className='bg-gradient-main-2 border border-boxBorderColor rounded-xl main-animated-border-box' style={{ "--dynamic-color": `${Networks.find(item => item.symbole === network).color}` }}>
-            <div className='flex justify-between items-center border-b border-b-boxBorderColor p-3'>
+            <div className='xl:flex justify-between items-center border-b border-b-boxBorderColor p-3'>
                 <div className='flex items-center'>
                     <img src={`/images/${network}.png`} className='w-8 inline-block ' />
                     <h6 className='inline-block text-xl mr-2 text-textColor'>
                         آدرس {Networks.find(item => item.symbole === network).name}
                     </h6>
                 </div>
-                <div className='flex items-center text-primary cursor-pointer'>
+                <div className='mt-2 xl:mt-0 flex items-center text-primary cursor-pointer'>
                     {
                         (Label === null || Label.length === 0) ?
                             <div className='flex items-center justify-center border bg-bgColor text-textColor border-boxBorderColor transition ml-2 h-9 w-9 rounded-full cursor-pointer'>
