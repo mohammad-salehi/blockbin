@@ -16,10 +16,8 @@ const Main = ({ SetLoading }) => {
 
     const onSubmit = () => {
         SetLoading(true)
-
         GetRequest(`${serverAddress}/explorer/network-detection/?query=${inputText}`)
             .then((response) => {
-                console.log(response)
                 SetLoading(false)
                 Setquery(response.data.query)
                 if (response.data.network.length > 1) {

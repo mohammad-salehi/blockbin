@@ -35,6 +35,7 @@ const AddressInfo = () => {
         GetRequest(`${serverAddress}/explorer/address-detail?query=${hash}`)
             .then((response) => {
                 if (response.status === 200) {
+                    console.log(response.data.address_detail.entity)
                     SetOwner(response.data.address_detail.entity)
                     SetLabel(response.data.address_detail.labels)
                     SetMetadata(response.data.address_detail.metadata.label)
@@ -174,7 +175,7 @@ const AddressInfo = () => {
                     <div className='flex items-center justify-center border bg-bgColor text-textColor border-boxBorderColor transition ml-2 h-9 w-9 rounded-full cursor-pointer'>
                         <ContentCopyIcon className='text-textColor' style={{ fontSize: '16px', cursor: 'pointer' }}
                             onClick={() => {
-                                navigator.clipboard.writeText('TAngDVCCBBs5Z2v42N9KzvcGfdRhnaXrrG')
+                                navigator.clipboard.writeText(hash)
                                 toast.success("در کلیپ‌بورد ذخیره شد!", {
                                     position: "bottom-left",
                                 });
@@ -227,9 +228,9 @@ const AddressInfo = () => {
                                         <path d="M22 12.2039V13.725C22 17.6258 22 19.5763 20.8284 20.7881C19.6569 22 17.7712 22 14 22H10C6.22876 22 4.34315 22 3.17157 20.7881C2 19.5763 2 17.6258 2 13.725V12.2039C2 9.91549 2 8.77128 2.5192 7.82274C3.0384 6.87421 3.98695 6.28551 5.88403 5.10813L7.88403 3.86687C9.88939 2.62229 10.8921 2 12 2C13.1079 2 14.1106 2.62229 16.116 3.86687L18.116 5.10812C20.0131 6.28551 20.9616 6.87421 21.4808 7.82274" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
                                         <path d="M15 18H9" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
                                     </svg>
-                                    <span className={`${Owner !== null ? 'text-primary' : 'text-textColor'} cursor-pointer`}>
+                                    <a href={`/panel/entity/${Owner?.uuid}`} className={`${Owner !== null ? 'text-primary' : 'text-textColor'} cursor-pointer`}>
                                         {Owner !== null ? Owner.name : 'نامشخص'}
-                                    </span>
+                                    </a>
                                 </p>
                             </div>
 

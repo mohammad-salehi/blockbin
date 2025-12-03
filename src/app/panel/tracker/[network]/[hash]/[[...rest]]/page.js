@@ -265,8 +265,7 @@ const Page = () => {
 
   //start Drawing Graph
   useEffect(() => {
-    console.log(id)
-    console.log(token)
+
     // token selection checker
     if (id === undefined) {
       if (token === undefined) {
@@ -321,7 +320,7 @@ const Page = () => {
                           .then((RiskResponse) => {
                             let risk = null;
                             if (RiskResponse.status === 200) {
-                              const risk = RiskResponse.data.risk_score;
+                              risk = RiskResponse.data.risk_score;
                             }
                             let createdData = [
                               {

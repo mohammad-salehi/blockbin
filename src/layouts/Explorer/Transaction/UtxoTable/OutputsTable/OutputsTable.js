@@ -41,9 +41,9 @@ const OutputsTable = ({ SetTotalUSDValue }) => {
           {AddressFormat(row.address, 8, "address", network, true)}
           <span>
             {row.Entity !== null ? (
-              <span className="mr-1 bg-BgRed text-TextRed px-2 rounded-lg cursor-pointer">
+              <a href={`/panel/entity/${row.Entity.uuid?? ''}`} className="mr-1 bg-BgRed text-TextRed px-2 rounded-lg cursor-pointer">
                 {row.Entity.name}
-              </span>
+              </a>
             ) : null}
           </span>
         </div>

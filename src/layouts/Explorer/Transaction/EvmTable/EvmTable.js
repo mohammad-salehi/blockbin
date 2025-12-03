@@ -58,9 +58,9 @@ const EvmTable = ({ SetTotalUSDValue }) => {
           <span>
         {
           row.from.entity !== null ?
-            <span className='mr-1 bg-BgGreen text-TextGreen px-2 rounded-lg cursor-pointer' >
+            <a href={`/panel/entity/${row.from.entity.uuid}`} className='mr-1 bg-BgGreen text-TextGreen px-2 rounded-lg cursor-pointer' >
               {row.from.entity.name}
-            </span>
+            </a>
           :
           null
         }
@@ -78,9 +78,9 @@ const EvmTable = ({ SetTotalUSDValue }) => {
         <span>
         {
           row.to.entity !== null ?
-            <span className='mr-1 bg-BgRed text-TextRed px-2 rounded-lg cursor-pointer' >
+            <a href={`/panel/entity/${row.to.entity.uuid}`} className='mr-1 bg-BgRed text-TextRed px-2 rounded-lg cursor-pointer' >
               {row.to.entity.name}
-            </span>
+            </a>
           :
           null
         }
