@@ -25,6 +25,7 @@
     "next": "15.5.4",
     "primeicons": "^7.0.0",
     "primereact": "^10.9.7",
+    "@headlessui/react": "2.2.7",
     "react": "18.2.0",
     "react-dom": "18.2.0",
     "react-hot-toast": "^2.6.0",
@@ -32,6 +33,9 @@
     "react-transition-group": "^4.4.5",
     "vis": "^4.21.0",
     "xlsx": "^0.18.5"
+  },
+  "overrides": {
+    "@headlessui/react": "2.2.7"
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4",
