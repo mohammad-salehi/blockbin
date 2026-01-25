@@ -9,6 +9,9 @@ COPY package*.json ./
 
 RUN npm ci
 
+RUN node -p "require('react/package.json').version" \
+ && node -p "require('@headlessui/react/package.json').version"
+ 
 COPY . .
 
 RUN npm run build
