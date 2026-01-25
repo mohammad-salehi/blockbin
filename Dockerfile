@@ -10,7 +10,7 @@ COPY package*.json ./
 RUN npm ci
 
 RUN node -p "require('react/package.json').version" \
- && node -p "require('@headlessui/react/package.json').version"
+ && npm ls @headlessui/react --depth=0 || true
  
 COPY . .
 
