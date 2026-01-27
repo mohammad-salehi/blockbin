@@ -15,7 +15,7 @@ const DetailBox = ({ data }) => {
                         key={sectionIndex}
                         className={`${sectionIndex !== data.length - 1
                             ? "border-l border-boxBorderColor dark:border-boxColor-dark"
-                            : ""
+                            : " "
                             }`}
                     >
                         <h3 className="text-xl font-semibold mb-4 bg-boxBorderColor dark:bg-boxColor-dark text-textColor p-2 text-center">
@@ -27,26 +27,120 @@ const DetailBox = ({ data }) => {
                                     key={index}
                                     className={`py-2 flex items-center bg-boxColor text-textColor
                                         ${sectionIndex === data.length - 1
-                                          ? 'justify-center text-center'
-                                          : 'justify-between'}
+                                            ? 'justify-center text-center'
+                                            : 'justify-between'}
                                       `}
                                 >
                                     {item.image ? (
-                                        <div className="flex items-center gap-2 min-w-0">
-                                            <img src={item.image} alt="Logo" className="w-8 h-8 ml-2" />
-                                            <div className="flex flex-col min-w-0">
-                                                <div className="flex items-center gap-1">
-                                                    <strong className="break-words">{item.title}</strong>
+                                        sectionIndex !== data.length - 1 ?
+
+                                            <div className="flex items-center gap-2 min-w-0">
+                                                <img src={item.image} alt="Logo" className="w-8 h-8 ml-2" />
+                                                <div className="flex flex-col min-w-0">
+                                                    <div className="flex items-center gap-1">
+                                                        <strong className="break-words">{item.title}</strong>
+                                                    </div>
+                                                    <div className="flex items-center gap-1 ">
+                                                        <span className="whitespace-normal break-words ">
+                                                            {item.content}
+                                                        </span>
+                                                        {sectionIndex < 2 ? (
+                                                            <button
+                                                                onClick={() =>
+                                                                    navigator.clipboard.writeText(String(item.content))
+                                                                }
+                                                                className="p-1 hover:text-blue-500"
+                                                                title="کپی محتوا"
+                                                            >
+                                                                <svg
+                                                                    xmlns="http://www.w3.org/2000/svg"
+                                                                    className="w-4 h-4"
+                                                                    fill="none"
+                                                                    viewBox="0 0 24 24"
+                                                                    stroke="currentColor"
+                                                                    strokeWidth={2}
+                                                                >
+                                                                    <path d="M8 7H6a2 2 0 00-2 2v9a2 2 0 002 2h9a2 2 0 002-2v-2" />
+                                                                    <rect
+                                                                        x="9"
+                                                                        y="3"
+                                                                        width="13"
+                                                                        height="13"
+                                                                        rx="2"
+                                                                        ry="2"
+                                                                    />
+                                                                </svg>
+                                                            </button>
+                                                        ) : null}
+                                                    </div>
                                                 </div>
-                                                <div className="flex items-center gap-1 ">
-                                                    <span className="whitespace-normal break-words ">
+                                            </div>
+
+                                            :
+                                            <div className="flex items-center gap-2 w-full">
+                                                <img src={item.image} alt="Logo" className="w-8 h-8 ml-2" />
+                                                <div className="flex flex-col min-w-0">
+                                                    <div className="flex items-center gap-1">
+                                                        <strong className="break-words">{item.title}</strong>
+                                                    </div>
+                                                    <div className="flex items-center gap-1 ">
+                                                        <span className="whitespace-normal break-words ">
+                                                            {item.content}
+                                                        </span>
+                                                        {sectionIndex < 2 ? (
+                                                            <button
+                                                                onClick={() =>
+                                                                    navigator.clipboard.writeText(String(item.content))
+                                                                }
+                                                                className="p-1 hover:text-blue-500"
+                                                                title="کپی محتوا"
+                                                            >
+                                                                <svg
+                                                                    xmlns="http://www.w3.org/2000/svg"
+                                                                    className="w-4 h-4"
+                                                                    fill="none"
+                                                                    viewBox="0 0 24 24"
+                                                                    stroke="currentColor"
+                                                                    strokeWidth={2}
+                                                                >
+                                                                    <path d="M8 7H6a2 2 0 00-2 2v9a2 2 0 002 2h9a2 2 0 002-2v-2" />
+                                                                    <rect
+                                                                        x="9"
+                                                                        y="3"
+                                                                        width="13"
+                                                                        height="13"
+                                                                        rx="2"
+                                                                        ry="2"
+                                                                    />
+                                                                </svg>
+                                                            </button>
+                                                        ) : null}
+                                                    </div>
+                                                </div>
+                                            </div>
+                                    ) : (
+                                        sectionIndex !== data.length - 1 ?
+
+                                            <div className="flex flex-col min-w-0">
+                                                {item.title ? (
+                                                    <div className="flex items-center gap-1">
+                                                        <span className="font-semibold break-words">
+                                                            {item.title}
+                                                        </span>
+                                                    </div>
+                                                ) : null}
+                                                <div className="flex items-center gap-1">
+                                                    <span className="whitespace-normal break-words">
                                                         {item.content}
                                                     </span>
                                                     {sectionIndex < 2 ? (
                                                         <button
-                                                            onClick={() =>
-                                                                navigator.clipboard.writeText(String(item.content))
-                                                            }
+                                                            onClick={() => {
+                                                                toast.success("در کلیپ‌بورد ذخیره شد.", {
+                                                                    position: "bottom-left",
+                                                                });
+                                                                navigator.clipboard.writeText(String(item.content));
+                                                            }}
                                                             className="p-1 hover:text-blue-500"
                                                             title="کپی محتوا"
                                                         >
@@ -72,53 +166,52 @@ const DetailBox = ({ data }) => {
                                                     ) : null}
                                                 </div>
                                             </div>
-                                        </div>
-                                    ) : (
-                                        <div className="flex flex-col min-w-0">
-                                            {item.title ? (
-                                                <div className="flex items-center gap-1">
-                                                    <span className="font-semibold break-words">
-                                                        {item.title}
-                                                    </span>
-                                                </div>
-                                            ) : null}
-                                            <div className="flex items-center gap-1">
-                                                <span className="whitespace-normal break-words">
-                                                    {item.content}
-                                                </span>
-                                                {sectionIndex < 2 ? (
-                                                    <button
-                                                        onClick={() => {
-                                                            toast.success("در کلیپ‌بورد ذخیره شد.", {
-                                                                position: "bottom-left",
-                                                            });
-                                                            navigator.clipboard.writeText(String(item.content));
-                                                        }}
-                                                        className="p-1 hover:text-blue-500"
-                                                        title="کپی محتوا"
-                                                    >
-                                                        <svg
-                                                            xmlns="http://www.w3.org/2000/svg"
-                                                            className="w-4 h-4"
-                                                            fill="none"
-                                                            viewBox="0 0 24 24"
-                                                            stroke="currentColor"
-                                                            strokeWidth={2}
-                                                        >
-                                                            <path d="M8 7H6a2 2 0 00-2 2v9a2 2 0 002 2h9a2 2 0 002-2v-2" />
-                                                            <rect
-                                                                x="9"
-                                                                y="3"
-                                                                width="13"
-                                                                height="13"
-                                                                rx="2"
-                                                                ry="2"
-                                                            />
-                                                        </svg>
-                                                    </button>
+                                            :
+                                            <div className=" w-full">
+                                                {item.title ? (
+                                                    <div className=" items-center gap-1 ">
+                                                        <span className="font-semibold break-words">
+                                                            {item.title}
+                                                        </span>
+                                                    </div>
                                                 ) : null}
+                                                <div className=" items-center gap-1">
+                                                    <span className="whitespace-normal break-words">
+                                                        {item.content}
+                                                    </span>
+                                                    {sectionIndex < 2 ? (
+                                                        <button
+                                                            onClick={() => {
+                                                                toast.success("در کلیپ‌بورد ذخیره شد.", {
+                                                                    position: "bottom-left",
+                                                                });
+                                                                navigator.clipboard.writeText(String(item.content));
+                                                            }}
+                                                            className="p-1 hover:text-blue-500"
+                                                            title="کپی محتوا"
+                                                        >
+                                                            <svg
+                                                                xmlns="http://www.w3.org/2000/svg"
+                                                                className="w-4 h-4"
+                                                                fill="none"
+                                                                viewBox="0 0 24 24"
+                                                                stroke="currentColor"
+                                                                strokeWidth={2}
+                                                            >
+                                                                <path d="M8 7H6a2 2 0 00-2 2v9a2 2 0 002 2h9a2 2 0 002-2v-2" />
+                                                                <rect
+                                                                    x="9"
+                                                                    y="3"
+                                                                    width="13"
+                                                                    height="13"
+                                                                    rx="2"
+                                                                    ry="2"
+                                                                />
+                                                            </svg>
+                                                        </button>
+                                                    ) : null}
+                                                </div>
                                             </div>
-                                        </div>
                                     )}
                                 </li>
                             ))

@@ -7,7 +7,7 @@ import { serverAddress } from '@/functions/ServerAddress'
 import FullPageLoading from '@/components/FullPageLoading/FullPageLoading'
 import ImageNotSupportedIcon from '@mui/icons-material/ImageNotSupported';
 import DetailBox from '@/components/DetailBox/DetailBox'
-import TailwindGaugePretty from '@/components/Gauge/Gauge'
+import RiskScore2 from '@/components/Gauge/Gauge'
 import ExpandableTable from '@/components/ExpandableTable/ExpandableTable'
 import Pagination from '@/components/Pagination/Pagination'
 import { Networks } from '@/functions/Networks'
@@ -81,7 +81,9 @@ const Page = () => {
         {
           id: 1,
           content: (
-            <TailwindGaugePretty value={RiskScore} />
+            <div>
+              <RiskScore2 value={RiskScore} />
+            </div>
           )
         }
       ],
@@ -127,7 +129,7 @@ const Page = () => {
                           <div className="w-full self-stretch flex justify-center items-center ">
                             {/* ظرف داخلی برای کنترل حداکثر عرض گیج */}
                             <div className="w-full ">
-                              <TailwindGaugePretty value={rs} />
+                              <RiskScore2 value={rs} />
                             </div>
                           </div>
                         ),
@@ -481,12 +483,42 @@ const Page = () => {
         </div>
 
       </div>
-      <p>
-        <input id='showNoTrAddresses' name='showNoTrAddresses' type='checkbox' className='ml-2 w-4 h-4 cursor-pointer' checked={!HasTransactopn} onChange={(e) => {
-          SetHasTransactopn(!HasTransactopn)
-        }}/>
-        <label for="showNoTrAddresses"  className='text-textColor cursor-pointer'>نمایش آدرس‌های بدون تراکنش</label>
-      </p>
+<p className="flex items-center gap-3">
+  <label
+    htmlFor="showNoTrAddresses"
+    className="relative inline-flex items-center cursor-pointer"
+  >
+    <input
+      id="showNoTrAddresses"
+      type="checkbox"
+      className="sr-only peer"
+      checked={!HasTransactopn}
+      onChange={() => SetHasTransactopn(!HasTransactopn)}
+    />
+
+    {/* Track */}
+    <div className="
+      w-11 h-6 bg-gray-300 rounded-full
+      peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-primary/40
+      dark:bg-gray-600
+      peer-checked:bg-primary
+      transition-colors
+    "></div>
+
+    {/* Thumb */}
+    <div className="
+      absolute left-1 top-1
+      w-4 h-4 bg-white rounded-full shadow
+      transition-transform
+      peer-checked:translate-x-5
+    "></div>
+  </label>
+
+  <span className="text-textColor cursor-pointer">
+    نمایش آدرس‌های بدون تراکنش
+  </span>
+</p>
+
       <div className='mt-2'>
         {
           TableLoading ?
