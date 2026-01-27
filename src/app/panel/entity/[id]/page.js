@@ -29,6 +29,7 @@ const Page = () => {
   const [TableLoading, SetTableLoading] = useState(false)
   const [RiskScore, SetRiskScore] = useState(0)
   const [networkSelected, SetnetworkSelected] = useState(Networks[10].symbole)
+  const [HasTransactopn, SetHasTransactopn] = useState(false)
 
   const handleEdit = (sectionId, contentId, newContent) => {
     setInvoiceData((prevData) =>
@@ -176,7 +177,7 @@ const Page = () => {
 
   useEffect(() => {
     SetLoading(true)
-    GetRequest(`${serverAddress}/entity/addresses/?entity_uuid=${id}&page=1&size=10&has_transaction=${false}`)
+    GetRequest(`${serverAddress}/entity/addresses/?entity_uuid=${id}&page=1&size=10&has_transaction=${HasTransactopn}`)
       .then((response) => {
         if (response.status === 200) {
           addDataToTable(response)
@@ -193,7 +194,7 @@ const Page = () => {
   useEffect(() => {
     if (Start) {
       SetTableLoading(true)
-      GetRequest(`${serverAddress}/entity/addresses/?entity_uuid=${id}&page=${First}&size=10&has_transaction=${false}`)
+      GetRequest(`${serverAddress}/entity/addresses/?entity_uuid=${id}&page=${First}&size=10&has_transaction=${HasTransactopn}`)
         .then((response) => {
           if (response.status === 200) {
             addDataToTable(response)
@@ -205,7 +206,7 @@ const Page = () => {
           SetTableLoading(false)
         })
     }
-  }, [networkSelected, First])
+  }, [networkSelected, First, HasTransactopn])
 
   useEffect(() => {
     SetFirst(1)
@@ -266,22 +267,22 @@ const Page = () => {
     if (!address) return;
     if (inFlight.current.has(address)) return;
     if (statusMap[address] === 'loaded') return; // قبلاً لود شده
-  
+
     inFlight.current.add(address);
     setStatusMap(prev => ({ ...prev, [address]: 'loading' }));
-  
+
     try {
       const response = await GetRequest(`${serverAddress}/explorer/address-detail/?query=${address}`);
       if (response.status === 200) {
         const meta = response.data?.address_detail?.metadata ?? {};
-  
+
         // نرمال‌سازی label
         const rawLabel = response.data?.address_detail?.address_label[0];
         const normalizedLabel =
           typeof rawLabel === 'string'
             ? rawLabel
             : (typeof rawLabel?.label === 'string' ? rawLabel.label : '');
-  
+
         setMetadataMap(prev => ({ ...prev, [address]: meta }));
         setSourceMap(prev => ({ ...prev, [address]: { label: normalizedLabel } }));
       }
@@ -322,7 +323,7 @@ const Page = () => {
 
     return label !== undefined ? (
       <span style={{
-        
+
         borderRadius: '16px',
         fontSize: '14px'
       }}>
@@ -478,8 +479,14 @@ const Page = () => {
             </Dropdown.Options>
           </Dropdown>
         </div>
-      </div>
 
+      </div>
+      <p>
+        <input id='showNoTrAddresses' name='showNoTrAddresses' type='checkbox' className='ml-2 w-4 h-4 cursor-pointer' checked={!HasTransactopn} onChange={(e) => {
+          SetHasTransactopn(!HasTransactopn)
+        }}/>
+        <label for="showNoTrAddresses"  className='text-textColor cursor-pointer'>نمایش آدرس‌های بدون تراکنش</label>
+      </p>
       <div className='mt-2'>
         {
           TableLoading ?
