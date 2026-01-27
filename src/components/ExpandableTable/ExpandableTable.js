@@ -197,7 +197,7 @@ export default function ExpandableTable(props) {
                       <td
                         key={ci}
                         className={classNames(
-                          "px-6 py-5 my-auto  bg-TableRow !border-0 ring-0 shadow-none",
+                          "px-6 py-5 my-auto  bg-TableRow border-0! ring-0 shadow-none",
                           "first:rounded-r-xl last:rounded-l-xl",
                           getAlignClass(c.align),
                           c.className
@@ -222,7 +222,7 @@ export default function ExpandableTable(props) {
                             </div>
 
                             {showDetails && (
-                              <div className={classNames("mt-3 pt-3 !border-0 !ring-0 shadow-none", rowDetailsClassName)}>
+                              <div className={classNames("mt-3 pt-3 border-0! ring-0! shadow-none", rowDetailsClassName)}>
                                 <div className="flex flex-col gap-3">{detailNodes}</div>
                               </div>
                             )}
@@ -257,7 +257,7 @@ export default function ExpandableTable(props) {
                     <tr key={`detail-row-${node.path}`}>
                       <td
                         colSpan={columns.length}
-                        className="bg-white dark:bg-bgColor-dark p-0 first:rounded-r-xl last:rounded-l-xl !border-0 ring-0 shadow-none "
+                        className="bg-white dark:bg-bgColor-dark p-0 first:rounded-r-xl last:rounded-l-xl border-0! ring-0 shadow-none "
                       >
                         <div className={classNames("px-6 py-4 shadow-none", rowDetailsClassName)}>
                           <div className="flex flex-col gap-3">{detailNodes}</div>
