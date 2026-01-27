@@ -45,8 +45,6 @@ const AddressBox = ({ Data, SetData, AddressSelectedData, Reload, SetReload }) =
   const [MiladiLastActivity, SetMiladiLastActivity] = useState(0)
   const [JalalaliLastActivity, SetJalalaliLastActivity] = useState(0)
   const [Balance, SetBalance] = useState(0)
-
-  //
   const [ActivityLoading, SetActivityLoading] = useState(false)
 
   const RemoveTxChecker = (firstData) => {
@@ -74,7 +72,6 @@ const AddressBox = ({ Data, SetData, AddressSelectedData, Reload, SetReload }) =
     }
     SetData(filtredData)
   }
-
   const GetMoreData = (page) => {
     setTableLoading(true)
     let address = `${serverAddress}/explorer/search/?query=${AddressSelectedData.id}&network=${network}`
@@ -255,12 +252,10 @@ const AddressBox = ({ Data, SetData, AddressSelectedData, Reload, SetReload }) =
         })
     }
   }
-
   const handlePagination = (page) => {
     setFirst(page);
     GetMoreData(page);
   };
-
   const removeSelectedData = (row) => {
 
     if (row.mode === 'out') {
@@ -299,7 +294,6 @@ const AddressBox = ({ Data, SetData, AddressSelectedData, Reload, SetReload }) =
       SetAddressTransactions(tmp2);
     }
   }
-
   const addSelectedData = async (row) => {
     let ProccessData = Data
 
@@ -454,7 +448,7 @@ const AddressBox = ({ Data, SetData, AddressSelectedData, Reload, SetReload }) =
                   metadata: detailRes.status === 200 ? detailRes.data.address_detail.metadata !== null ? detailRes.data.address_detail.metadata.label : null : null,
                   x: x,
                   y: y,
-                  main: row.hash === address,
+                  main: row.hash === hash,
                   inputs: row.mode === 'out' ? [
                     {
                       id: row.hash,
@@ -538,12 +532,8 @@ const AddressBox = ({ Data, SetData, AddressSelectedData, Reload, SetReload }) =
               SetAddressTransactions(tmp2);
 
               SetData(ProccessData)
-              // SetLoading(false)
 
-            } finally {
-              // SetLoading(false);
-              // SetShowGraph(true);
-            }
+            } finally {}
 
 
             check = false
@@ -753,9 +743,13 @@ const AddressBox = ({ Data, SetData, AddressSelectedData, Reload, SetReload }) =
     setTableLoading(true)
     GetRequest(address)
       .then((response) => {
+        console.log('response')
+        console.log(response)
         if (Networks.find(item => item.symbole === network).type === 'account') {
           if (network === token) {
             const getData = (Account_Address(response.data.data, AddressSelectedData.id, network, 0))
+            console.log('getData')
+            console.log(getData)
             const getTransactions = []
             for (let i = 0; i < getData.inputs.length; i++) {
               getTransactions.push(
@@ -806,6 +800,8 @@ const AddressBox = ({ Data, SetData, AddressSelectedData, Reload, SetReload }) =
             SetAddressTransactions(getTransactions)
           } else {
             const getData = (Account_Token_Address(response.data.data, AddressSelectedData.id, network, 0))
+            console.log('getData')
+            console.log(getData)
             const getTransactions = []
             for (let i = 0; i < getData.logs.inputs.length; i++) {
               getTransactions.push(

@@ -545,8 +545,8 @@ const Blockbin_graph_engine = ({
     <div
       id="myGraphDiv"
       ref={containerRef}
-
-      style={{ minWidth: "100%", transition: "0.3s", backgroundImage: isDarkMode ? "url('/images/dark_graph_bg.png')" : "url('/images/light_graph_bg.png')" }}
+      className="outline-none"
+      style={{ minWidth: "100%", transition: "0.3s", backgroundImage: isDarkMode ? "url('/images/dark_graph_bg.png')" : "url('/images/light_graph_bg.png')", outline:'none' }}
     >
       <Modal
         open={OpenAddressModal}
@@ -557,7 +557,7 @@ const Blockbin_graph_engine = ({
 
         <Modal.Panel
           className="
-      fixed left-[33px] top-[73px] h-[calc(100vh-60px)] 
+      fixed left-8.25 top-18.25 h-[calc(100vh-60px)] 
       w-full max-w-2xl 
       bg-boxColor dark:bg-bgColor-dark 
       shadow-lg rounded-none
@@ -587,7 +587,7 @@ const Blockbin_graph_engine = ({
 
         <Modal.Panel
           className="
-      fixed left-[33px] top-[73px] h-[calc(100vh-60px)] 
+      fixed left-8.25 top-18.25 h-[calc(100vh-60px)] 
       w-full max-w-2xl 
       bg-boxColor dark:bg-bgColor-dark 
       shadow-lg rounded-none

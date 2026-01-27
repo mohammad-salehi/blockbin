@@ -1193,7 +1193,7 @@ const Page = () => {
       ></div>
 
       {/* آکاردیون */}
-      <div className="fixed top-[80px] right-0 h-[calc(100vh-60px)] flex items-start justify-end z-50">
+      <div className="fixed top-20 right-0 h-[calc(100vh-60px)] flex items-start justify-end z-50">
         {/* دکمه باز و بسته شدن */}
         <button
           onClick={() => setOpen(!open)}
@@ -1204,7 +1204,7 @@ const Page = () => {
 
         {/* محتوای آکاردیون */}
         <div
-          className={`bg-boxColor text-textColor shadow-lg transition-all duration-500 overflow-hidden p-2 ${open ? "w-[400px] opacity-100 overflow-visible" : "w-0 opacity-0 overflow-hidden"}`}
+          className={`bg-boxColor text-textColor shadow-lg transition-all duration-500 overflow-hidden p-2 ${open ? "w-100 opacity-100 overflow-visible" : "w-0 opacity-0 overflow-hidden"}`}
         >
           <div className="w-full m-0 p-0">
 
@@ -1493,7 +1493,7 @@ const Page = () => {
       >
         <Modal.Backdrop />
         <div className="fixed inset-0 flex z-50 backdrop-blur-sm bg-white/10">
-          <Modal.Panel className="w-full max-w-xl rounded-lg bg-boxColor  shadow-lg mt-[50px] text-textColor p-4">
+          <Modal.Panel className="w-full max-w-xl rounded-lg bg-boxColor  shadow-lg mt-12.5 text-textColor p-4">
             <>
               <h6>ذخیره گراف</h6>
               <Input className='border border-boxBorderColor rounded-md mt-4' placeholder='عنوان گراف' id='GraphName' defaultValue={Name} />
@@ -1531,7 +1531,7 @@ const Page = () => {
       >
         <Modal.Backdrop />
         <div className="fixed inset-0 flex z-50 backdrop-blur-sm bg-white/10">
-          <Modal.Panel className="w-full max-w-xl rounded-lg bg-boxColor  shadow-lg mt-[50px] text-textColor p-4">
+          <Modal.Panel className="w-full max-w-xl rounded-lg bg-boxColor  shadow-lg mt-12.5 text-textColor p-4">
             <ReportModal Data={Data} PaintedEdges={PaintedEdges} />
           </Modal.Panel>
         </div>
@@ -1545,7 +1545,7 @@ const Page = () => {
       >
         <Modal.Backdrop />
         <div className="fixed inset-0 flex z-50 backdrop-blur-sm bg-white/10">
-          <Modal.Panel className="w-full max-w-xl rounded-lg bg-boxColor  shadow-lg mt-[50px] text-textColor p-4">
+          <Modal.Panel className="w-full max-w-xl rounded-lg bg-boxColor  shadow-lg mt-12.5 text-textColor p-4">
             <h6> آیا از تغییر شبکه مورد نظر مطمئن هستید؟</h6>
             <small className="font-bold"> در صورتی که گراف ذخیره نشده باشد، اطلاعات مورد نظرتان از بین خواهد رفت</small>
             <br />
@@ -1569,7 +1569,7 @@ const Page = () => {
       >
         <Modal.Backdrop />
         <div className="fixed inset-0 flex z-50 backdrop-blur-sm bg-white/10">
-          <Modal.Panel className="w-full max-w-xl rounded-lg bg-boxColor  shadow-lg mt-[50px] text-textColor p-4">
+          <Modal.Panel className="w-full max-w-xl rounded-lg bg-boxColor  shadow-lg mt-12.5 text-textColor p-4">
             <h6> توکن مورد نظرتان را انتخاب کنید</h6>
 
             {
@@ -1632,7 +1632,7 @@ const Page = () => {
       <Modal open={OpenFolderBox} onClose={() => { SetOpenFolderBox(false) }}>
         <Modal.Backdrop />
         <div className="fixed inset-0 flex z-50 backdrop-blur-sm bg-white/10">
-          <Modal.Panel className="w-full max-w-xl rounded-lg bg-boxColor  shadow-lg mt-[200px] text-textColor p-4">
+          <Modal.Panel className="w-full max-w-xl rounded-lg bg-boxColor  shadow-lg mt-50 text-textColor p-4">
             <h5>
               پرونده موردنظر را انتخاب کنید
             </h5>
