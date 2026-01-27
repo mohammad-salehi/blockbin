@@ -243,7 +243,7 @@ const Page = () => {
       header: "شبکه", accessorKey: "legal_name",
       cell: (row) => (
         <div className='p-0'>
-          <img src={`../../images/${row.network}.png`} className='w-6 inline-block' />
+          <img src={`../../../images/${row.network}.png`} className='w-6 inline-block' />
           <span className='mr-1 text-md'>
             {Networks.find(item => item.symbole.toUpperCase() === row.network.toUpperCase()).name}
           </span>
