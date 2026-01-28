@@ -106,7 +106,7 @@ const AddressTransactions = ({ TokenTransfered, Miladi, TokenSelected, Transacti
 
       cell: (row) => (
         <div>
-          {AddressFormat(row.hash, 8, 'transaction', 'TRX', true)}
+          {AddressFormat(row.hash, 8, 'transaction', params.network.toUpperCase(), true)}
         </div>
       ),
     },
