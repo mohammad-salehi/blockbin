@@ -171,7 +171,6 @@ const AddressTransactions = ({ TokenTransfered, Miladi, TokenSelected, Transacti
           raw = ExploreProcessor(hash, null, response) || [];
         }
 
-
         const rows = raw.map((d) => ({
           Date: d.Time ?? null,
           hash: d.address,
