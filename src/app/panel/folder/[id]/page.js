@@ -27,6 +27,7 @@ const Page = () => {
 
   const [addressPage, setAddressPage] = useState(1);
   const [transactionPage, setTransactionPage] = useState(1);
+  const [GraphPage, setGraphPage] = useState(1);
 
   const pageSize = 10;
 
@@ -146,9 +147,41 @@ const Page = () => {
       ),
     },
   ];
+
+  const Graphcolumns = [
+    {
+      header: "عنوان",
+      cell: (row) => (
+        <div>
+          <a href={`/panel/tracker/${row.graph_detail.network}/TAngDVCCBBs5Z2v42N9KzvcGfdRhnaXrrG/USDT/TR7NHqjeKQxGTCi8q8ZY4pL8otSzgjLj6t/217`}>
+            {row.graph_detail.title}
+          </a>
+        </div>
+      ),
+    },
+    {
+      header: "شبکه",
+      accessorKey: "logo",
+      cell: (row) => (
+        <div style={{ direction: "ltr" }}>
+          {row.graph_detail.network}
+        </div>
+      ),
+    },
+    {
+      header: "توضیحات",
+      accessorKey: "logo",
+      cell: (row) => (
+        <div>
+          {row.graph_detail.Description}
+        </div>
+      ),
+    }
+  ];
   useEffect(() => {
     GetRequest(`${serverAddress}/case/management/${uuid}/`)
       .then((response) => {
+        console.log(response.data.graphs)
         SetName(response.data.case_info.name)
         SetLastUpdate(response.data.case_info.modified_time)
         SetNote(response.data.case_info.note_detail)
@@ -273,19 +306,17 @@ const Page = () => {
           گراف‌های افزوده‌شده
         </h5>
         <ExpandableTable
-          data={[]}
-          columns={[]}
+          data={Graphs}
+          columns={Graphcolumns}
           rowDetailsMode="row"
           rowDetailsClassName="rounded-xl p-3"
         />
         <Pagination
           rtl
-          totalItems={10}
-          pageSize={10}
-          currentPage={1}
-        // onPageChange={(e) => {
-        //   SetFirst(e);
-        // }}
+          totalItems={Graphs.length}
+          pageSize={pageSize}
+          currentPage={GraphPage}
+          onPageChange={(page) => setGraphPage(page)}
         />
       </div>
     </div>
