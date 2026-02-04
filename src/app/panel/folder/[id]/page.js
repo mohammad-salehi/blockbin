@@ -11,6 +11,8 @@ import { utcToJalaliIran } from '@/functions/utcToJalali';
 import axios from 'axios';
 import Cookies from 'js-cookie';
 import toast from 'react-hot-toast';
+import { Network } from 'vis';
+import { Networks } from '@/functions/Networks';
 
 const Page = () => {
 
@@ -153,7 +155,7 @@ const Page = () => {
       header: "عنوان",
       cell: (row) => (
         <div>
-          <a href={`/panel/tracker/${row.graph_detail.network}/TAngDVCCBBs5Z2v42N9KzvcGfdRhnaXrrG/USDT/TR7NHqjeKQxGTCi8q8ZY4pL8otSzgjLj6t/217`}>
+          <a onClick={() => {openGraph(row.graph_detail.id)}} className='cursor-pointer'>
             {row.graph_detail.title}
           </a>
         </div>
@@ -164,7 +166,11 @@ const Page = () => {
       accessorKey: "logo",
       cell: (row) => (
         <div style={{ direction: "ltr" }}>
-          {row.graph_detail.network}
+          {
+            Networks.find(item => item.id === row.graph_detail.network).symbole
+          }
+          <img style={{ width: "24px" }} src={`/images/${Networks.find(item => item.id === row.graph_detail.network).symbole}.png`} className='inline-block ml-1' />
+
         </div>
       ),
     },
@@ -181,7 +187,6 @@ const Page = () => {
   useEffect(() => {
     GetRequest(`${serverAddress}/case/management/${uuid}/`)
       .then((response) => {
-        console.log(response.data.graphs)
         SetName(response.data.case_info.name)
         SetLastUpdate(response.data.case_info.modified_time)
         SetNote(response.data.case_info.note_detail)
@@ -223,6 +228,19 @@ const Page = () => {
     transactionPage * pageSize
   );
 
+  const openGraph = (id) => {
+    GetRequest(`${serverAddress}/tracing/graph/${id}/`)
+    .then((response2) => {
+      window.location.assign(`/panel/tracker/${response2.data.value.network}/${response2.data.value.hash}/${response2.data.value.token}/${response2.data.value.contractAddress}/${response2.data.id}`)
+    })
+    .catch((err) => {
+      if(err.status === 404){
+        return toast.error('گراف موردنظر یافت نشد', {
+          position: 'bottom-left',
+        });
+      }
+    })
+  }
 
   return (
     <div>
