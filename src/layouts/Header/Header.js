@@ -182,7 +182,7 @@ export default function Header({
 
             <header
                 className={`relative z-50 w-full h-18 bg-boxColor dark:bg-boxColor-dark flex items-stretch justify-between ${isOpen ? 'rounded-bl-md rounded-br-md' : ''
-                    } shadow-sm px-6`}
+                    } shadow-sm px-2 sm:px-6`}
             >
                 <div className="flex items-center gap-5 text-textColor">
                     {/* دکمه منو (هم موبایل هم دسکتاپ) */}

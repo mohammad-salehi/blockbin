@@ -30,9 +30,7 @@ const Page = () => {
       .then((response) => {
         if (response.status !== 200) throw new Error('Failed to load types')
 
-        const getType = [
-          { id: null, value: false, label: 'انتخاب نشده', pname: 'انتخاب نشده' },
-        ]
+        const getType = [{ id: null, value: false, label: 'انتخاب نشده', pname: 'انتخاب نشده' }]
 
         for (let i = 0; i < response.data.results.length; i++) {
           getType.push({
@@ -73,6 +71,7 @@ const Page = () => {
           SetData([])
           SetEntitieNumber(0)
         }
+
         setLoading(false)
       })
       .catch((err) => {
@@ -85,23 +84,33 @@ const Page = () => {
       })
   }, [First, type])
 
-  // ✅ مهم: با تغییر First یا type دوباره دیتا بگیر
   useEffect(() => {
     getData()
   }, [getData])
+
+  // کلاس مشترک: جلوگیری از رفتن متن به خط بعد + ellipsis
+  const nowrapCell = 'whitespace-nowrap overflow-hidden text-ellipsis'
+  // برای اینکه ellipsis کار کنه باید max-width داشته باشیم
+  const maxCell = 'max-w-[240px]'
 
   const columns = [
     {
       header: 'عنوان',
       accessorKey: 'logo',
       cell: (row) => (
-        <a href={`/panel/entity/${row.uuid}`}>
+        <a
+          href={`/panel/entity/${row.uuid}`}
+          className="flex items-center gap-2 min-w-0 whitespace-nowrap overflow-hidden"
+        >
           {row.image !== null ? (
-            <img src={row.image} className="w-6 inline-block" />
+            <img src={row.image} className="w-6 h-6 shrink-0 inline-block" alt="" />
           ) : (
-            <ImageNotSupportedIcon />
+            <ImageNotSupportedIcon className="shrink-0" />
           )}
-          <span className="mr-2">{row.name}</span>
+
+          <span className="min-w-0 overflow-hidden text-ellipsis" title={row.name}>
+            {row.name}
+          </span>
         </a>
       ),
     },
@@ -109,9 +118,11 @@ const Page = () => {
       header: 'وبسایت',
       accessorKey: 'hash',
       cell: (row) => (
-        <div>
+        <div className={`${nowrapCell} ${maxCell}`} title={row.web_site || ''}>
           {row.web_site !== null ? (
-            <a href={row.web_site}>{row.web_site}</a>
+            <a href={row.web_site} className="block overflow-hidden text-ellipsis whitespace-nowrap">
+              {row.web_site}
+            </a>
           ) : (
             <span>نامشخص</span>
           )}
@@ -122,8 +133,8 @@ const Page = () => {
       header: 'نام حقوقی',
       accessorKey: 'legal_name',
       cell: (row) => (
-        <div className="p-0">
-          {row.legal_name !== null ? <p>{row.legal_name}</p> : <span>نامشخص</span>}
+        <div className={`${nowrapCell} max-w-55`} title={row.legal_name || ''}>
+          {row.legal_name !== null ? row.legal_name : 'نامشخص'}
         </div>
       ),
     },
@@ -131,16 +142,16 @@ const Page = () => {
       header: 'ریسک',
       accessorKey: 'TokenInfo',
       cell: (row) => (
-        <div className="p-0">
-          {row.riskscore !== null ? <p>{row.riskscore * 100}%</p> : <span>نامشخص</span>}
+        <div className="whitespace-nowrap" title={row.riskscore != null ? `${row.riskscore * 100}%` : ''}>
+          {row.riskscore !== null ? <span>{row.riskscore * 100}%</span> : <span>نامشخص</span>}
         </div>
       ),
     },
     {
       header: 'آخرین به‌روزرسانی',
-      accessorKey: 'hash',
+      accessorKey: 'last_modified',
       cell: (row) => (
-        <div>
+        <div className="whitespace-nowrap" title={row.last_modified ? utcToJalaliIran(row.last_modified) : ''}>
           {row.last_modified ? <span>{utcToJalaliIran(row.last_modified)}</span> : 'نامشخص'}
         </div>
       ),
@@ -153,12 +164,15 @@ const Page = () => {
 
       {!Loading ? (
         <>
-          <ExpandableTable
-            data={Data}
-            columns={columns}
-            rowDetailsMode="row"
-            rowDetailsClassName="rounded-xl p-3"
-          />
+          {/* اگر جدول شما خودش overflow نداره، این wrapper کمک می‌کنه روی موبایل اسکرول افقی بگیری */}
+          <div className="overflow-x-auto">
+            <ExpandableTable
+              data={Data}
+              columns={columns}
+              rowDetailsMode="row"
+              rowDetailsClassName="rounded-xl p-3"
+            />
+          </div>
 
           <Pagination
             rtl
@@ -171,7 +185,7 @@ const Page = () => {
           />
         </>
       ) : (
-        <div className="overflow-x-auto rounded-2xl border border-boxBorderColor dark:border-boxColor-dark shadow-sm px-2 ">
+        <div className="overflow-x-auto rounded-2xl border border-boxBorderColor dark:border-boxColor-dark shadow-sm px-2">
           <SkeletonLoading />
         </div>
       )}

@@ -80,7 +80,7 @@ const Page = () => {
 
     return (
         <div className='mt-16 max-w-7xl m-auto'>
-            <h1 className='text-4xl font-bold text-textColor'>
+            <h1 className='text-lg sm:text-4xl font-bold text-textColor'>
                 <p className='inline-block'>
                     جست‌وجوی موجودیت‌های
                 </p>
@@ -89,7 +89,7 @@ const Page = () => {
                 </p>
             </h1>
 
-            <h1 className='text-md font-bold text-textColor mt-4'>
+            <h1 className='text-sm sm:text-md font-bold text-textColor mt-4'>
                 <p className='inline-block'>
                     می‌توانید دسته مورد نظرتان را انتخاب و یا عنوان موجودیت مورد نظرتان را جست‌وجو کنید
                 </p>

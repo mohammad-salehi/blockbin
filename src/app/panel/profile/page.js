@@ -21,7 +21,7 @@ function CustomTabPanel(props) {
       aria-labelledby={`simple-tab-${index}`}
       {...other}
     >
-      {value === index && <Box sx={{ p: 3 }}>{children}</Box>}
+      {value === index && <Box className="sm:p-3 mt-4 sm:mt-0">{children}</Box>}
     </div>
   );
 }
@@ -34,50 +34,63 @@ const Page = () => {
   };
 
   return (
-    <Box sx={{ width: '100%' }}>
+    <Box sx={{ width: '100%' }} className='p-0'>
       <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
         <Tabs
           value={value}
           onChange={handleChange}
           aria-label="basic tabs example"
           textColor="inherit"
+          variant="scrollable"
+          scrollButtons="auto"
+          className="p-0"
           sx={{
-            // رنگ تب‌های معمولی
+            // مهم: اجازه بده container تب‌ها اسکرول افقی داشته باشه
+            '& .MuiTabs-scroller': {
+              overflowX: 'auto',
+            },
+            // اختیاری: اسکرول نرم‌تر روی iOS
+            '& .MuiTabs-scroller::-webkit-scrollbar': { display: 'none' },
+            '& .MuiTabs-flexContainer': {
+              gap: 1, // اختیاری برای فاصله
+            },
+
             '& .MuiTab-root': {
               color: 'var(--color-textColor)',
+              // بهتر برای موبایل: تب‌ها خودشون جمع نشن و خوانا بمونن
+              minWidth: 'max-content',
+              whiteSpace: 'nowrap',
             },
-            // فقط تب انتخاب‌شده
             '& .MuiTab-root.Mui-selected': {
-              color: 'var(--color-primary)',      // متن تب انتخاب‌شده
+              color: 'var(--color-primary)',
             },
-            // رنگ indicator (خط زیر تب)
             '& .MuiTabs-indicator': {
               backgroundColor: 'var(--color-primary)',
             },
           }}
         >
-          <Tab label="لیست کاربران" />
+          <Tab label="لیست کاربران" className="p-0" />
           <Tab label="افزودن کاربر" />
           <Tab label="برچسب‌های ذخیره شده" />
           <Tab label="گراف‌های ذخیره شده" />
           <Tab label="تنظیمات" />
         </Tabs>
-      </Box>
 
-      <CustomTabPanel value={value} index={0}>
-        <UserList/>
+      </Box>
+      <CustomTabPanel value={value} index={0} className='p-0'>
+        <UserList />
       </CustomTabPanel>
       <CustomTabPanel value={value} index={1}>
-        <AddUser/>
+        <AddUser />
       </CustomTabPanel>
       <CustomTabPanel value={value} index={2}>
-        <SavedLabel/>
+        <SavedLabel />
       </CustomTabPanel>
       <CustomTabPanel value={value} index={3}>
-        <SavedGraph/>
+        <SavedGraph />
       </CustomTabPanel>
       <CustomTabPanel value={value} index={4}>
-        <Setting/>
+        <Setting />
       </CustomTabPanel>
     </Box>
   );

@@ -45,9 +45,10 @@ const Main = ({ SetLoading }) => {
       useEffect(() => {
         document.addEventListener("click", handleClickOutside);
       }, []);
+      
     return (
         <div className='mt-16 max-w-7xl m-auto'>
-            <h1 className='text-4xl font-bold text-textColor'>
+            <h1 className='text-lg sm:text-4xl font-bold text-textColor'>
                 <p className='inline-block'>
                     آدرس یا تراکنش های خود را به کمک
                 </p>
@@ -59,7 +60,7 @@ const Main = ({ SetLoading }) => {
                 </p>
             </h1>
 
-            <h1 className='text-md font-bold text-textColor mt-4'>
+            <h1 className='text-sm sm:text-md font-bold text-textColor mt-4'>
                 <p className='inline-block'>
                     جست‌وجو در
                 </p>
@@ -75,14 +76,14 @@ const Main = ({ SetLoading }) => {
                 <MainInput SetInputText={SetInputText} inputText={inputText} onSubmit={onSubmit} placeholder={"آدرس یا شناسه تراکنش..."}/>
             </div>
 
-            <h1 className='text-md  text-textColor mt-4'>
+            <h1 className='text-sm sm:text-md  text-textColor mt-4'>
                 <p className='inline-block'>
                     نمونه کاوش
                 </p>
-                <p className='inline-block mr-4 bg-bgColor2 px-4 py-1 rounded-full cursor-pointer' onClick={() => { SetInputText('TAngDVCCBBs5Z2v42N9KzvcGfdRhnaXrrG') }}>
+                <p className='inline-block mr-2 sm:mr-4 bg-bgColor2 px-4 py-1 rounded-full cursor-pointer' onClick={() => { SetInputText('TAngDVCCBBs5Z2v42N9KzvcGfdRhnaXrrG') }}>
                     آدرس
                 </p>
-                <p className='inline-block mr-4 bg-bgColor2 px-4 py-1 rounded-full cursor-pointer' onClick={() => { SetInputText('38f6f5464e83eb65fc818b7164e5c88bd66c734f3ca7e39dbae9db80e69cea2a') }}>
+                <p className='inline-block mr-2 sm:mr-4 bg-bgColor2 px-4 py-1 rounded-full cursor-pointer' onClick={() => { SetInputText('38f6f5464e83eb65fc818b7164e5c88bd66c734f3ca7e39dbae9db80e69cea2a') }}>
                     تراکنش
                 </p>
             </h1>
@@ -97,7 +98,7 @@ const Main = ({ SetLoading }) => {
             }
 
 
-            <h1 className='text-lg font-bold text-textColor mt-8'>
+            <h1 className='text-lg font-bold text-textColor mt-8  mb-4 sm:mb-0'>
                 <p className='inline-block'>
                     شبکه‌های پشتیبانی‌شده
                 </p>
@@ -108,7 +109,7 @@ const Main = ({ SetLoading }) => {
                 {
                     Networks.map((item, index) => {
                         return (
-                            <div className="mt-3" key={index}>
+                            <div className="mt-0 sm:mt-3" key={index}>
                                 <RoundedColorBox fee={2.04} lastBlock={123456} symbol={item.symbole} name={item.name} NetworkColor={item.color} logo={`${item.symbole}.png`} />  <div className="mt-3"></div>
                             </div>
                         )

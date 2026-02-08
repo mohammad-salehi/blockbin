@@ -271,7 +271,7 @@ const Page = () => {
         <div className="w-full text-left">
           <button
             onClick={() => { sendValueTextarea() }}
-            className="bg-primary border border-primary rounded-lg text-bgColor w-full max-w-[150px] py-1 cursor-pointer mt-4"
+            className="bg-primary border border-primary rounded-lg text-bgColor w-full max-w-37.5 py-1 cursor-pointer mt-4"
           >
             ثبت
           </button>

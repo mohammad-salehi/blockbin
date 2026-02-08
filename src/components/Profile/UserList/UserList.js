@@ -125,16 +125,7 @@ const UserList = () => {
         page * pageSize
     );
 
-
-
-
-
-
-
-
-
     const [users, Setusers] = useState(null)
-    const [openEdit, SetopenEdit] = useState(true)
     const [Loading, SetLoading] = useState(false)
     const [number, SetNumber] = useState(1)
     const [Edit, setEdit] = useState(false)
@@ -467,17 +458,6 @@ const UserList = () => {
             SetNameErrText('')
         }
     }
-
-
-
-
-
-
-
-
-
-
-
 
     return (
         <div>

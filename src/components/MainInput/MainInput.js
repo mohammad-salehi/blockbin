@@ -1,51 +1,66 @@
 "use client";
 import React from "react";
 
-export default function MainInput({ onSubmit, inputText, SetInputText, placeholder }) {
-    const handleSubmit = (e) => {
-        e.preventDefault();
-        const q = new FormData(e.currentTarget).get("q")?.toString() ?? "";
-        if (onSubmit) onSubmit(q);
-    };
+export default function MainInput({
+  onSubmit,
+  inputText,
+  SetInputText,
+  placeholder,
+}) {
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    const q = inputText.trim();
+    if (!q) return;
+    onSubmit?.(q);
+  };
 
-    return (
-        <form
-            onSubmit={handleSubmit}
-            dir="rtl"
-            className="w-full  mx-auto px-1 "
+  return (
+    <form onSubmit={handleSubmit} dir="rtl" className="w-full mx-auto px-1">
+      <div
+        className="
+          flex items-center gap-2
+          rounded-full bg-boxColor border border-boxBorderColor
+          p-1 overflow-hidden
+        "
+      >
+        <input
+          value={inputText}
+          onChange={(e) => SetInputText(e.target.value)}
+          type="text"
+          placeholder={placeholder}
+          className="
+            flex-1 min-w-0
+            outline-none px-4 py-3
+            text-sm font-iranSans
+            placeholder-gray-400 text-textColor
+            bg-boxColor rounded-full
+          "
+        />
+
+        <button
+          type="submit"
+          disabled={!inputText.trim()}
+          className="
+            shrink-0 whitespace-nowrap
+            flex items-center gap-1
+            px-3 sm:px-4 py-2.5
+            rounded-full bg-primary text-white
+            font-iranSans transition
+            hover:brightness-95 active:brightness-90
+            disabled:opacity-50 disabled:cursor-not-allowed
+          "
         >
-            {/* ظرف اصلی با سایه و حالت کپسولی */}
-            <div className="flex items-center gap-2 rounded-full bg-boxColor border border-boxBorderColor  overflow-hidden p-1 m-0">
-                <input
-                    onChange={(e) => {SetInputText(e.target.value)}}
-                    value={inputText}
-                    type="text"
-                    name="q"
-                    placeholder={placeholder}
-                    className="flex-1  outline-none border px-4 py-3 text-sm font-iranSans placeholder-gray-400 text-textColor bg-boxColor rounded-full border-boxColor "
-                />
-                {/* دکمه جستجو */}
-                <button
-                    type="submit"
-                    className="outline-none border-none cursor-pointer shrink-0 flex items-center gap-2 px-4 py-2.5 ms-1 rounded-full bg-primary text-white font-iranSans transition-colors hover:brightness-95 active:brightness-90 focus:outline-none  ring-primary/40"
-                    aria-label="جست‌وجو"
-                    title="جست‌وجو"
-                >
-                    جست‌وجو
-                    {/* آیکن ذره‌بین */}
-                    <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        fill="currentColor"
-                        viewBox="0 0 24 24"
-                        className="w-4 h-4"
-                    >
-                        <path d="M21.53 20.47l-4.76-4.76a8 8 0 10-1.06 1.06l4.76 4.76a.75.75 0 101.06-1.06zM10.5 17a6.5 6.5 0 110-13 6.5 6.5 0 010 13z" />
-                    </svg>
-                </button>
-
-                {/* ورودی متن */}
-
-            </div>
-        </form>
-    );
+          جست‌وجو
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            fill="currentColor"
+            viewBox="0 0 24 24"
+            className="w-4 h-4"
+          >
+            <path d="M21.53 20.47l-4.76-4.76a8 8 0 10-1.06 1.06l4.76 4.76a.75.75 0 101.06-1.06zM10.5 17a6.5 6.5 0 110-13 6.5 6.5 0 010 13z" />
+          </svg>
+        </button>
+      </div>
+    </form>
+  );
 }
