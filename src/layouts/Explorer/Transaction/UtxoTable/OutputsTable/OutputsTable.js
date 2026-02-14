@@ -60,13 +60,13 @@ const OutputsTable = ({ SetTotalUSDValue }) => {
   useEffect(() => {
     SetLoading(true);
     GetRequest(
-      `${serverAddress}/explorer/search/?query=${hash}&page_number=0&page_size=0&network=${network}&pageNumberFrom=1&pageSizeFrom=1&pageNumberTo=${First * 5 + 1}&pageSizeTo=5`
+      `${serverAddress}/explorer/utxo/transaction/${hash}/?network=${network}&page_number_from=1&page_size_from=1&page_number_to=${First * 5 + 1}&page_size_to=5`
     )
       .then((response) => {
-        SetTotalInputs(response.data.data.total_outputs)
+        SetTotalInputs(response.data.data.result.total_outputs)
         const array = [];
         const getData = UTXOTr(
-          response.data.data,
+          response.data.data.result,
           network,
           Networks.find((item) => item.symbole === network).name
         );

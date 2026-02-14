@@ -60,15 +60,15 @@ const InputsTable = ({ SetTotalUSDValue }) => {
   useEffect(() => {
     SetLoading(true);
     GetRequest(
-      `${serverAddress}/explorer/search/?query=${hash}&page_number=0&page_size=0&network=${network}&pageNumberFrom=${
+      `${serverAddress}/explorer/utxo/transaction/${hash}/?network=${network}&page_number_from=${
         First * 5 + 1
-      }&pageSizeFrom=5&pageNumberTo=1&pageSizeTo=1`
+      }&page_size_from=5&page_number_to=1&page_size_to=1`
     )
       .then((response) => {
-        SetTotalInputs(response.data.data.total_inputs)
+        SetTotalInputs(response.data.data.result.total_inputs)
         const array = [];
         const getData = UTXOTr(
-          response.data.data,
+          response.data.data.result,
           network,
           Networks.find((item) => item.symbole === network).name
         );

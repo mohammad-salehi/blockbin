@@ -40,25 +40,25 @@ const TransactionInfo = ({ TotalUSDValue, SetTotalUSDValue }) => {
     const [isFolderOpen, setFolderIsOpen] = useState(false);
 
     useEffect(() => {
-        GetRequest(`${serverAddress}/explorer/search/?query=${hash}&network=${network}`)
+        GetRequest(`${serverAddress}/explorer/utxo/transaction/${hash}/?network=${network}&page_number_from=1&page_size_from=1&page_number_to=2&page_size_to=2`)
             .then((response) => {
                 if (Networks.find(item => item.symbole === network).type === 'account') {
-                    SetblockNumber(response.data.data.block_number)
-                    SetTrValue(response.data.data.value)
-                    SetFee(response.data.data.fee)
-                    SetTime(response.data.data.time)
+                    SetblockNumber(response.data.data.result.block_number)
+                    SetTrValue(response.data.data.result.value)
+                    SetFee(response.data.data.result.fee)
+                    SetTime(response.data.data.result.time)
                 } else {
-                    SetblockNumber(response.data.data.block_number)
-                    SetTrValue(response.data.data.amount_transacted)
-                    SetFee(response.data.data.fee)
-                    SetTime(response.data.data.time)
-                    if (response.status == 200) {
-                        let sum = 0
-                        for (let i = 0; i < response.data.data.outputs.length; i++) {
-                            sum = sum + response.data.data.outputs[i].ValueInDollar
-                        }
-                        SetTotalUSDValue(sum)
-                    }
+                    SetblockNumber(response.data.data.result.block_number)
+                    SetTrValue(response.data.data.result.amount_transacted)
+                    SetFee(response.data.data.result.fee)
+                    SetTime(response.data.data.result.time)
+                    // if (response.status == 200) {
+                    //     let sum = 0
+                    //     for (let i = 0; i < response.data.data.result.outputs.length; i++) {
+                    //         sum = sum + response.data.data.result.outputs[i].ValueInDollar
+                    //     }
+                    //     SetTotalUSDValue(sum)
+                    // }
                 }
 
             })
