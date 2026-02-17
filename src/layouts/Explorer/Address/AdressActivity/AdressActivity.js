@@ -30,11 +30,12 @@ const AdressActivity = ({ SetTokenSelected, TokenSelected, SetMiladi, Miladi, Se
       
       GetRequest(`${serverAddress}/explorer/address-aggregation/?query=${hash}&network=${network}`)
         .then((response) => {
+          console.log(response)
           if (response.status === 200) {
-            SetBalance(response.data.balance)
-            SetFirstActivity(response.data.first_activity)
-            SetLastActivity(response.data.last_activity)
-            SetTransactions(response.data.transactions)
+            SetBalance(response.data.data.balance)
+            SetFirstActivity(response.data.data.first_activity)
+            SetLastActivity(response.data.data.last_activity)
+            SetTransactions(response.data.data.transactions)
           }
           SetLoading1(false)
         })

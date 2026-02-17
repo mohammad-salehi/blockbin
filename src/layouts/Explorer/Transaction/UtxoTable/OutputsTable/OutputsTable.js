@@ -74,7 +74,7 @@ const OutputsTable = ({ SetTotalUSDValue }) => {
           array.push({
             address: getData.outputData[i].address.address,
             value: getData.outputData[i].BTCAmount,
-            Entity: getData.outputData[i].address.entity,
+            Entity: getData.outputData[i].address.entity.name ? getData.outputData[i].address.entity : null,
           });
         }
         SetLoading(false);

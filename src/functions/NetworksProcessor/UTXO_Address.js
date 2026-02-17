@@ -2,7 +2,6 @@
 /* eslint-disable no-unused-vars */
 /* eslint-disable comma-dangle */
 export function UTXO_Address (address, data, symbole, decimal) {
-
     console.log('UTXO_Address')
     console.log(data)
     let isError = false

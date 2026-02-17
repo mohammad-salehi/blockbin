@@ -169,6 +169,9 @@ export function AccountBaseAdd(getData, TokenData, symbol) {
 
     return data
 }
+
+
+
 export function UTXOTr(data, symbol, name) {
 
     const CurrencyPrice = 28000
@@ -298,6 +301,10 @@ export function UTXOTr(data, symbol, name) {
         TotalAmount
     })
 }
+
+
+
+
 export function AccountBaseTr(data, symbole, name) {
     const blockNumber = data.block_number
     const address = data.hash
@@ -400,7 +407,7 @@ export function ExploreProcessor(hash, addressMode, tokens) {
 
     const processAccountAddress = (symbol, PersianName, decimal) => {
         try {
-            const AccountAddress = addressMode !== null ? Account_Address(addressMode.data.data, hash, symbol, decimal) : []
+            const AccountAddress = addressMode !== null ? Account_Address(addressMode.data.data.result, hash, symbol, decimal) : []
             const AccountTokenAddress = tokens !== null ? Account_Token_Address(tokens.data.data, hash, symbol, decimal) : []
             return (AccountBaseAdd(AccountAddress, AccountTokenAddress, symbol))
         } catch (error) {
@@ -410,14 +417,14 @@ export function ExploreProcessor(hash, addressMode, tokens) {
     }
     const processAccountTransaction = (symbol, decimal, PersianName) => {
         try {
-            return (AccountBaseTr(Account_transaction(addressMode.data.data, symbol, decimal), symbol, PersianName))
+            return (AccountBaseTr(Account_transaction(addressMode.data.data.result, symbol, decimal), symbol, PersianName))
         } catch (error) {
             return error
         }
     }
     const processUtxoAddress = (symbol, PersianName, color, decimal) => {
         try {
-            const getData = UTXO_Address(hash, addressMode.data.data, symbol, decimal)
+            const getData = UTXO_Address(hash, addressMode.data.data.result, symbol, decimal)
             return (UTXOAdd(getData, symbol))
         } catch (error) {
             return error
@@ -425,7 +432,7 @@ export function ExploreProcessor(hash, addressMode, tokens) {
     }
     const processUtxoTransaction = (symbol, decimal, PersianName) => {
         try {
-            const GetData = UTXO_Transaction(addressMode.data.data, symbol, decimal)
+            const GetData = UTXO_Transaction(addressMode.data.data.result, symbol, decimal)
             return (UTXOTr(GetData, symbol, PersianName))
         } catch (error) {
             return err
@@ -433,18 +440,18 @@ export function ExploreProcessor(hash, addressMode, tokens) {
     }
 
     const recognizingNetwork = (addressMode) => {
-        if (addressMode.data.query === 'transaction') {
-            if (Networks.find(item => item.symbole === addressMode.data.network[0]).type === 'account') {
-                return processAccountTransaction(addressMode.data.network[0], 1, Networks.find(item => item.symbole === addressMode.data.network[0]).name)
+        if (addressMode.data.data.query === 'transaction') {
+            if (Networks.find(item => item.symbole === addressMode.data.data.network[0]).type === 'account') {
+                return processAccountTransaction(addressMode.data.data.network[0], 1, Networks.find(item => item.symbole === addressMode.data.data.network[0]).name)
             } else {
-                return processUtxoTransaction(addressMode.data.network[0], 1, Networks.find(item => item.symbole === addressMode.data.network[0]).name)
+                return processUtxoTransaction(addressMode.data.data.network[0], 1, Networks.find(item => item.symbole === addressMode.data.data.network[0]).name)
             }
-        } else if (addressMode.data.query === 'address') {
+        } else if (addressMode.data.data.query === 'address') {
 
-            if (Networks.find(item => item.symbole === addressMode.data.network[0]).type === 'account') {
-                return processAccountAddress(addressMode.data.network[0], 1, Networks.find(item => item.symbole === addressMode.data.network[0]).name)
+            if (Networks.find(item => item.symbole === addressMode.data.data.network[0]).type === 'account') {
+                return processAccountAddress(addressMode.data.data.network[0], 1, Networks.find(item => item.symbole === addressMode.data.data.network[0]).name)
             } else {
-                return processUtxoAddress(addressMode.data.network[0], 1, Networks.find(item => item.symbole === addressMode.data.network[0]).name)
+                return processUtxoAddress(addressMode.data.data.network[0], 1, Networks.find(item => item.symbole === addressMode.data.data.network[0]).name)
             }
         }
     }

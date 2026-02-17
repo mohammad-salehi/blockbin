@@ -72,11 +72,12 @@ const InputsTable = ({ SetTotalUSDValue }) => {
           network,
           Networks.find((item) => item.symbole === network).name
         );
+        console.log(getData)
         for (let i = 0; i < getData.inputData.length; i++) {
           array.push({
             address: getData.inputData[i].address.address,
             value: getData.inputData[i].BTCAmount,
-            Entity: getData.inputData[i].address.entity,
+            Entity: getData.inputData[i].address.entity.name ? getData.inputData[i].address.entity : null ,
           });
         }
         SetLoading(false);

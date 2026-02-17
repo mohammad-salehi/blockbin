@@ -34,11 +34,12 @@ const AddressInfo = () => {
         SetLoading1(true)
         GetRequest(`${serverAddress}/explorer/address-detail?query=${hash}`)
             .then((response) => {
+                console.log(response)
                 if (response.status === 200) {
-                    SetOwner(response.data.address_detail.entity)
-                    SetLabel(response.data.address_detail.labels)
-                    SetMetadata(response.data.address_detail.metadata.label)
-                    SetIdentificationBy(response.data.address_detail.address_label[0])
+                    SetOwner(response.data.data.address_detail.entity)
+                    SetLabel(response.data.data.address_detail.labels)
+                    SetMetadata(response.data.data.address_detail.metadata.label ?? null)
+                    SetIdentificationBy(response.data.data.address_detail.address_label[0])
                 }
                 SetLoading1(false)
             })
@@ -49,7 +50,7 @@ const AddressInfo = () => {
         GetRequest(`${serverAddress}/explorer/risk-score/?address=${hash}&network=${network}`)
             .then((response) => {
                 if (response.status === 200) {
-                    SetRisk(response.data.risk_score)
+                    SetRisk(response.data.data.risk_score)
                 }
                 SetLoading2(false)
             })
@@ -308,7 +309,7 @@ const AddressInfo = () => {
             <Modal open={isOpen} onClose={() => { setIsOpen(false) }}>
                 <Modal.Backdrop />
                 <div className="fixed inset-0 flex z-50 backdrop-blur-sm bg-white/10">
-                    <Modal.Panel className="w-full max-w-xl rounded-lg bg-boxColor  shadow-lg mt-[200px] text-textColor p-4">
+                    <Modal.Panel className="w-full max-w-xl rounded-lg bg-boxColor  shadow-lg mt-50 text-textColor p-4">
                         <h5>
                             برچسب موردنظر را وارد کنید
                         </h5>
@@ -323,7 +324,7 @@ const AddressInfo = () => {
             <Modal open={isFolderOpen} onClose={() => { setFolderIsOpen(false) }}>
                 <Modal.Backdrop />
                 <div className="fixed inset-0 flex z-50 backdrop-blur-sm bg-white/10">
-                    <Modal.Panel className="w-full max-w-xl rounded-lg bg-boxColor  shadow-lg mt-[200px] text-textColor p-4">
+                    <Modal.Panel className="w-full max-w-xl rounded-lg bg-boxColor  shadow-lg mt-50 text-textColor p-4">
                         <h5>
                             پرونده موردنظر را انتخاب کنید
                         </h5>

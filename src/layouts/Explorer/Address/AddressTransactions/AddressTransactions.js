@@ -11,6 +11,7 @@ import { ExploreProcessor } from '@/functions/ExploreProcessor';
 import { GetRequest } from '@/functions/GetRequest';
 import { serverAddress } from '@/functions/ServerAddress';
 import SkeletonLoading from '@/components/SkeletonLoading/SkeletonLoading';
+import { Networks } from '@/functions/Networks';
 const AddressTransactions = ({ TokenTransfered, Miladi, TokenSelected, Transactions }) => {
 
   const [First, SetFirst] = useState(1)
@@ -150,20 +151,20 @@ const AddressTransactions = ({ TokenTransfered, Miladi, TokenSelected, Transacti
     SetLoading(true)
     let address = '';
     if (TokenSelected === network) {
-      address = `${serverAddress}/explorer/search/?query=${hash}&network=${network}&page_number=${First}&page_size=10`;
+      if (Networks.find(item => item.symbole === network).type === 'utxo') {
+        address = `${serverAddress}/explorer/utxo/address/${hash}/?network=${network}&page_number=${First}&page_size=10&sort_order=ascending`;
+      } else {
+        
+      }
     } else {
       const token = TokenTransfered?.find((item) => item.symbol === TokenSelected);
-      if (!token?.contract_address) {
-        SetFiltredData([]); // گارد در صورت نبودن توکن
-        return;
-      }
       address = `${serverAddress}/explorer/search/?query=${hash}&network=${network}&page_number=${First}&page_size=10&type=token-20&contract_address=${token.contract_address}`;
     }
 
     let cancelled = false;
-
     GetRequest(address)
       .then((response) => {
+        console.log(response)
         let raw
         if (TokenSelected === network) {
           raw = ExploreProcessor(hash, response, null) || [];
