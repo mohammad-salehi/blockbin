@@ -57,7 +57,7 @@ const EvmTable = ({ SetTotalUSDValue }) => {
           {AddressFormat(row.from.address, 8, 'address', 'TRX', true)}
           <span>
         {
-          row.from.entity !== null ?
+          row.from.entity.name ?
             <a href={`/panel/entity/${row.from.entity.uuid}`} className='mr-1 bg-BgGreen text-TextGreen px-2 rounded-lg cursor-pointer' >
               {row.from.entity.name}
             </a>
@@ -77,7 +77,7 @@ const EvmTable = ({ SetTotalUSDValue }) => {
         {AddressFormat(row.to.address, 8, 'address', 'TRX', true)}
         <span>
         {
-          row.to.entity !== null ?
+          row.to.entity.name ?
             <a href={`/panel/entity/${row.to.entity.uuid}`} className='mr-1 bg-BgRed text-TextRed px-2 rounded-lg cursor-pointer' >
               {row.to.entity.name}
             </a>
@@ -111,9 +111,10 @@ const EvmTable = ({ SetTotalUSDValue }) => {
 
   useEffect(() => {
     SetLoading(true)
-    GetRequest(`${serverAddress}/explorer/search/?query=${hash}&network=${network}&page_number=${1}&page_size=30`)
+    GetRequest(`${serverAddress}/explorer/evm/transaction/${hash}/?network=${network}&page_number=1&page_size=100&transaction_type=ALL`)
       .then((response) => {
-        const Trlist = (AccountBaseTr(response.data.data, network, Networks.find(item => item.symbole === network).name).transfers)
+        console.log(response)
+        const Trlist = (AccountBaseTr(response.data.data.result, network, Networks.find(item => item.symbole === network).name).transfers)
         const getData = []
         for (let i = 0; i < Trlist.length; i++) {
           getData.push(
@@ -129,10 +130,10 @@ const EvmTable = ({ SetTotalUSDValue }) => {
         SetFiltredData(getData)
         SetLoading(false)
         let sum = 0
-        for (let i = 0; i < response.data.data.logs.length; i++) {
-          sum = sum + response.data.data.logs[i].ValueInDollor
+        for (let i = 0; i < response.data.data.result.logs.length; i++) {
+          sum = sum + response.data.data.result.logs[i].ValueInDollor
         }
-        sum = sum + response.data.data.value_in_dollor
+        sum = sum + response.data.data.result.value_in_dollor
         SetTotalUSDValue(sum)
       })
       .catch((err) => {
@@ -147,7 +148,7 @@ const EvmTable = ({ SetTotalUSDValue }) => {
         !Loading ?
           <>
             <ExpandableTable
-              data={filteredData}          // ← فقط دیتای فیلترشده را بده
+              data={filteredData}
               columns={columns}
               rowDetailsMode="row"
               rowDetailsClassName="rounded-xl p-3"
