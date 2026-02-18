@@ -25,9 +25,9 @@ const Page = () => {
 
     useEffect(() => {
         SetLoading(true)
-        GetRequest(`${serverAddress}/entity/type/`)
+        GetRequest(`${serverAddress}/entity/categories/?page_number=1&page_size=100`)
             .then((response) => {
-                SetTypes(response.data.results)
+                SetTypes(response.data.data.categories)
                 SetLoading(false)
             })
             .catch((err) => {
@@ -51,9 +51,9 @@ const Page = () => {
                 GetRequest(`${serverAddress}/entity/filter-process/`, queryParams)
                     .then((response) => {
                         SetTableLoading(false)
-                        SetEntitieNumber(response.data.count)
+                        SetEntitieNumber(response.data.data.count)
                         if (response.status === 200) {
-                            SetData(response.data.results)
+                            SetData(response.data.data.results)
                         } else if (response.status === 204) {
                             SetData([])
                             SetEntitieNumber(0)
