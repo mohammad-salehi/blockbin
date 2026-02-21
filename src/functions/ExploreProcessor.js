@@ -351,23 +351,23 @@ export function AccountBaseTr(data, symbole, name) {
     for (let i = 0; i < data.logs.length; i++) {
         if (data.logs[i].symbol) {
             try {
-                if (data.logs[i].from !== null && data.logs[i].to !== null) {
+                if (data.logs[i].fromAddress !== null && data.logs[i].toAddress !== null) {
                     transfers.push({
-                        from: data.logs[i].from,
-                        to: data.logs[i].to,
+                        from: data.logs[i].fromAddress,
+                        to: data.logs[i].toAddress,
                         currencyType: data.logs[i].symbol,
                         amount: data.logs[i].tokenValue
                     })
-                } else if (data.logs[i].from === null && data.logs[i].to !== null) {
+                } else if (data.logs[i].fromAddress === null && data.logs[i].toAddress !== null) {
                     transfers.push({
                         from: 'coin base',
-                        to: data.logs[i].to,
+                        to: data.logs[i].toAddress,
                         currencyType: data.logs[i].symbol,
                         amount: data.logs[i].tokenValue
                     })
-                } else if (data.logs[i].from !== null && data.logs[i].to === null) {
+                } else if (data.logs[i].fromAddress !== null && data.logs[i].toAddress === null) {
                     transfers.push({
-                        from: data.logs[i].from,
+                        from: data.logs[i].fromAddress,
                         to: 'coin base',
                         currencyType: data.logs[i].symbol,
                         amount: data.logs[i].tokenValue

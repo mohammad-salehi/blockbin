@@ -27,10 +27,10 @@ export function Account_Token_Address (data, address, symbole, decimal) {
                     }
                 }
                 if (!mainEntity) {
-                    mainEntity = array[i].from.entity
+                    mainEntity = array[i].from.entity.name ? array[i].from.entity : null
                 }
                 if (!mainMetadata) {
-                    if (array[i].from.metadata !== null) {
+                    if (array[i].from.metadata.label) {
                         mainMetadata = array[i].from.metadata.label
                     }
                 }
@@ -63,10 +63,10 @@ export function Account_Token_Address (data, address, symbole, decimal) {
                     }
                 }
                 if (!mainEntity) {
-                    mainEntity = array[i].to.entity
+                    mainEntity = array[i].to.entity.name ? array[i].to.entity : null
                 }
                 if (!mainMetadata) {
-                    if (array[i].to.metadata !== null) {
+                    if (array[i].to.metadata.label) {
                         mainMetadata = array[i].to.metadata.label
                     }
                 }
@@ -97,6 +97,17 @@ export function Account_Token_Address (data, address, symbole, decimal) {
             }
         )
     } else {
+        console.log(
+            {
+                isError,
+                address,
+                symbole,
+                logs,
+                Label:mainLabel,
+                entity:mainEntity,
+                metadata:mainMetadata
+            }
+        )
         return (
             {
                 isError,

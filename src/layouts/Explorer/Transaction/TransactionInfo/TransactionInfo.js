@@ -74,8 +74,8 @@ const TransactionInfo = ({ TotalUSDValue, SetTotalUSDValue }) => {
                     SetTrValue(response.data.data.result.value)
                     SetFee(response.data.data.result.fee)
                     SetTime(response.data.data.result.time)
-                    if (response.data.data.result.label_tag.labels.length > 0) {
-                        SetLabel(response.data.data.result.label_tag.labels)
+                    if (response.data.data.result.labels_tags.labels.length > 0) {
+                        SetLabel(response.data.data.result.labels_tags.labels)
                     }
                 } else {
                     SetblockNumber(response.data.data.result.block_number)

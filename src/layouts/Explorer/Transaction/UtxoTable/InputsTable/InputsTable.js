@@ -60,9 +60,7 @@ const InputsTable = ({ SetTotalUSDValue }) => {
   useEffect(() => {
     SetLoading(true);
     GetRequest(
-      `${serverAddress}/explorer/utxo/transaction/${hash}/?network=${network}&page_number_from=${
-        First * 5 + 1
-      }&page_size_from=5&page_number_to=1&page_size_to=1`
+      `${serverAddress}/explorer/utxo/transaction/${hash}/?network=${network}&page_number_from=${First * 5 + 1}&page_size_from=5&page_number_to=1&page_size_to=1`
     )
       .then((response) => {
         SetTotalInputs(response.data.data.result.total_inputs)

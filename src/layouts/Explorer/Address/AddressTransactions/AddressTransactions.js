@@ -158,7 +158,7 @@ const AddressTransactions = ({ TokenTransfered, Miladi, TokenSelected, Transacti
       }
     } else {
       const token = TokenTransfered?.find((item) => item.symbol === TokenSelected);
-      address = `${serverAddress}/explorer/search/?query=${hash}&network=${network}&page_number=${First}&page_size=10&type=token-20&contract_address=${token.contract_address}`;
+      address = `${serverAddress}/explorer/evm/address/${hash}/?contract_address=${token.contract_address}&evm_address_type=tokens&network=${network}&page_number=${First}&page_size=10&sort_field=time&sort_order=ascending`;
     }
 
     let cancelled = false;

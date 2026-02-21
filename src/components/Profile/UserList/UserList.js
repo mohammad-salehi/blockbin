@@ -13,21 +13,23 @@ const UserList = () => {
     const [Data, SetData] = useState([])
     const [Reload, SetReload] = useState(false)
     const [TableLoading, SetTableLoading] = useState(false)
+
+    //get user list
     useEffect(() => {
         SetTableLoading(true)
         let getUsers = []
         GetRequest(`${serverAddress}/accounts/users/`)
             .then((response) => {
-                if (response.data.results.length > 0) {
-                    getUsers = response.data.results
+                if (response.data.data.results.length > 0) {
+                    getUsers = response.data.data.results
                     GetRequest(`${serverAddress}/accounts/role/`)
                         .then((resp2) => {
                             SetTableLoading(false)
-                            if (resp2.data.results.length > 0) {
+                            if (resp2.data.data.results.length > 0) {
                                 for (let i = 0; i < getUsers.length; i++) {
-                                    for (let j = 0; j < resp2.data.results.length; j++) {
-                                        if (String(getUsers[i].role) === String(resp2.data.results[j].id)) {
-                                            getUsers[i].role = resp2.data.results[j].name
+                                    for (let j = 0; j < resp2.data.data.results.length; j++) {
+                                        if (String(getUsers[i].role) === String(resp2.data.data.results[j].id)) {
+                                            getUsers[i].role = resp2.data.data.results[j].name
                                         }
                                     }
                                 }
@@ -253,13 +255,13 @@ const UserList = () => {
                 }
             })
             .then((response) => {
-                if (response.data.results.length > 0) {
-                    SetRolls(response.data.results)
+                if (response.data.data.results.length > 0) {
+                    SetRolls(response.data.data.results)
                 }
             })
             .catch((err) => {
                 try {
-                    if (err.response.data.detail === 'Token is expired' || err.response.statusText === "Unauthorized") {
+                    if (err.response.data.data.detail === 'Token is expired' || err.response.statusText === "Unauthorized") {
                         Cookies.set('refresh', '')
                         Cookies.set('access', '')
                         window.location.assign('/')
@@ -296,12 +298,12 @@ const UserList = () => {
     const ErrorHandler = (response) => {
         try {
             if (response.response.status === 400) {
-                if (response.response.data.error.fields.first_name !== undefined) {
+                if (response.response.data.data.error.fields.first_name !== undefined) {
                     return toast.error('نام را به درستی وارد کنید', {
                         position: 'bottom-left'
                     })
-                } else if (response.response.data.error.fields.username !== undefined) {
-                    if (response.response.data.error.fields.username[0].message === 'A user with that username already exists.') {
+                } else if (response.response.data.data.error.fields.username !== undefined) {
+                    if (response.response.data.data.error.fields.username[0].message === 'A user with that username already exists.') {
                         return toast.error('نام کاربری انتخاب شده از قبل وجود دارد.', {
                             position: 'bottom-left'
                         })
@@ -311,12 +313,12 @@ const UserList = () => {
                         })
                     }
 
-                } else if (response.response.data.error.fields.email !== undefined) {
+                } else if (response.response.data.data.error.fields.email !== undefined) {
                     return toast.error('ایمیل را به درستی وارد کنید', {
                         position: 'bottom-left'
                     })
-                } else if (response.response.data.error.fields.phone_number !== undefined) {
-                    if (response.response.data.error.fields.phone_number[0].message === 'user with this phone number already exists.') {
+                } else if (response.response.data.data.error.fields.phone_number !== undefined) {
+                    if (response.response.data.data.error.fields.phone_number[0].message === 'user with this phone number already exists.') {
                         return toast.error('شماره موبایل تکراری است', {
                             position: 'bottom-left'
                         })
@@ -361,7 +363,7 @@ const UserList = () => {
                             if (nameValue !== '') {
                                 // register
                                 SetLoading(true)
-                                axios.put(`${serverAddress}/accounts/profile/${users.id}/`,
+                                axios.put(`${serverAddress}/accounts/users/${users.id}/`,
                                     {
                                         first_name: document.getElementById('NameAddUserAdmin2').value,
                                         last_name: document.getElementById('lastNameMulti2').value,
@@ -378,10 +380,9 @@ const UserList = () => {
                                         }
                                     })
                                     .then((response) => {
-                                        console.log(response)
-                                        if (response.status === 200) {
+                                        if (response.data.status === 200) {
                                             SetLoading(false)
-                                            if (response.data.message === 'success') {
+                                            if (response.data.data.message === 'success') {
                                                 handleEdit()
                                                 SetReload(!Reload)
                                                 return toast.success('انجام شد', {

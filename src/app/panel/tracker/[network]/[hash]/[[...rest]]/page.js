@@ -147,7 +147,7 @@ const Page = () => {
               if (response.status === 200) {
                 SetOpenSaveBox(false);
 
-                // window.location.assign(`/tracker/loadGraph/${networkName}/${response.data.id}/${Token}`)
+                // window.location.assign(`/tracker/loadGraph/${networkName}/${response.data.data.id}/${Token}`)
                 return toast.success("با موفقیت ذخیره شد.", {
                   position: "bottom-left",
                 });
@@ -213,7 +213,7 @@ const Page = () => {
                   position: "bottom-left",
                 });
                 window.location.assign(
-                  `/panel/tracker/${network}/${hash}/${token}/${contractAddress}/${response.data.id}`
+                  `/panel/tracker/${network}/${hash}/${token}/${contractAddress}/${response.data.data.id}`
                 );
               } else {
                 return toast.error("ناموفق", {
@@ -269,9 +269,7 @@ const Page = () => {
     // token selection checker
     if (id === undefined) {
       if (token === undefined) {
-        if (
-          Networks.find((item) => item.symbole === network).type === "account"
-        ) {
+        if (Networks.find((item) => item.symbole === network).type === "account") {
           SetSelectTokenBox(true);
           SetLoading(false)
           SetShowGraph(true)
@@ -283,40 +281,42 @@ const Page = () => {
         let GetAddress;
         GetRequest(`${serverAddress}/explorer/network-detection/?query=${hash}`)
           .then((response) => {
-            if (response.data.query === "address") {
+            // آدرس
+            if (response.data.data.query === "address") {
               if (token === network) {
-                GetAddress = `${serverAddress}/explorer/search/?query=${hash}&network=${network}`;
+                if (Networks.find((item) => item.symbole === network).type === "account") {
+                  GetAddress = `${serverAddress}/explorer/evm/address/${hash}/?evm_address_type=main&network=${network}&page_number=1&page_size=10&sort_order=ascending`;
+                } else {
+                  GetAddress = `${serverAddress}/explorer/utxo/address/${hash}/?network=${network}&page_number=1&page_size=10&sort_order=ascending`;
+                }
               } else {
-                GetAddress = `${serverAddress}/explorer/search/?query=${hash}&network=${network}&page_number=1&page_size=10&type=token-20&contract_address=${contractAddress}`;
+                GetAddress = `${serverAddress}/explorer/evm/address/${hash}/?contract_address=${contractAddress}&evm_address_type=tokens&network=${network}&page_number=1&page_size=10&sort_field=time&sort_order=ascending`;
               }
             } else {
+              // تراکنش
               if (
-                Networks.find((item) => item.symbole === network).type ===
-                "account"
+                Networks.find((item) => item.symbole === network).type === "account"
               ) {
-                GetAddress = `${serverAddress}/explorer/search/?query=${hash}&network=${network}&page_number=1&page_size=100`;
+                GetAddress = `${serverAddress}/explorer/evm/transaction/${hash}/?network=${network}&page_number=1&page_size=100&transaction_type=ALL`;
               } else {
-                GetAddress = `${serverAddress}/explorer/search/?query=${hash}&page_number=0&page_size=0&network=${network}&pageNumberFrom=1&pageSizeFrom=2&pageNumberTo=1&pageSizeTo=2`;
+                GetAddress = `${serverAddress}/explorer/utxo/transaction/${hash}/?network=${network}&page_number_from=1&page_size_from=2&page_number_to=1&page_size_to=2`;
               }
             }
             GetRequest(GetAddress)
               .then(async (TrsResponse) => {
                 if (TrsResponse.status === 200) {
-                  if (
-                    Networks.find((item) => item.symbole === network).type ===
-                    "account"
-                  ) {
-                    if (response.data.query === "address") {
+                  if (Networks.find((item) => item.symbole === network).type === "account") {
+                    if (response.data.data.query === "address") {
                       if (network === token) {
                         const getData = Account_Address(
-                          TrsResponse.data.data,
+                          TrsResponse.data.data.result,
                           hash,
                           network,
                           0
                         );
-                        GetRequest(
-                          `${serverAddress}/explorer/risk-score/?address=${hash}&network=${network}`
-                        )
+                        console.log('getData')
+                        console.log(getData)
+                        GetRequest(`${serverAddress}/explorer/risk-score/?address=${hash}&network=${network}`)
                           .then((RiskResponse) => {
                             let risk = null;
                             if (RiskResponse.status === 200) {
@@ -370,6 +370,7 @@ const Page = () => {
                           network,
                           0
                         );
+
                         GetRequest(
                           `${serverAddress}/explorer/risk-score/?address=${hash}&network=${network}`
                         )
@@ -424,10 +425,13 @@ const Page = () => {
                     } else {
                       if (network === token) {
                         const getData = Account_transaction(
-                          TrsResponse.data.data,
+                          TrsResponse.data.data.result,
                           network,
                           0
                         );
+
+                        console.log('getData')
+                        console.log(getData)
                         let createdData = [];
 
                         createdData.push({
@@ -482,7 +486,7 @@ const Page = () => {
                           risk: null,
                           x: 300,
                           y: 800,
-                          metadata: getData.FromMetadata,
+                          metadata: getData.FromMetadata?.label,
                           main: false,
                           inputs: [],
                           outputs: [
@@ -506,7 +510,7 @@ const Page = () => {
                           risk: null,
                           x: -300,
                           y: 800,
-                          metadata: getData.ToMetadata,
+                          metadata: getData.ToMetadata?.label,
                           main: false,
                           inputs: [
                             {
@@ -605,11 +609,10 @@ const Page = () => {
                           });
                       } else {
                         const getData = Account_transaction(
-                          TrsResponse.data.data,
+                          TrsResponse.data.data.result,
                           network,
                           0
                         );
-
                         for (let i = 0; i < getData.logs.length; i++) {
                           if (getData.logs[i].symbole === token) {
                             let createdData = [];
@@ -704,7 +707,6 @@ const Page = () => {
                               ],
                               outputs: [],
                             });
-
                             let FromRisk = null;
                             let ToRisk = null;
                             GetRequest(
@@ -798,7 +800,7 @@ const Page = () => {
                       }
                     }
                   } else {
-                    if (response.data.query === "address") {
+                    if (response.data.data.query === "address") {
                       try {
                         // ۱. اجرا هم‌زمان دو درخواست
                         const [riskRes, detailRes] = await Promise.all([
@@ -809,7 +811,8 @@ const Page = () => {
                             `${serverAddress}/explorer/address-detail?query=${hash}`
                           ),
                         ]);
-
+                        console.log('detailRes')
+                        console.log(detailRes)
                         let createdData = [
                           {
                             id: hash,
@@ -817,15 +820,15 @@ const Page = () => {
                             type: "address",
                             label:
                               detailRes.status === 200
-                                ? detailRes.data.label_tags.labels.length > 0
-                                  ? detailRes.data.label_tags.labels.label
+                                ? detailRes.data.data.label_tags.labels.length > 0
+                                  ? detailRes.data.data.label_tags.labels[0].label
                                   : null
                                 : null,
                             main: true,
                             entity:
                               detailRes.status === 200
-                                ? detailRes.data.address_detail.entity !== null
-                                  ? detailRes.data.address_detail.entity
+                                ? detailRes.data.data.address_detail.entity.name
+                                  ? detailRes.data.data.address_detail.entity
                                   : null
                                 : null,
                             risk:
@@ -836,9 +839,9 @@ const Page = () => {
                             y: 800,
                             metadata:
                               detailRes.status === 200
-                                ? detailRes.data.address_detail.metadata !==
+                                ? detailRes.data.data.address_detail.metadata !==
                                   null
-                                  ? detailRes.data.address_detail.metadata.label
+                                  ? detailRes.data.data.address_detail.metadata.label
                                   : null
                                 : null,
                             inputs: [],
@@ -875,7 +878,7 @@ const Page = () => {
                       }
                     } else {
                       const getData = UTXO_Transaction(
-                        TrsResponse.data.data,
+                        TrsResponse.data.data.result,
                         network,
                         0
                       );
@@ -1041,17 +1044,17 @@ const Page = () => {
           console.log(response);
           SetLoading(false);
 
-          for (let i = 0; i < response.data.results.length; i++) {
-            if (response.data.results[i].id === Number(id)) {
-              SetName(response.data.results[i].title);
-              SetDescription(response.data.results[i].value.GraphDescription);
-              SetNodesPosition(response.data.results[i].value.NodesPosition);
-              SetSavedPositions(response.data.results[i].value.SavedPositions);
-              SetScale(response.data.results[i].value.Scale);
-              SetXPosition(response.data.results[i].value.XPosition);
-              SetYPosition(response.data.results[i].value.YPosition);
-              SetPaintedEdges(response.data.results[i].value.PaintedEdges);
-              SetData(response.data.results[i].value.Data);
+          for (let i = 0; i < response.data.data.results.length; i++) {
+            if (response.data.data.results[i].id === Number(id)) {
+              SetName(response.data.data.results[i].title);
+              SetDescription(response.data.data.results[i].value.GraphDescription);
+              SetNodesPosition(response.data.data.results[i].value.NodesPosition);
+              SetSavedPositions(response.data.data.results[i].value.SavedPositions);
+              SetScale(response.data.data.results[i].value.Scale);
+              SetXPosition(response.data.data.results[i].value.XPosition);
+              SetYPosition(response.data.data.results[i].value.YPosition);
+              SetPaintedEdges(response.data.data.results[i].value.PaintedEdges);
+              SetData(response.data.data.results[i].value.Data);
               SetShowGraph(true);
             }
           }
@@ -1081,27 +1084,55 @@ const Page = () => {
   const [GraphTokens, SetGraphTokens] = useState([]);
   const [Tokens, SetTokens] = useState([]);
   const [TokenSelectionLoading, setTokenSelectionLoading] = useState(false);
+
+  //token selection
   useEffect(() => {
     if (hash !== undefined) {
       setTokenSelectionLoading(true)
-      GetRequest(
-        `${serverAddress}/explorer/token-transfer-list/?query=${hash}&network=${network}`
-      )
-        .then((response) => {
-          if (response.status === 204) {
-            SetshowNetworkSelectionBox(false);
-          }
-          const getTokens = [];
-          for (let i = 0; i < response.data.length; i++) {
-            getTokens.push(response.data[i]);
-          }
-          SetTokens(getTokens);
-          setTokenSelectionLoading(false)
-        })
-        .catch((err) => {
-          console.log(err);
-          setTokenSelectionLoading(false)
-        });
+      GetRequest(`${serverAddress}/explorer/network-detection/?query=${hash}`)
+      .then((networkDetection) => {
+        if (networkDetection.data.data.query === "address") {
+          GetRequest(`${serverAddress}/explorer/token-transfer-list/?query=${hash}&network=${network}`)
+          .then((response) => {
+            if (response.status === 204) {
+              SetshowNetworkSelectionBox(false);
+            }
+            const getTokens = [];
+            for (let i = 0; i < response.data.data.length; i++) {
+              getTokens.push(response.data.data[i]);
+            }
+            SetTokens(getTokens);
+            setTokenSelectionLoading(false)
+          })
+          .catch((err) => {
+            console.log(err);
+            setTokenSelectionLoading(false)
+          });
+        } else {
+          GetRequest(`${serverAddress}/explorer/evm/transaction/${hash}/?network=${network}&page_number=1&page_size=100&transaction_type=ALL`)
+          .then((networkDetection) => {
+            console.log(networkDetection)
+            const getTokens = [];
+            for (let i = 0; i < networkDetection.data.data.result.logs.length; i++) {
+              getTokens.push(
+                {
+                  symbol:networkDetection.data.data.result.logs[i].symbol,
+                  contract_address:networkDetection.data.data.result.logs[i].contractAddress
+                }
+              )
+            }
+            SetTokens(getTokens)
+            setTokenSelectionLoading(false)
+          })
+          .catch((err) => {
+            setTokenSelectionLoading(false)
+          })
+        }
+      })
+      .catch((err) => {
+
+      })
+
     }
   }, []);
   useEffect(() => {

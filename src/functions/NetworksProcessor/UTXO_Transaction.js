@@ -62,7 +62,7 @@ export function UTXO_Transaction (array, symbole, decimal) {
                 inputs.push({
                     address: array.inputs[i].coin.address.address,
                     metadata: array.inputs[i].coin.address.metadata !== null ? array.inputs[i].coin.address.metadata.label : null,
-                    entity:array.inputs[i].coin.address.entity,
+                    entity:array.inputs[i].coin.address.entity.name ? array.inputs[i].coin.address.entity : null,
                     value: Number(array.inputs[i].coin.value),
                     valueInDollar: VID,
                     Label,
@@ -112,7 +112,7 @@ export function UTXO_Transaction (array, symbole, decimal) {
                 outputs.push({
                     address: array.outputs[i].address.address,
                     metadata: array.outputs[i].address.metadata !== null ? array.outputs[i].address.metadata.label : null,
-                    entity:array.outputs[i].address.entity,
+                    entity:array.outputs[i].address.entity.name ? array.outputs[i].address.entity : null,
                     value: array.outputs[i].value,
                     valueInDollar: VID,
                     Label,

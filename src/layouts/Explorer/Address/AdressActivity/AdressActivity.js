@@ -47,7 +47,7 @@ const AdressActivity = ({ SetTokenSelected, TokenSelected, SetMiladi, Miladi, Se
       GetRequest(`${serverAddress}/explorer/token-transfer-list/?query=${hash}&network=${network}`)
         .then((response) => {
           if (response.status === 200) {
-            const Result = response.data.find(item => item.symbol === TokenSelected)
+            const Result = response.data.data.find(item => item.symbol === TokenSelected)
 
             SetBalance(Result.crypto_balance * Math.pow(10, -Result.decimals))
             SetFirstActivity(Result.first_activity)
@@ -56,7 +56,7 @@ const AdressActivity = ({ SetTokenSelected, TokenSelected, SetMiladi, Miladi, Se
             GetRequest(`${serverAddress}/explorer/total-transaction/?type=asset_transactions&contract_address=${TokenTransfered.find(item => item.symbol === TokenSelected).contract_address}&query=${hash}&network=${network}`)
               .then((response) => {
                 if (response.status === 200) {
-                  SetTransactions(response.data.total_document)
+                  SetTransactions(response.data.data.total_document)
                 }
                 SetLoading1(false)
 
@@ -82,14 +82,14 @@ const AdressActivity = ({ SetTokenSelected, TokenSelected, SetMiladi, Miladi, Se
         SetLoading2(false)
         const getData = [];
         getData.push(TokenTransfered[0]);
-        for (let i = 0; i < response.data.length; i++) {
-          if (!getData.some(item => item.symbol === response.data[i].symbol)) {
+        for (let i = 0; i < response.data.data.length; i++) {
+          if (!getData.some(item => item.symbol === response.data.data[i].symbol)) {
             getData.push(
               {
-                symbol: response.data[i].symbol,
-                contract_address: response.data[i].contract_address,
-                value: response.data[i].symbol,
-                label: response.data[i].symbol,
+                symbol: response.data.data[i].symbol,
+                contract_address: response.data.data[i].contract_address,
+                value: response.data.data[i].symbol,
+                label: response.data.data[i].symbol,
               }
             );
           }
