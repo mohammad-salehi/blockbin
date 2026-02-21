@@ -23,9 +23,9 @@ const AddressBox = ({ Data, SetData, AddressSelectedData, Reload, SetReload }) =
   const params = useParams();
   const { network, hash } = params;
   const rest = Array.isArray(params.rest) ? params.rest : [];
-  const token = rest[0];            
-  const contractAddress = rest[1];  
-  const id = rest[2]; 
+  const token = rest[0];
+  const contractAddress = rest[1];
+  const id = rest[2];
   const [AddressTransactions, SetAddressTransactions] = useState([])
 
   const [from_volume, setfrom_volume] = useState(false);
@@ -533,7 +533,7 @@ const AddressBox = ({ Data, SetData, AddressSelectedData, Reload, SetReload }) =
 
               SetData(ProccessData)
 
-            } finally {}
+            } finally { }
 
 
             check = false
@@ -728,11 +728,18 @@ const AddressBox = ({ Data, SetData, AddressSelectedData, Reload, SetReload }) =
   };
 
   const createAddress = () => {
-    let address = `${serverAddress}/explorer/search/?query=${AddressSelectedData.id}&network=${network}`
-
-    if (token !== network) {
-      address = address + `&type=token-20&contract_address=${contractAddress}`
+    let address
+    if (Networks.find((item) => item.symbole === network).type === "account") {
+      if (token !== network) {
+        address = `${serverAddress}/explorer/evm/address/${hash}/?contract_address=${contractAddress}&evm_address_type=tokens&network=${network}&page_number=1&page_size=10&sort_field=time&sort_order=ascending`
+      } else {
+        address = `${serverAddress}/explorer/evm/address/${hash}/?evm_address_type=main&network=${network}&page_number=1&page_size=10&sort_order=ascending`
+      }
+    } else {
+      address = `${serverAddress}/explorer/utxo/address/${hash}/?network=${network}&page_number=1&page_size=10&sort_order=ascending`
     }
+
+
     return address
   }
 
@@ -748,8 +755,6 @@ const AddressBox = ({ Data, SetData, AddressSelectedData, Reload, SetReload }) =
         if (Networks.find(item => item.symbole === network).type === 'account') {
           if (network === token) {
             const getData = (Account_Address(response.data.data, AddressSelectedData.id, network, 0))
-            console.log('getData')
-            console.log(getData)
             const getTransactions = []
             for (let i = 0; i < getData.inputs.length; i++) {
               getTransactions.push(
@@ -799,6 +804,7 @@ const AddressBox = ({ Data, SetData, AddressSelectedData, Reload, SetReload }) =
             }
             SetAddressTransactions(getTransactions)
           } else {
+            console.log(response)
             const getData = (Account_Token_Address(response.data.data, AddressSelectedData.id, network, 0))
             console.log('getData')
             console.log(getData)
@@ -1032,7 +1038,7 @@ const AddressBox = ({ Data, SetData, AddressSelectedData, Reload, SetReload }) =
       <div className="m-0 mt-4 p-0 w-full ">
         {ActivityLoading ? (
           <div className="p-2  bg-TableBorder" >
-            <ExploreTopBoxLoading/>
+            <ExploreTopBoxLoading />
           </div>
         ) : (
           <div
@@ -1161,7 +1167,7 @@ const AddressBox = ({ Data, SetData, AddressSelectedData, Reload, SetReload }) =
       >
         {!TableLoading ? (
           <ExpandableTable
-            data={AddressTransactions}          
+            data={AddressTransactions}
             columns={columns}
             rowDetailsMode="row"
             rowDetailsClassName="rounded-xl p-3"
