@@ -24,7 +24,8 @@ const TxBox = ({ Data, SetData, AddressSelectedData, Reload, SetReload }) => {
     const token = rest[0];
     const contractAddress = rest[1];
     const id = rest[2];
-
+    console.log('rest')
+    console.log(rest)
     const [ShowUSD, setShowUSD] = useState(false);
     const [ShowAddress, setShowAddress] = useState(false);
     const [InputLoading, setInputLoading] = useState(false);
@@ -74,6 +75,8 @@ const TxBox = ({ Data, SetData, AddressSelectedData, Reload, SetReload }) => {
                                 contractAddress: data.logs[i].contractAddress,
                                 show: Data[Data.findIndex(item => item.id === data.logs[i].from)] !== undefined ? Data[Data.findIndex(item => item.id === data.logs[i].from)].outputs.some(item => item.id === AddressSelectedData.id) : false,
                                 valueInDollar: data.logs[i].valueInDollar,
+                                risk: data.logs[i].FromRisk,
+                                metadata: data.logs[i].FromMetadata,
                                 loading: false
                             }
                         )
@@ -92,6 +95,8 @@ const TxBox = ({ Data, SetData, AddressSelectedData, Reload, SetReload }) => {
                                 contractAddress: data.logs[i].contractAddress,
                                 show: Data[Data.findIndex(item => item.id === data.logs[i].to)] !== undefined ? Data[Data.findIndex(item => item.id === data.logs[i].to)].inputs.some(item => item.id === AddressSelectedData.id) : false,
                                 valueInDollar: data.logs[i].valueInDollar,
+                                risk: data.logs[i].ToRisk,
+                                metadata: data.logs[i].ToMetadata,
                                 loading: false
                             }
                         )
@@ -113,6 +118,8 @@ const TxBox = ({ Data, SetData, AddressSelectedData, Reload, SetReload }) => {
                                 symbole: data.symbole,
                                 show: Data[Data.findIndex(item => item.id === data.from)] !== undefined ? Data[Data.findIndex(item => item.id === data.from)].outputs.some(item => item.id === AddressSelectedData.id) : false,
                                 valueInDollar: data.valueInDollar,
+                                risk: data.FromRisk,
+                                metadata: data.FromMetadata,
                                 loading: false
                             }
                         )
@@ -132,6 +139,8 @@ const TxBox = ({ Data, SetData, AddressSelectedData, Reload, SetReload }) => {
                                 symbole: data.symbole,
                                 show: Data[Data.findIndex(item => item.id === data.to)] !== undefined ? Data[Data.findIndex(item => item.id === data.to)].inputs.some(item => item.id === AddressSelectedData.id) : false,
                                 valueInDollar: data.valueInDollar,
+                                risk: data.ToRisk,
+                                metadata: data.ToMetadata,
                                 loading: false
                             }
                         )
@@ -311,11 +320,10 @@ const TxBox = ({ Data, SetData, AddressSelectedData, Reload, SetReload }) => {
 
     const onPageChangeInput = (page) => {
         setInputLoading(true)
-        GetRequest(`${serverAddress}/explorer/search/?query=${AddressSelectedData.id}&page_number=0&page_size=0&network=${network}&pageNumberFrom=${page}&pageSizeFrom=10&pageNumberTo=1&pageSizeTo=1`)
+        GetRequest(`${serverAddress}/explorer/utxo/transaction/${AddressSelectedData.id}/?network=${network}&page_number_from=${page}&page_number_to=1&page_size_from=10&page_size_to=1`)
             .then((response) => {
-                const getData = (UTXOTr(UTXO_Transaction(response.data.data, network, 1), network))
+                const getData = (UTXOTr(UTXO_Transaction(response.data.data.result, network, 1), network))
                 SetInputsData(getData.inputAddresses)
-                // SetOutputsData(getData.outputAddresses)
                 setInputLoading(false)
             })
             .catch((err) => {
@@ -325,10 +333,9 @@ const TxBox = ({ Data, SetData, AddressSelectedData, Reload, SetReload }) => {
     }
     const onPageChangeOutput = (page) => {
         setOutputLoading(true)
-        GetRequest(`${serverAddress}/explorer/search/?query=${AddressSelectedData.id}&page_number=0&page_size=0&network=${network}&pageNumberFrom=1&pageSizeFrom=1&pageNumberTo=${page}&pageSizeTo=10`)
+        GetRequest(`${serverAddress}/explorer/utxo/transaction/${AddressSelectedData.id}/?network=${network}&page_number_from=1&page_number_to=${page}&page_size_from=1&page_size_to=10`)
             .then((response) => {
-                const getData = (UTXOTr(UTXO_Transaction(response.data.data, network, 1), network))
-                // SetInputsData(getData.inputAddresses)
+                const getData = (UTXOTr(UTXO_Transaction(response.data.data.result, network, 1), network))
                 SetOutputsData(getData.outputAddresses)
                 setOutputLoading(false)
             })
@@ -384,6 +391,7 @@ const TxBox = ({ Data, SetData, AddressSelectedData, Reload, SetReload }) => {
     }
 
     const addInputSelectedData = async (row) => {
+
         let ProccessData = Data
 
         let SelectedAddress = AddressSelectedData
@@ -421,100 +429,49 @@ const TxBox = ({ Data, SetData, AddressSelectedData, Reload, SetReload }) => {
                     y = y - 100
                 } else {
                     if (Networks.find(item => item.symbole === network).type === 'account') {
+                        ProccessData.push(
+                            {
+                                id: row.address,
+                                text: row.address,
+                                type: "address",
+                                label: row.Label,
+                                entity: row.entity,
+                                risk: row.risk ? row.risk*100 : null,
+                                metadata: row.metadata,
+                                x: x,
+                                y: y,
+                                main: row.address === hash,
+                                inputs: [],
+                                outputs: [
+                                    {
+                                        id: AddressSelectedData.id,
+                                        text: AddressSelectedData.id,
+                                        value: row.value,
+                                        time: BlockDate,
+                                        symbol: row.symbole,
+                                        DollarValue: row.valueInDollar,
+                                        color: false
+                                    },
+                                ],
+                                network: network,
+                                token: token,
+                            }
+                        )
 
-                        try {
-                            // ۱. اجرا هم‌زمان دو درخواست
-                            const [riskRes, detailRes] = await Promise.all([
-                                GetRequest(`${serverAddress}/explorer/risk-score/?address=${row.address}&network=${network}`),
-                                GetRequest(`${serverAddress}/explorer/address-detail?query=${row.address}`)
-                            ]);
+                        SetData(ProccessData)
+                        const tmp2 = InputsData.map(item => ({ ...item }));
+                        const idx2 = tmp2.findIndex(item => item.address === row.address);
+                        if (idx2 !== -1) tmp2[idx2].show = true;
+                        SetInputsData(tmp2);
+                        SetReload(!Reload)
 
-
-                            ProccessData.push(
-                                {
-                                    id: row.address,
-                                    text: row.address,
-                                    type: "address",
-                                    label: null,
-                                    entity: row.entity,
-                                    risk: riskRes.status === 200 ? riskRes.data.risk_score : null,
-                                    metadata: detailRes.status === 200 ? detailRes.data.address_detail.metadata !== null ? detailRes.data.address_detail.metadata.label : null : null,
-                                    x: x,
-                                    y: y,
-                                    main: row.address === address,
-                                    inputs: [],
-                                    outputs: [
-                                        {
-                                            id: AddressSelectedData.id,
-                                            text: AddressSelectedData.id,
-                                            value: row.value,
-                                            time: BlockDate,
-                                            symbol: row.symbole,
-                                            DollarValue: row.valueInDollar,
-                                            color: false
-                                        },
-                                    ],
-                                    network: network,
-                                    token: token,
-                                }
-                            )
-
-                            SetData(ProccessData)
-                            const tmp2 = InputsData.map(item => ({ ...item }));
-                            const idx2 = tmp2.findIndex(item => item.address === row.address);
-                            if (idx2 !== -1) tmp2[idx2].show = true;
-                            SetInputsData(tmp2);
-                            SetReload(!Reload)
-                        } catch (err) {
-
-                            console.log(err)
-                            ProccessData.push(
-                                {
-                                    id: row.address,
-                                    text: row.address,
-                                    type: "address",
-                                    label: null,
-                                    entity: row.entity,
-                                    risk: null,
-                                    metadata: null,
-                                    x: x,
-                                    y: y,
-                                    main: row.address === address,
-                                    inputs: [],
-                                    outputs: [
-                                        {
-                                            id: AddressSelectedData.id,
-                                            text: AddressSelectedData.id,
-                                            value: row.value,
-                                            time: BlockDate,
-                                            symbol: row.symbole,
-                                            DollarValue: row.valueInDollar,
-                                            color: false
-                                        },
-                                    ],
-                                    network: network,
-                                    token: token,
-                                }
-                            )
-                            SetData(ProccessData)
-
-                            const tmp2 = InputsData.map(item => ({ ...item }));
-                            const idx2 = tmp2.findIndex(item => item.address === row.address);
-                            if (idx2 !== -1) tmp2[idx2].show = true;
-                            SetInputsData(tmp2);
-                            SetReload(!Reload)
-
-                        } finally {
-                            // SetLoading(false);
-                            // SetShowGraph(true);
-                        }
                     } else {
                         ProccessData.push(
                             {
                                 id: row.address,
                                 text: row.address,
                                 type: "address",
-                                label: null,
+                                label: row.Label,
                                 entity: row.entity,
                                 risk: null,
                                 metadata: row.metadata,
@@ -575,6 +532,7 @@ const TxBox = ({ Data, SetData, AddressSelectedData, Reload, SetReload }) => {
 
     }
     const addOutputSelectedData = async (row) => {
+
         let ProccessData = Data
 
         let SelectedAddress = AddressSelectedData
@@ -612,104 +570,54 @@ const TxBox = ({ Data, SetData, AddressSelectedData, Reload, SetReload }) => {
                     y = y - 100
                 } else {
                     if (Networks.find(item => item.symbole === network).type === 'account') {
-                        try {
-                            // ۱. اجرا هم‌زمان دو درخواست
-                            const [riskRes, detailRes] = await Promise.all([
-                                GetRequest(`${serverAddress}/explorer/risk-score/?address=${row.address}&network=${network}`),
-                                GetRequest(`${serverAddress}/explorer/address-detail?query=${row.address}`)
-                            ]);
-
-
-                            ProccessData.push(
-                                {
-                                    id: row.address,
-                                    text: row.address,
-                                    type: "address",
-                                    label: null,
-                                    entity: row.entity,
-                                    risk: riskRes.status === 200 ? riskRes.data.risk_score : null,
-                                    metadata: detailRes.status === 200 ? detailRes.data.address_detail.metadata !== null ? detailRes.data.address_detail.metadata.label : null : null,
-                                    x: x,
-                                    y: y,
-                                    main: row.address === address,
-                                    inputs: [
-                                        {
-                                            id: AddressSelectedData.id,
-                                            text: AddressSelectedData.id,
-                                            value: row.value,
-                                            time: BlockDate,
-                                            symbol: row.symbole,
-                                            DollarValue: row.valueInDollar,
-                                            color: false
-                                        },
-                                    ],
-                                    outputs: [],
-                                    network: network,
-                                    token: token,
-                                }
-                            )
+                        ProccessData.push(
+                            {
+                                id: row.address,
+                                text: row.address,
+                                type: "address",
+                                label: row.Label,
+                                entity: row.entity,
+                                risk: row.risk ? row.risk*100 : null,
+                                metadata: row.metadata,
+                                x: x,
+                                y: y,
+                                main: row.address === hash,
+                                inputs: [
+                                    {
+                                        id: AddressSelectedData.id,
+                                        text: AddressSelectedData.id,
+                                        value: row.value,
+                                        time: BlockDate,
+                                        symbol: row.symbole,
+                                        DollarValue: row.valueInDollar,
+                                        color: false
+                                    },
+                                ],
+                                outputs: [],
+                                network: network,
+                                token: token,
+                            }
+                        )
 
 
 
-                            SetData(ProccessData)
-                            const tmp2 = OutputsData.map(item => ({ ...item }));
-                            const idx2 = tmp2.findIndex(item => item.address === row.address);
-                            if (idx2 !== -1) tmp2[idx2].show = true;
-                            SetOutputsData(tmp2);
-                            SetReload(!Reload)
-                        } catch (err) {
+                        SetData(ProccessData)
+                        const tmp2 = OutputsData.map(item => ({ ...item }));
+                        const idx2 = tmp2.findIndex(item => item.address === row.address);
+                        if (idx2 !== -1) tmp2[idx2].show = true;
+                        SetOutputsData(tmp2);
+                        SetReload(!Reload)
 
-                            console.log(err)
-                            ProccessData.push(
-                                {
-                                    id: row.address,
-                                    text: row.address,
-                                    type: "address",
-                                    label: null,
-                                    entity: row.entity,
-                                    risk: null,
-                                    metadata: null,
-                                    x: x,
-                                    y: y,
-                                    main: row.address === address,
-                                    inputs: [
-                                        {
-                                            id: AddressSelectedData.id,
-                                            text: AddressSelectedData.id,
-                                            value: row.value,
-                                            time: BlockDate,
-                                            symbol: row.symbole,
-                                            DollarValue: row.valueInDollar,
-                                            color: false
-                                        },
-                                    ],
-                                    outputs: [],
-                                    network: network,
-                                    token: token,
-                                }
-                            )
-                            SetData(ProccessData)
-
-                            const tmp2 = OutputsData.map(item => ({ ...item }));
-                            const idx2 = tmp2.findIndex(item => item.address === row.address);
-                            if (idx2 !== -1) tmp2[idx2].show = true;
-                            SetOutputsData(tmp2);
-                            SetReload(!Reload)
-
-                        } finally {
-                            // SetLoading(false);
-                            // SetShowGraph(true);
-                        }
                     } else {
                         ProccessData.push(
                             {
                                 id: row.address,
                                 text: row.address,
                                 type: "address",
-                                label: null,
+                                label: row.Label,
                                 entity: row.entity,
                                 risk: null,
-                                metadata: row.metadata,
+                                metadata: null,
                                 x: x,
                                 y: y,
                                 main: row.address === hash,
@@ -953,43 +861,56 @@ const TxBox = ({ Data, SetData, AddressSelectedData, Reload, SetReload }) => {
         setInputLoading(true)
         setOutputLoading(true)
         SetActivityLoading(true)
-        GetRequest(`${serverAddress}/explorer/search/?query=${AddressSelectedData.id}&network=${network}`)
-            .then((response) => {
-                if (response.status == 200) {
-                    console.log(response)
-                    SetFee(response.data.data.fee)
-                    SetblockNumber(response.data.data.block_number)
-                    SetBlockDate(response.data.data.time)
-                    if (Networks.find(item => item.symbole === network).type === 'account') {
-                        SetValue(response.data.data.value)
-                        const getData = (AccountBaseTr(Account_transaction(response.data.data, network, 1), network))
+        if (Networks.find(item => item.symbole === network).type === 'account') {
+            GetRequest(`${serverAddress}/explorer/evm/transaction/${AddressSelectedData.id}/?network=${network}&page_number=1&page_size=10&transaction_type=ALL`)
+                .then((response) => {
+                    if (response.status == 200) {
+                        console.log(response)
+                        SetFee(response.data.data.result.fee)
+                        SetblockNumber(response.data.data.result.block_number)
+                        SetBlockDate(response.data.data.result.time)
+                        SetValue(response.data.data.result.value)
+                        const getData = (AccountBaseTr(Account_transaction(response.data.data.result, network, 1), network))
                         SetInputsData(getData.inputAddresses)
                         SetOutputsData(getData.outputAddresses)
                         setInputLoading(false)
                         setOutputLoading(false)
                         SetActivityLoading(false)
 
-                    } else {
+
+                    }
+                })
+                .catch((err) => {
+                    console.log(err)
+                })
+        } else {
+            GetRequest(`${serverAddress}/explorer/utxo/transaction/${AddressSelectedData.id}/?network=${network}&page_number=1&page_size=10`)
+                .then((response) => {
+                    if (response.status == 200) {
+                        console.log(response)
+                        SetFee(response.data.data.result.fee)
+                        SetblockNumber(response.data.data.result.block_number)
+                        SetBlockDate(response.data.data.result.time)
                         let sum = 0
-                        for (let i = 0; i < response.data.data.outputs.length; i++) {
-                            sum = sum + response.data.data.outputs[i].value
+                        for (let i = 0; i < response.data.data.result.outputs.length; i++) {
+                            sum = sum + response.data.data.result.outputs[i].value
                         }
                         SetValue(sum.toFixed(5))
-                        const getData = (UTXOTr(UTXO_Transaction(response.data.data, network, 1), network))
+                        const getData = (UTXOTr(UTXO_Transaction(response.data.data.result, network, 1), network))
                         SetInputsData(getData.inputAddresses)
                         SetOutputsData(getData.outputAddresses)
-                        SetInputTrNumber(response.data.data.total_inputs)
-                        SetOutputTrNumber(response.data.data.total_outputs)
+                        SetInputTrNumber(response.data.data.result.total_inputs)
+                        SetOutputTrNumber(response.data.data.result.total_outputs)
                         setInputLoading(false)
                         setOutputLoading(false)
                         SetActivityLoading(false)
                     }
+                })
+                .catch((err) => {
+                    console.log(err)
+                })
+        }
 
-                }
-            })
-            .catch((err) => {
-                console.log(err)
-            })
     }, [])
 
     const inputColumns = [
@@ -1095,7 +1016,7 @@ const TxBox = ({ Data, SetData, AddressSelectedData, Reload, SetReload }) => {
                                 </svg>
                                 <small className="ml-1">{network}</small>
                                 {Fee}
-                                
+
                             </p>
                         </div>
 

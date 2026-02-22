@@ -1,6 +1,6 @@
 /* eslint-disable no-unused-vars */
 export function Account_transaction (array, symbole, decimal) {
-    
+
     const hash = array.hash
     const blockNumber = array.blockNumber
     const timestamp = array.time
@@ -11,7 +11,9 @@ export function Account_transaction (array, symbole, decimal) {
     const fee = Number(array.fee) 
     const logs = []
     const FromEntity = array.detail_from.entity.name ? array.detail_from.entity : null
+    const FromRisk = array.detail_from.entity.name ? array.detail_from.entity.riskscore : null
     const FromMetadata = array.detail_from.metadata
+    const ToRisk = array.detail_to.entity.name ? array.detail_to.entity.riskscore : null
     const ToEntity = array.detail_to.entity.name ? array.detail_to.entity : null
     const ToMetadata = array.detail_to.metadata
 
@@ -44,33 +46,16 @@ export function Account_transaction (array, symbole, decimal) {
                     FromLabel:array.logs[i].fromAddress.labels.length !== 0 ? array.logs[i].fromAddress.labels[0].label : null,
                     FromMetadata: array.logs[i].fromAddress.metadata !== null ? array.logs[i].fromAddress.metadata.label : false,
                     ToMetadata: array.logs[i].toAddress.metadata !== null ? array.logs[i].toAddress.metadata.label : false,
+                    ToRisk:array.logs[i].toAddress.entity.name ? array.logs[i].toAddress.entity.riskscore : null,
+                    FromRisk:array.logs[i].fromAddress.entity.name ? array.logs[i].fromAddress.entity.riskscore : null,
+                    ToMetadata:array.logs[i].toAddress.metadata.label ? array.logs[i].toAddress.metadata.label : null,
+                    FromMetadata:array.logs[i].fromAddress.metadata.label ? array.logs[i].fromAddress.metadata.label : null,
                 })
             }
         } catch (error) {
             console.log(error)
         }
     }
-    console.log(
-        {
-            hash,
-            blockNumber,
-            timestamp,
-            from,
-            to,
-            symbole,
-            value,
-            valueInDollar,
-            fee,
-            logs,
-            FromLabel,
-            ToLabel,
-            MainLabel,
-            FromEntity,
-            ToEntity,
-            FromMetadata,
-            ToMetadata
-        }
-    )
     return (
         {
             hash,
@@ -89,7 +74,9 @@ export function Account_transaction (array, symbole, decimal) {
             FromEntity,
             ToEntity,
             FromMetadata,
-            ToMetadata
+            ToMetadata,
+            FromRisk,
+            ToRisk
         }
     )
 }
