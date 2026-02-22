@@ -73,185 +73,188 @@ const AddressBox = ({ Data, SetData, AddressSelectedData, Reload, SetReload }) =
     SetData(filtredData)
   }
   const GetMoreData = (page) => {
-    setTableLoading(true)
-    let address = `${serverAddress}/explorer/search/?query=${AddressSelectedData.id}&network=${network}`
-    address = address + `&page_number=${page}&page_size=10`
+    setTableLoading(true);
 
-    if (token !== network) {
-      address = address + `&type=token-20&contract_address=${contractAddress}`
+    // ساخت آدرس
+    let address;
+
+    if (Networks.find((item) => item.symbole === network).type === "account") {
+      if (token !== network) {
+        address = `${serverAddress}/explorer/evm/address/${AddressSelectedData.id}/?contract_address=${contractAddress}&evm_address_type=tokens&network=${network}&page_number=${page}&page_size=10&sort_field=time&sort_order=ascending`;
+      } else {
+        address = `${serverAddress}/explorer/evm/address/${AddressSelectedData.id}/?evm_address_type=main&network=${network}&page_number=${page}&page_size=10&sort_order=ascending`;
+      }
+    } else {
+      address = `${serverAddress}/explorer/utxo/address/${AddressSelectedData.id}/?network=${network}&page_number=${page}&page_size=10&sort_order=ascending`;
     }
 
-    if (token === network) {
-      setTableLoading(true)
+    // ارسال درخواست و پردازش داده‌ها
+    GetRequest(address)
+      .then((response) => {
+        setTableLoading(false);
 
-      let ProcessedAddress = address
+        const data = response.data.data.result;
+        const transactions = [];
 
-      GetRequest(ProcessedAddress)
-        .then((response) => {
-          setTableLoading(false)
-
-          if (Networks.find(item => item.symbole === network).type === 'account') {
-
-            const getData = (Account_Address(response.data.data, AddressSelectedData.id, network, 0))
-            const getTransactions = []
+        if (Networks.find(item => item.symbole === network).type === 'account') {
+          let getData
+          if (network === token) {
+            getData = Account_Address(data, AddressSelectedData.id, network, 0);
+            // پردازش ورودی‌ها
             for (let i = 0; i < getData.inputs.length; i++) {
-              getTransactions.push(
-                {
-                  show: (
-                    Data.some(item => item.id === getData.inputs[i].hash)
-                    &&
-                    Data[Data.findIndex(item => item.id === AddressSelectedData.id)].inputs.some(item => item.id === getData.inputs[i].hash)
-                  ) ? true : false,
-                  loading: false,
-                  mode: 'in',
-                  date: getData.inputs[i].timestamp,
-                  hash: getData.inputs[i].hash,
-                  symbole: token,
-                  amount: getData.inputs[i].value,
-                  valueInDollar: getData.inputs[i].ValueInDollar,
-                  address: getData.inputs[i].address,
-                  entity: getData.inputs[i].entity,
-                  label: getData.inputs[i].Label,
-                  Risk: null,
-                  metadata: null,
-                }
-              )
-            }
-            for (let i = 0; i < getData.outputs.length; i++) {
-              getTransactions.push(
-                {
-                  show: (
-                    Data.some(item => item.id === getData.outputs[i].hash)
-                    &&
-                    Data[Data.findIndex(item => item.id === AddressSelectedData.id)].outputs.some(item => item.id === getData.outputs[i].hash)
-                  ) ? true : false,
-                  loading: false,
-                  mode: 'out',
-                  date: getData.outputs[i].timestamp,
-                  hash: getData.outputs[i].hash,
-                  symbole: token,
-                  amount: getData.outputs[i].value,
-                  valueInDollar: getData.outputs[i].ValueInDollar,
-                  address: getData.outputs[i].address,
-                  entity: getData.outputs[i].entity,
-                  label: getData.outputs[i].Label,
-                  Risk: null,
-                  metadata: null,
-                }
-              )
-            }
-            SetAddressTransactions(getTransactions)
-          } else {
-            const getData = (UTXO_Address(AddressSelectedData.id, response.data.data, network, 0))
-            const getTransactions = []
-            for (let i = 0; i < getData.inputs.length; i++) {
-              getTransactions.push(
-                {
-                  show: (
-                    // Data.some(item => item.id === getData.inputs[i].hash)
-                    true
-                    &&
-                    Data[Data.findIndex(item => item.id === AddressSelectedData.id)].inputs.some(item => item.id === getData.inputs[i].hash)
-                  ) ? true : false,
-                  loading: false,
-                  mode: 'in',
-                  date: getData.inputs[i].timestamp,
-                  hash: getData.inputs[i].hash,
-                  symbole: token,
-                  amount: getData.inputs[i].value,
-                  valueInDollar: getData.inputs[i].ValueInDollar,
-                  address: getData.inputs[i].address,
-                  entity: getData.inputs[i].entity,
-                  label: getData.inputs[i].Label,
-                  Risk: null,
-                  metadata: null,
-                }
-              )
-            }
-            for (let i = 0; i < getData.outputs.length; i++) {
-              getTransactions.push(
-                {
-                  show: (
-                    // Data.some(item => item.id === getData.outputs[i].hash)
-                    true
-                    &&
-                    Data[Data.findIndex(item => item.id === AddressSelectedData.id)].outputs.some(item => item.id === getData.outputs[i].hash)
-                  ) ? true : false,
-                  loading: false,
-                  mode: 'out',
-                  date: getData.outputs[i].timestamp,
-                  hash: getData.outputs[i].hash,
-                  symbole: token,
-                  amount: getData.outputs[i].value,
-                  valueInDollar: getData.outputs[i].ValueInDollar,
-                  address: getData.outputs[i].address,
-                  entity: getData.outputs[i].entity,
-                  label: getData.outputs[i].Label,
-                  Risk: null,
-                  metadata: null,
-                }
-              )
-            }
-            SetAddressTransactions(getTransactions)
-          }
-        })
-        .catch((err) => {
-          console.log(err)
-          setTableLoading(false)
-        })
-    } else {
-
-      GetRequest(address)
-        .then((response) => {
-          setTableLoading(false)
-          const getData = (Account_Token_Address(response.data.data, AddressSelectedData.id, network, 0))
-          const getTransactions = []
-          for (let i = 0; i < getData.logs.inputs.length; i++) {
-            getTransactions.push(
-              {
-                show: Data.some(item => item.id === getData.logs.inputs[i].hash) ? true : false,
+              transactions.push({
+                show: (
+                  Data.some(item => item.id === getData.inputs[i].hash) &&
+                  Data[Data.findIndex(item => item.id === AddressSelectedData.id)].inputs.some(item => item.id === getData.inputs[i].hash)
+                ) ? true : false,
                 loading: false,
                 mode: 'in',
-                date: getData.logs.inputs[i].timestamp,
-                hash: getData.logs.inputs[i].hash,
+                date: getData.inputs[i].timestamp,
+                hash: getData.inputs[i].hash,
                 symbole: token,
-                amount: getData.logs.inputs[i].value,
-                valueInDollar: getData.logs.inputs[i].ValueInDollar,
-                address: getData.logs.inputs[i].address,
-                entity: getData.logs.inputs[i].entity,
-                label: getData.logs.inputs[i].Label,
+                amount: getData.inputs[i].value,
+                valueInDollar: getData.inputs[i].ValueInDollar,
+                address: getData.inputs[i].address,
+                entity: getData.inputs[i].entity,
+                label: getData.inputs[i].Label,
                 Risk: null,
                 metadata: null,
-              }
-            )
-          }
-          for (let i = 0; i < getData.logs.outputs.length; i++) {
-            getTransactions.push(
-              {
-                show: Data.some(item => item.id === getData.logs.outputs[i].hash) ? true : false,
+              });
+            }
+
+            // پردازش خروجی‌ها
+            for (let i = 0; i < getData.outputs.length; i++) {
+              transactions.push({
+                show: (
+                  Data.some(item => item.id === getData.outputs[i].hash) &&
+                  Data[Data.findIndex(item => item.id === AddressSelectedData.id)].outputs.some(item => item.id === getData.outputs[i].hash)
+                ) ? true : false,
                 loading: false,
                 mode: 'out',
-                date: getData.logs.outputs[i].timestamp,
-                hash: getData.logs.outputs[i].hash,
+                date: getData.outputs[i].timestamp,
+                hash: getData.outputs[i].hash,
                 symbole: token,
-                amount: getData.logs.outputs[i].value,
-                valueInDollar: getData.logs.outputs[i].ValueInDollar,
-                address: getData.logs.outputs[i].address,
-                entity: getData.logs.outputs[i].entity,
-                label: getData.logs.outputs[i].Label,
+                amount: getData.outputs[i].value,
+                valueInDollar: getData.outputs[i].ValueInDollar,
+                address: getData.outputs[i].address,
+                entity: getData.outputs[i].entity,
+                label: getData.outputs[i].Label,
                 Risk: null,
                 metadata: null,
-              }
-            )
+              });
+            }
+
+            SetAddressTransactions(transactions);
+          } else {
+            getData = (Account_Token_Address(response.data.data, AddressSelectedData.id, network, 0))
+            const getTransactions = []
+            for (let i = 0; i < getData.logs.inputs.length; i++) {
+              getTransactions.push(
+                {
+                  show: (
+                    // Data.some(item => item.id === getData.logs.inputs[i].hash)
+                    true
+                    &&
+                    Data[Data.findIndex(item => item.id === AddressSelectedData.id)].inputs.some(item => item.id === getData.logs.inputs[i].hash)
+                  ) ? true : false,
+                  loading: false,
+                  mode: 'in',
+                  date: getData.logs.inputs[i].timestamp,
+                  hash: getData.logs.inputs[i].hash,
+                  symbole: token,
+                  amount: getData.logs.inputs[i].value,
+                  valueInDollar: getData.logs.inputs[i].ValueInDollar,
+                  address: getData.logs.inputs[i].address,
+                  entity: getData.logs.inputs[i].entity,
+                  label: getData.logs.inputs[i].Label,
+                  Risk: null,
+                  metadata: null,
+                }
+              )
+            }
+            for (let i = 0; i < getData.logs.outputs.length; i++) {
+              getTransactions.push(
+                {
+                  show: (
+                    // Data.some(item => item.id === getData.logs.outputs[i].hash)
+                    true
+                    &&
+                    Data[Data.findIndex(item => item.id === AddressSelectedData.id)].outputs.some(item => item.id === getData.logs.outputs[i].hash)
+                  ) ? true : false,
+                  loading: false,
+                  mode: 'out',
+                  date: getData.logs.outputs[i].timestamp,
+                  hash: getData.logs.outputs[i].hash,
+                  symbole: token,
+                  amount: getData.logs.outputs[i].value,
+                  valueInDollar: getData.logs.outputs[i].ValueInDollar,
+                  address: getData.logs.outputs[i].address,
+                  entity: getData.logs.outputs[i].entity,
+                  label: getData.logs.outputs[i].Label,
+                  Risk: null,
+                  metadata: null,
+                }
+              )
+            }
+            SetAddressTransactions(getTransactions)
           }
-          console.log(getTransactions)
-          SetAddressTransactions(getTransactions)
-        })
-        .catch((err) => {
-          setTableLoading(false)
-        })
-    }
-  }
+        } else {
+          const getData = UTXO_Address(AddressSelectedData.id, data, network, 0);
+
+          // پردازش ورودی‌ها
+          for (let i = 0; i < getData.inputs.length; i++) {
+            transactions.push({
+              show: (
+                // Data.some(item => item.id === getData.inputs[i].hash)
+                true &&
+                Data[Data.findIndex(item => item.id === AddressSelectedData.id)].inputs.some(item => item.id === getData.inputs[i].hash)
+              ) ? true : false,
+              loading: false,
+              mode: 'in',
+              date: getData.inputs[i].timestamp,
+              hash: getData.inputs[i].hash,
+              symbole: token,
+              amount: getData.inputs[i].value,
+              valueInDollar: getData.inputs[i].ValueInDollar,
+              address: getData.inputs[i].address,
+              entity: getData.inputs[i].entity,
+              label: getData.inputs[i].Label,
+              Risk: null,
+              metadata: null,
+            });
+          }
+
+          // پردازش خروجی‌ها
+          for (let i = 0; i < getData.outputs.length; i++) {
+            transactions.push({
+              show: (
+                // Data.some(item => item.id === getData.outputs[i].hash)
+                true &&
+                Data[Data.findIndex(item => item.id === AddressSelectedData.id)].outputs.some(item => item.id === getData.outputs[i].hash)
+              ) ? true : false,
+              loading: false,
+              mode: 'out',
+              date: getData.outputs[i].timestamp,
+              hash: getData.outputs[i].hash,
+              symbole: token,
+              amount: getData.outputs[i].value,
+              valueInDollar: getData.outputs[i].ValueInDollar,
+              address: getData.outputs[i].address,
+              entity: getData.outputs[i].entity,
+              label: getData.outputs[i].Label,
+              Risk: null,
+              metadata: null,
+            });
+          }
+
+          SetAddressTransactions(transactions);
+        }
+      })
+      .catch((err) => {
+        console.log(err);
+        setTableLoading(false);
+      });
+  };
   const handlePagination = (page) => {
     setFirst(page);
     GetMoreData(page);
@@ -427,16 +430,8 @@ const AddressBox = ({ Data, SetData, AddressSelectedData, Reload, SetReload }) =
             const idx = tmp.findIndex(item => item.hash === row.hash);
             if (idx !== -1) tmp[idx].loading = true;
             SetAddressTransactions(tmp);
-
-            try {
-              // ۱. اجرا هم‌زمان دو درخواست
-              setCanAdd(false)
-              const [riskRes, detailRes] = await Promise.all([
-                GetRequest(`${serverAddress}/explorer/risk-score/?address=${row.address}&network=${network}`),
-                GetRequest(`${serverAddress}/explorer/address-detail?query=${row.address}`)
-              ]);
-
-
+              console.log('row')
+              console.log(row)
               ProccessData.push(
                 {
                   id: row.address,
@@ -444,8 +439,8 @@ const AddressBox = ({ Data, SetData, AddressSelectedData, Reload, SetReload }) =
                   type: "address",
                   label: row.label ? row.label : null,
                   entity: row.entity,
-                  risk: riskRes.status === 200 ? riskRes.data.risk_score : null,
-                  metadata: detailRes.status === 200 ? detailRes.data.address_detail.metadata !== null ? detailRes.data.address_detail.metadata.label : null : null,
+                  risk: row.Risk,
+                  metadata: row.metadata,
                   x: x,
                   y: y,
                   main: row.hash === hash,
@@ -484,56 +479,7 @@ const AddressBox = ({ Data, SetData, AddressSelectedData, Reload, SetReload }) =
               if (idx2 !== -1) tmp2[idx2].loading = false;
               SetAddressTransactions(tmp2);
               // SetLoading(false)
-            } catch (err) {
-              setCanAdd(true)
 
-              console.log(err)
-              ProccessData.push(
-                {
-                  id: row.address,
-                  text: row.address,
-                  type: "address",
-                  label: row.label ? row.label : null,
-                  entity: row.entity,
-                  risk: null,
-                  metadata: null,
-                  x: x,
-                  y: y,
-                  main: row.hash === hash,
-                  inputs: row.mode === 'out' ? [
-                    {
-                      id: row.hash,
-                      text: row.hash,
-                      value: row.amount,
-                      time: row.date,
-                      symbol: row.symbole,
-                      DollarValue: row.valueInDollar,
-                      color: false
-                    },
-                  ] : [],
-                  outputs: row.mode === 'in' ? [
-                    {
-                      id: row.hash,
-                      text: row.hash,
-                      value: row.amount,
-                      time: row.date,
-                      symbol: row.symbole,
-                      DollarValue: row.valueInDollar,
-                      color: false
-                    },
-                  ] : [],
-                  network: network,
-                  token: token,
-                }
-              )
-              const tmp2 = AddressTransactions.map(item => ({ ...item }));
-              const idx2 = tmp2.findIndex(item => item.hash === row.hash);
-              if (idx2 !== -1) tmp2[idx2].loading = false;
-              SetAddressTransactions(tmp2);
-
-              SetData(ProccessData)
-
-            } finally { }
 
 
             check = false
@@ -731,12 +677,14 @@ const AddressBox = ({ Data, SetData, AddressSelectedData, Reload, SetReload }) =
     let address
     if (Networks.find((item) => item.symbole === network).type === "account") {
       if (token !== network) {
-        address = `${serverAddress}/explorer/evm/address/${hash}/?contract_address=${contractAddress}&evm_address_type=tokens&network=${network}&page_number=1&page_size=10&sort_field=time&sort_order=ascending`
+        address = `${serverAddress}/explorer/evm/address/${AddressSelectedData.id}/?contract_address=${contractAddress}&evm_address_type=tokens&network=${network}&page_number=1&page_size=10&sort_field=time&sort_order=ascending`
+
+
       } else {
-        address = `${serverAddress}/explorer/evm/address/${hash}/?evm_address_type=main&network=${network}&page_number=1&page_size=10&sort_order=ascending`
+        address = `${serverAddress}/explorer/evm/address/${AddressSelectedData.id}/?evm_address_type=main&network=${network}&page_number=1&page_size=10&sort_order=ascending`
       }
     } else {
-      address = `${serverAddress}/explorer/utxo/address/${hash}/?network=${network}&page_number=1&page_size=10&sort_order=ascending`
+      address = `${serverAddress}/explorer/utxo/address/${AddressSelectedData.id}/?network=${network}&page_number=1&page_size=10&sort_order=ascending`
     }
 
 
@@ -750,11 +698,9 @@ const AddressBox = ({ Data, SetData, AddressSelectedData, Reload, SetReload }) =
     setTableLoading(true)
     GetRequest(address)
       .then((response) => {
-        console.log('response')
-        console.log(response)
         if (Networks.find(item => item.symbole === network).type === 'account') {
           if (network === token) {
-            const getData = (Account_Address(response.data.data, AddressSelectedData.id, network, 0))
+            const getData = (Account_Address(response.data.data.result, AddressSelectedData.id, network, 0))
             const getTransactions = []
             for (let i = 0; i < getData.inputs.length; i++) {
               getTransactions.push(
@@ -804,9 +750,8 @@ const AddressBox = ({ Data, SetData, AddressSelectedData, Reload, SetReload }) =
             }
             SetAddressTransactions(getTransactions)
           } else {
-            console.log(response)
             const getData = (Account_Token_Address(response.data.data, AddressSelectedData.id, network, 0))
-            console.log('getData')
+            console.log('Account_Token_Address')
             console.log(getData)
             const getTransactions = []
             for (let i = 0; i < getData.logs.inputs.length; i++) {
@@ -828,8 +773,8 @@ const AddressBox = ({ Data, SetData, AddressSelectedData, Reload, SetReload }) =
                   address: getData.logs.inputs[i].address,
                   entity: getData.logs.inputs[i].entity,
                   label: getData.logs.inputs[i].Label,
-                  Risk: null,
-                  metadata: null,
+                  Risk: getData.logs.inputs[i].risk ?? null,
+                  metadata: getData.logs.inputs[i].metadata,
                 }
               )
             }
@@ -852,15 +797,15 @@ const AddressBox = ({ Data, SetData, AddressSelectedData, Reload, SetReload }) =
                   address: getData.logs.outputs[i].address,
                   entity: getData.logs.outputs[i].entity,
                   label: getData.logs.outputs[i].Label,
-                  Risk: null,
-                  metadata: null,
+                  Risk: getData.logs.outputs[i].risk ?? null,
+                  metadata: getData.logs.outputs[i].metadata,
                 }
               )
             }
             SetAddressTransactions(getTransactions)
           }
         } else {
-          const getData = (UTXO_Address(AddressSelectedData.id, response.data.data, network, 0))
+          const getData = (UTXO_Address(AddressSelectedData.id, response.data.data.result, network, 0))
           const getTransactions = []
           for (let i = 0; i < getData.inputs.length; i++) {
             getTransactions.push(
@@ -930,13 +875,13 @@ const AddressBox = ({ Data, SetData, AddressSelectedData, Reload, SetReload }) =
           SetActivityLoading(false)
           if (response.status === 200) {
             SetTrNumber(response.data.transactions)
-            const FA = response.data.first_activity > 10000000000 ? response.data.first_activity : response.data.first_activity * 1000
-            const LA = response.data.last_activity > 10000000000 ? response.data.last_activity : response.data.last_activity * 1000
+            const FA = response.data.data.first_activity > 10000000000 ? response.data.data.first_activity : response.data.data.first_activity * 1000
+            const LA = response.data.data.last_activity > 10000000000 ? response.data.data.last_activity : response.data.data.last_activity * 1000
             SetJalaliFirstActivity(`${JalaliCalendar(FA).year}/${JalaliCalendar(FA).month}/${JalaliCalendar(FA).day}`)
             SetJalalaliLastActivity(`${JalaliCalendar(LA).year}/${JalaliCalendar(LA).month}/${JalaliCalendar(LA).day}`)
             SetMiladiFirstActivity(`${MiladiCalendar(FA).year}/${MiladiCalendar(FA).month}/${MiladiCalendar(FA).day}`)
             SetMiladiLastActivity(`${MiladiCalendar(LA).year}/${MiladiCalendar(LA).month}/${MiladiCalendar(LA).day}`)
-            SetBalance(response.data.balance)
+            SetBalance(response.data.data.balance)
           }
         })
         .catch((err) => {
@@ -947,7 +892,7 @@ const AddressBox = ({ Data, SetData, AddressSelectedData, Reload, SetReload }) =
         .then((response) => {
           if (response.status === 200) {
             console.log(response)
-            const Result = response.data.find(item => item.symbol === token)
+            const Result = response.data.data.find(item => item.symbol === token)
             SetJalaliFirstActivity(`${JalaliCalendar(Result.first_activity).year}/${JalaliCalendar(Result.first_activity).month}/${JalaliCalendar(Result.first_activity).day}`)
             SetJalalaliLastActivity(`${JalaliCalendar(Result.last_activity).year}/${JalaliCalendar(Result.last_activity).month}/${JalaliCalendar(Result.last_activity).day}`)
             SetMiladiFirstActivity(`${MiladiCalendar(Result.first_activity).year}/${MiladiCalendar(Result.first_activity).month}/${MiladiCalendar(Result.first_activity).day}`)
@@ -967,8 +912,18 @@ const AddressBox = ({ Data, SetData, AddressSelectedData, Reload, SetReload }) =
       GetRequest(`${serverAddress}/explorer/total-transaction/?type=asset_transactions&contract_address=${contractAddress}&query=${AddressSelectedData.id}&network=${network}`)
         .then((response) => {
           if (response.status === 200) {
-            SetTrNumber(response.data.total_document)
+            SetTrNumber(response.data.data.total_document)
           }
+        })
+    } else {
+      GetRequest(`${serverAddress}/explorer/address-aggregation/?query=${AddressSelectedData.id}&network=${network}`)
+        .then((response) => {
+          if (response.status === 200) {
+            SetTrNumber(response.data.data.transactions)
+          }
+        })
+        .catch((err) => {
+          console.log(err)
         })
     }
   }, [, AddressSelectedData])

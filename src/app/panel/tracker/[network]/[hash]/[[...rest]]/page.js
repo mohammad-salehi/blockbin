@@ -53,7 +53,6 @@ const Page = () => {
   const [ShowPrice, SetShowPrice] = useState(false);
   const [ShowValues, SetShowValues] = useState(true);
   const [ShowTimes, SetShowTimes] = useState(true);
-  const [ShowGuides, SetShowGuides] = useState(false);
   const [OpenSaveBox, SetOpenSaveBox] = useState(false);
   const [OpenFolderBox, SetOpenFolderBox] = useState(false);
 
@@ -61,6 +60,13 @@ const Page = () => {
   const [ShowGraph, SetShowGraph] = useState(false);
   const [SelectTokenBox, SetSelectTokenBox] = useState(false);
   const [ReportBox, SetReportBox] = useState(false);
+
+
+
+  useEffect(() => {
+    console.log('Data')
+    console.log(Data)
+  },[Data])
 
   useEffect(() => {
     document.title = `بلاک‌بین`;
@@ -184,7 +190,7 @@ const Page = () => {
           //Error Done
           axios
             .post(
-              `${serverAddress}/tracing/graph/`,
+              `${serverAddress}/explorer/graph/`,
               {
                 value: {
                   GraphName: GraphName,
@@ -207,7 +213,7 @@ const Page = () => {
             )
             .then((response) => {
               SetLoading(false);
-              if (response.status === 201) {
+              if (response.status === 200) {
                 SetOpenSaveBox(false);
                 toast.success("با موفقیت ذخیره شد.", {
                   position: "bottom-left",
@@ -314,13 +320,11 @@ const Page = () => {
                           network,
                           0
                         );
-                        console.log('getData')
-                        console.log(getData)
                         GetRequest(`${serverAddress}/explorer/risk-score/?address=${hash}&network=${network}`)
                           .then((RiskResponse) => {
                             let risk = null;
                             if (RiskResponse.status === 200) {
-                              risk = RiskResponse.data.risk_score;
+                              risk = RiskResponse.data.data.risk_score;
                             }
                             let createdData = [
                               {
@@ -377,7 +381,7 @@ const Page = () => {
                           .then((RiskResponse) => {
                             let risk = null;
                             if (RiskResponse.status === 200) {
-                              risk = RiskResponse.data.risk_score;
+                              risk = RiskResponse.data.data.risk_score;
                             }
 
                             let createdData = [
@@ -532,13 +536,13 @@ const Page = () => {
                         )
                           .then((RiskResponse) => {
                             if (RiskResponse.status === 200) {
-                              FromRisk = RiskResponse.data.risk_score;
+                              FromRisk = RiskResponse.data.data.risk_score;
                               GetRequest(
                                 `${serverAddress}/explorer/risk-score/?address=${getData.to}&network=${network}`
                               )
                                 .then((RiskResponse) => {
                                   if (RiskResponse.status === 200) {
-                                    ToRisk = RiskResponse.data.risk_score;
+                                    ToRisk = RiskResponse.data.data.risk_score;
                                     createdData.find(
                                       (item) => item.id === getData.from
                                     ).risk = FromRisk;
@@ -564,7 +568,7 @@ const Page = () => {
                               )
                                 .then((RiskResponse) => {
                                   if (RiskResponse.status === 200) {
-                                    ToRisk = RiskResponse.data.risk_score;
+                                    ToRisk = RiskResponse.data.data.risk_score;
                                     createdData.find(
                                       (item) => item.id === getData.from
                                     ).risk = FromRisk;
@@ -592,7 +596,7 @@ const Page = () => {
                             )
                               .then((RiskResponse) => {
                                 if (RiskResponse.status === 200) {
-                                  ToRisk = RiskResponse.data.risk_score;
+                                  ToRisk = RiskResponse.data.data.risk_score;
                                   createdData.find(
                                     (item) => item.id === getData.to
                                   ).risk = ToRisk;
@@ -714,13 +718,13 @@ const Page = () => {
                             )
                               .then((FromRiskResponse) => {
                                 if (FromRiskResponse.status === 200) {
-                                  FromRisk = FromRiskResponse.data.risk_score;
+                                  FromRisk = FromRiskResponse.data.data.risk_score;
                                   GetRequest(
                                     `${serverAddress}/explorer/risk-score/?address=${getData.logs[i].to}&network=${network}`
                                   )
                                     .then((ToRiskResponse) => {
                                       if (ToRiskResponse.status === 200) {
-                                        ToRisk = ToRiskResponse.data.risk_score;
+                                        ToRisk = ToRiskResponse.data.data.risk_score;
                                         createdData.find(
                                           (item) =>
                                             item.id === getData.logs[i].from
@@ -749,7 +753,7 @@ const Page = () => {
                                   )
                                     .then((ToRiskResponse) => {
                                       if (ToRiskResponse.status === 200) {
-                                        ToRisk = ToRiskResponse.data.risk_score;
+                                        ToRisk = ToRiskResponse.data.data.risk_score;
                                         createdData.find(
                                           (item) =>
                                             item.id === getData.logs[i].from
@@ -780,7 +784,7 @@ const Page = () => {
                                 )
                                   .then((ToRiskResponse) => {
                                     if (ToRiskResponse.status === 200) {
-                                      ToRisk = ToRiskResponse.data.risk_score;
+                                      ToRisk = ToRiskResponse.data.data.risk_score;
                                       createdData.find(
                                         (item) => item.id === getData.logs[i].to
                                       ).risk = ToRisk;
@@ -1039,13 +1043,13 @@ const Page = () => {
           });
       }
     } else {
-      GetRequest(`${serverAddress}/tracing/graph/`)
+      GetRequest(`${serverAddress}/explorer/graph/`)
         .then((response) => {
           console.log(response);
           SetLoading(false);
 
           for (let i = 0; i < response.data.data.results.length; i++) {
-            if (response.data.data.results[i].id === Number(id)) {
+            if (response.data.data.results[i].id === id) {
               SetName(response.data.data.results[i].title);
               SetDescription(response.data.data.results[i].value.GraphDescription);
               SetNodesPosition(response.data.data.results[i].value.NodesPosition);

@@ -349,8 +349,8 @@ const Blockbin_graph_engine = ({
         image:
           item.entity === null
             ? "/images/location.png"
-            : item.entity.image !== null
-              ? mainURL + item.entity.image
+            : item.entity.metadata?.image !== null
+              ? item.entity.metadata.image
               : "/images/location.png",
         label,
       };
