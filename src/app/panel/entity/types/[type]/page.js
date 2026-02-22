@@ -1,5 +1,5 @@
 'use client'
-import React, { useCallback, useEffect, useState } from 'react'
+import React, { useState, useEffect, useCallback } from 'react'
 import ExpandableTable from '@/components/ExpandableTable/ExpandableTable'
 import Pagination from '@/components/Pagination/Pagination'
 import SkeletonLoading from '@/components/SkeletonLoading/SkeletonLoading'
@@ -8,6 +8,7 @@ import { serverAddress } from '@/functions/ServerAddress'
 import { useParams } from 'next/navigation'
 import ImageNotSupportedIcon from '@mui/icons-material/ImageNotSupported'
 import { utcToJalaliIran } from '@/functions/utcToJalali'
+import Switch from '@mui/material/Switch'  // وارد کردن سوییچ از MUI
 
 const PAGE_SIZE = 10
 
@@ -18,91 +19,73 @@ const Page = () => {
   const [Loading, setLoading] = useState(false)
   const [First, SetFirst] = useState(1)
   const [EntitieNumber, SetEntitieNumber] = useState(0)
+  const [TotalPages, SetTotalPages] = useState(0)
   const [Data, SetData] = useState([])
   const [Name, SetName] = useState('')
+  const [IsIranianFilter, SetIsIranianFilter] = useState(true)  // فیلتر ایرانی بودن
 
   const getData = useCallback(() => {
     if (!type) return
 
     setLoading(true)
 
-    GetRequest(`${serverAddress}/entity/type/`)
+    // پارامترهای ریکوئست طبق نیاز شما
+    const queryParams = {
+      page_number: First,
+      page_size: PAGE_SIZE,
+      category: type,
+      ...(IsIranianFilter === false && { is_iranian: true }),  // اگر فیلتر ایرانی بودن انتخاب شده باشد، آن را به ریکوئست اضافه می‌کنیم
+    }
+
+    // ارسال ریکوئست با پارامترهای صحیح
+    GetRequest(`${serverAddress}/entity/entities/`, queryParams)
       .then((response) => {
-        if (response.status !== 200) throw new Error('Failed to load types')
+        if (response.status !== 200) throw new Error('Failed to load entities')
 
-        const getType = [{ id: null, value: false, label: 'انتخاب نشده', pname: 'انتخاب نشده' }]
+        const entities = response.data.data?.entities ?? []
+        SetEntitieNumber(entities.length)
+        SetData(entities)
 
-        for (let i = 0; i < response.data.results.length; i++) {
-          getType.push({
-            id: response.data.results[i].id,
-            value: response.data.results[i].id,
-            label: response.data.results[i].name,
-            pname: response.data.results[i].persian_name,
-          })
+        if (entities.length > 0) {
+          SetName(entities[0].category.persian_name || 'موجودیت‌ها')
         }
 
-        const found = getType.find((item) => item.label === type)
-
-        if (!found) {
-          SetName('')
-          SetData([])
-          SetEntitieNumber(0)
-          setLoading(false)
-          return null
-        }
-
-        SetName(found.pname)
-
-        const queryParams = {
-          limit: PAGE_SIZE,
-          offset: (First - 1) * PAGE_SIZE,
-          type: found.id,
-        }
-
-        return GetRequest(`${serverAddress}/entity/filter-process/`, queryParams)
-      })
-      .then((response) => {
-        if (!response) return
-
-        if (response.status === 200) {
-          SetEntitieNumber(response.data.count ?? 0)
-          SetData(response.data.results ?? [])
-        } else if (response.status === 404) {
-          SetData([])
-          SetEntitieNumber(0)
-        }
+        const totalPages = Math.ceil(response.data.data?.count)
+        SetTotalPages(totalPages)
 
         setLoading(false)
       })
       .catch((err) => {
         console.log(err)
-        if (err?.response?.status === 404) {
-          SetData([])
-          SetEntitieNumber(0)
-        }
         setLoading(false)
       })
-  }, [First, type])
+  }, [First, type, IsIranianFilter])
 
   useEffect(() => {
     getData()
   }, [getData])
 
-  // کلاس مشترک: جلوگیری از رفتن متن به خط بعد + ellipsis
+  const handlePageChange = (page) => {
+    SetFirst(page)
+  }
+
+  const handleIranianFilterChange = (event) => {
+    SetIsIranianFilter(event.target.checked ? true : false)  // برای سوییچ ایرانی بودن، true برای ایرانی و null برای همه
+  }
+
   const nowrapCell = 'whitespace-nowrap overflow-hidden text-ellipsis'
-  // برای اینکه ellipsis کار کنه باید max-width داشته باشیم
   const maxCell = 'max-w-[240px]'
 
   const columns = [
     {
-      header: 'عنوان',
-      accessorKey: 'logo',
+      header: 'نام',
+      accessorKey: 'name',
       cell: (row) => (
         <a
-          href={`/panel/entity/${row.uuid}`}
+          href={`/panel/entity/${row.id}`}
           className="flex items-center gap-2 min-w-0 whitespace-nowrap overflow-hidden"
         >
-          {row.image !== null ? (
+          {row.image ? (
             <img src={row.image} className="w-6 h-6 shrink-0 inline-block" alt="" />
           ) : (
             <ImageNotSupportedIcon className="shrink-0" />
@@ -115,37 +98,18 @@ const Page = () => {
       ),
     },
     {
-      header: 'وبسایت',
-      accessorKey: 'hash',
-      cell: (row) => (
-        <div className={`${nowrapCell} ${maxCell}`} title={row.web_site || ''}>
-          {row.web_site !== null ? (
-            <a href={row.web_site} className="block overflow-hidden text-ellipsis whitespace-nowrap">
-              {row.web_site}
-            </a>
-          ) : (
-            <span>نامشخص</span>
-          )}
-        </div>
-      ),
-    },
-    {
-      header: 'نام حقوقی',
-      accessorKey: 'legal_name',
-      cell: (row) => (
-        <div className={`${nowrapCell} max-w-55`} title={row.legal_name || ''}>
-          {row.legal_name !== null ? row.legal_name : 'نامشخص'}
-        </div>
-      ),
-    },
-    {
       header: 'ریسک',
-      accessorKey: 'TokenInfo',
+      accessorKey: 'riskscore',
       cell: (row) => (
-        <div className="whitespace-nowrap" title={row.riskscore != null ? `${row.riskscore * 100}%` : ''}>
-          {row.riskscore !== null ? <span>{row.riskscore * 100}%</span> : <span>نامشخص</span>}
+        <div className="whitespace-nowrap">
+          {row.riskscore !== null ? <span>{(row.riskscore * 100).toFixed(2)}%</span> : <span>نامشخص</span>}
         </div>
       ),
+    },
+    {
+      header: 'کشور',
+      accessorKey: 'country',
+      cell: (row) => <div className={nowrapCell}>{row.country || 'نامشخص'}</div>,
     },
     {
       header: 'آخرین به‌روزرسانی',
@@ -160,11 +124,22 @@ const Page = () => {
 
   return (
     <div>
-      <h3 className="text-textColor text-xl mb-1">لیست موجودیت‌های {Name}</h3>
+      <h3 className="text-textColor text-xl mb-4">لیست موجودیت‌ها - {Name}</h3>
+
+      {/* فیلتر ایرانی بودن به صورت سوییچ */}
+      <div className="mb-4 flex items-center gap-2">
+        <label htmlFor="iranian-filter" className="font-bold text-textTitleColor">
+          نمایش موجودیت های غیرایرانی:
+        </label>
+        <Switch
+          checked={IsIranianFilter}
+          onChange={handleIranianFilterChange}
+          inputProps={{ 'aria-label': 'Toggle Iranian Filter' }}
+        />
+      </div>
 
       {!Loading ? (
         <>
-          {/* اگر جدول شما خودش overflow نداره، این wrapper کمک می‌کنه روی موبایل اسکرول افقی بگیری */}
           <div className="overflow-x-auto">
             <ExpandableTable
               data={Data}
@@ -176,12 +151,11 @@ const Page = () => {
 
           <Pagination
             rtl
-            totalItems={EntitieNumber}
+            totalItems={TotalPages}
             pageSize={PAGE_SIZE}
             currentPage={First}
-            onPageChange={(page) => {
-              SetFirst(page)
-            }}
+            totalPages={TotalPages}
+            onPageChange={handlePageChange}
           />
         </>
       ) : (

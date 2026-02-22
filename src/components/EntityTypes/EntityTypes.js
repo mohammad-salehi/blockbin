@@ -8,16 +8,16 @@ const EntityTypes = (props) => {
   const [EntityNumber, SetEntityNumber] = useState(0);
 
   useEffect(() => {
-    GetRequest(`${serverAddress}/entity/filter-process/?limit=1&offset=0&type=${props.id}`)
+    GetRequest(`${serverAddress}/entity/entities/?category=${props.id}&is_iranian=false&page_number=1&page_size=1000`)
       .then((response) => {
-        if (response.status === 200) SetEntityNumber(response.data.count);
+        if (response.status === 200) SetEntityNumber(response.data.data.count);
         else SetEntityNumber(0);
       })
       .catch((err) => console.log(err));
 
-    GetRequest(`${serverAddress}/entity/filter-process/?countries=106&limit=1&offset=0&type=${props.id}`)
+    GetRequest(`${serverAddress}/entity/entities/?category=${props.id}&is_iranian=true&page_number=1&page_size=1000`)
       .then((response) => {
-        if (response.status === 200) SetPersianEntityNumber(response.data.count);
+        if (response.status === 200) SetPersianEntityNumber(response.data.data.count);
         else if (response.status === 204) SetPersianEntityNumber(0);
       })
       .catch((err) => console.log(err));
@@ -28,7 +28,7 @@ const EntityTypes = (props) => {
       className="animated-border-box bg-gradient-main shadow-none font-iranSans text-sm h-full"
       style={{ "--dynamic-color": props.NetworkColor }}
     >
-      <a className="cursor-pointer" href={`/panel/entity/types/${props.symbol}`}>
+      <a className="cursor-pointer" href={`/panel/entity/types/${props.id}`}>
         {/* Row 1: عنوان + لوگو (هم‌ردیف در موبایل) */}
         <div className="flex flex-nowrap items-center justify-between gap-3">
           {/* Title */}
