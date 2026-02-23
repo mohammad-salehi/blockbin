@@ -126,8 +126,8 @@ const Page = () => {
     GetRequest(`${serverAddress}/case/management/`)
       .then((response) => {
         SetLoading(false);
-        SetData(response.data);
-        SetTotalItem(response.data.length)
+        SetData(response.data.data);
+        SetTotalItem(response.data.data.length)
       })
       .catch((err) => {
         SetLoading(false);
@@ -207,21 +207,29 @@ const Page = () => {
           افزودن پرونده جدید
         </button>
       </div>
-      <ExpandableTable
-        data={Data.slice((First - 1) * 10, First * 10)}
-        columns={columns}
-        rowDetailsMode="row"
-        rowDetailsClassName="rounded-xl p-3"
-      />
-      <Pagination
-        rtl
-        totalItems={TotalItem}
-        pageSize={10}
-        currentPage={First}
-        onPageChange={(e) => {
-          SetFirst(e);
-        }}
-      />
+      {
+        Data.length > 0 ?
+          <div>
+            <ExpandableTable
+              data={Data.slice((First - 1) * 10, First * 10)}
+              columns={columns}
+              rowDetailsMode="row"
+              rowDetailsClassName="rounded-xl p-3"
+            />
+            <Pagination
+              rtl
+              totalItems={TotalItem}
+              pageSize={10}
+              currentPage={First}
+              onPageChange={(e) => {
+                SetFirst(e);
+              }}
+            />
+          </div>
+          :
+          null
+      }
+
 
       <Modal
         open={AddBox}

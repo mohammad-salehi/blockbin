@@ -85,8 +85,8 @@ const Page = () => {
           href={`/panel/entity/${row.id}`}
           className="flex items-center gap-2 min-w-0 whitespace-nowrap overflow-hidden"
         >
-          {row.image ? (
-            <img src={row.image} className="w-6 h-6 shrink-0 inline-block" alt="" />
+          {row.metadata.image ? (
+            <img src={row.metadata.image} className="w-6 h-6 shrink-0 inline-block" alt="" />
           ) : (
             <ImageNotSupportedIcon className="shrink-0" />
           )}

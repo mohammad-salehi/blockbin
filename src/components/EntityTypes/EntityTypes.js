@@ -2,10 +2,12 @@ import React, { useEffect, useState } from "react";
 import "./style.css";
 import { GetRequest } from "@/functions/GetRequest";
 import { serverAddress } from "@/functions/ServerAddress";
+import ImageNotSupportedIcon from '@mui/icons-material/ImageNotSupported'; // Importing the fallback icon
 
 const EntityTypes = (props) => {
   const [PersianEntityNumber, SetPersianEntityNumber] = useState(0);
   const [EntityNumber, SetEntityNumber] = useState(0);
+  const [imageError, setImageError] = useState(false); // State to track if image fails to load
 
   useEffect(() => {
     GetRequest(`${serverAddress}/entity/entities/?category=${props.id}&is_iranian=false&page_number=1&page_size=1000`)
@@ -23,23 +25,23 @@ const EntityTypes = (props) => {
       .catch((err) => console.log(err));
   }, []);
 
+  // Fallback image error handler
+  const handleImageError = () => {
+    setImageError(true); // Set the error state to true when image fails to load
+  };
+
   return (
     <div
-      className="animated-border-box bg-gradient-main shadow-none font-iranSans text-sm h-full"
+      className="bg-gradient-main shadow-lg font-iranSans text-sm rounded-xl overflow-hidden transform transition-transform duration-300 hover:scale-105"
       style={{ "--dynamic-color": props.NetworkColor }}
     >
-      <a className="cursor-pointer" href={`/panel/entity/types/${props.id}`}>
-        {/* Row 1: عنوان + لوگو (هم‌ردیف در موبایل) */}
-        <div className="flex flex-nowrap items-center justify-between gap-3">
+      <a className="block cursor-pointer" href={`/panel/entity/types/${props.id}`}>
+        {/* Row 1: Title + Logo (Aligned in mobile view) */}
+        <div className="flex flex-nowrap items-center justify-between gap-4 p-4">
           {/* Title */}
-          <div className="px-6 py-2 min-w-0">
+          <div className="min-w-0">
             <h4
-              style={{
-                display: "inline-block",
-                marginLeft: "8px",
-                fontWeight: "bold",
-              }}
-              className="text-textColor font-bold truncate"
+              className="text-textColor font-semibold truncate hover:text-primary transition duration-300"
               title={props.name}
             >
               {props.name}
@@ -47,26 +49,31 @@ const EntityTypes = (props) => {
           </div>
 
           {/* Logo */}
-          <div className="px-6 py-2 shrink-0">
-            <img
-              src={`${props.logo}`}
-              className="w-15 h-15 object-contain"
-              alt=""
-            />
+          <div className="shrink-0">
+            {imageError ? (
+              <ImageNotSupportedIcon className="w-16 h-16 text-gray-400" /> // Show icon if image fails to load
+            ) : (
+              <img
+                src={props.logo}
+                className="w-16 h-16 object-contain rounded-full border-2 border-white shadow-md"
+                alt="Logo"
+                onError={handleImageError} // Trigger error handler if image fails to load
+              />
+            )}
           </div>
         </div>
 
-        {/* Row 2 */}
-        <div className="flex flex-col">
-          <div className="w-full px-6">
-            <h6 style={{ fontWeight: "100" }} className="text-textColor">
-              <span className="font-bold">{EntityNumber.toLocaleString()}</span> موجودیت
+        {/* Row 2: Entity Counts */}
+        <div className="p-4">
+          <div className="w-full mb-2">
+            <h6 className="text-textColor text-sm">
+              <span className="font-bold text-lg">{EntityNumber.toLocaleString()}</span> موجودیت
             </h6>
           </div>
 
-          <div className="w-full px-6 pt-2">
-            <h6 style={{ fontWeight: "100" }} className="text-textColor">
-              <span className="font-bold">{PersianEntityNumber.toLocaleString()}</span> موجودیت ایرانی
+          <div className="w-full">
+            <h6 className="text-textColor text-sm">
+              <span className="font-bold text-lg">{PersianEntityNumber.toLocaleString()}</span> موجودیت ایرانی
             </h6>
           </div>
         </div>
