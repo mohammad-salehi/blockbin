@@ -408,7 +408,7 @@ const Blockbin_graph_engine = ({
                   ? `\u200E${v.toLocaleString()} USD`
                   : "قیمت نامشخص";
             } else {
-              label += `\u200E${d.inputs[j].value.toLocaleString()} ${d.inputs[j].symbol}`;
+              label += `\u200E${d.inputs[j].value?.toLocaleString()} ${d.inputs[j].symbol}`;
             }
           }
           if (ShowTimes && ShowValues) label += ` \n `;
@@ -450,7 +450,7 @@ const Blockbin_graph_engine = ({
                   ? `\u200E${v.toLocaleString()} USD`
                   : "قیمت نامشخص";
             } else {
-              label += `\u200E${d.outputs[j].value.toLocaleString()} ${d.outputs[j].symbol}`;
+              label += `\u200E${d.outputs[j].value?.toLocaleString()} ${d.outputs[j].symbol}`;
             }
           }
           if (ShowTimes && ShowValues) label += ` \n `;

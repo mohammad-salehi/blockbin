@@ -6,6 +6,7 @@ import ExploreTopBoxLoading from '../ExploreTopBoxLoading/ExploreTopBoxLoading';
 import axios from 'axios';
 import Cookies from "js-cookie";
 import toast from 'react-hot-toast';
+import { Networks } from '@/functions/Networks';
 
 const FolderList = ({ address, network, type, setFolderIsOpen, Description = '', title = '' }) => {
     const [folders, Setfolders] = useState([])
@@ -17,11 +18,11 @@ const FolderList = ({ address, network, type, setFolderIsOpen, Description = '',
         GetRequest(`${serverAddress}/case/management/`)
             .then((response) => {
                 const getData = []
-                for (let i = 0; i < response.data.length; i++) {
+                for (let i = 0; i < response.data.data.results.length; i++) {
                     getData.push(
                         {
-                            label: response.data[i].name,
-                            value: response.data[i].id
+                            label: response.data.data.results[i].name,
+                            value: response.data.data.results[i].id
                         }
                     )
                 }
@@ -42,7 +43,7 @@ const FolderList = ({ address, network, type, setFolderIsOpen, Description = '',
                 {
                     address_hash: address,
                     case: id,
-                    network: network,
+                    network: Networks.find(item => item.id === network).uuid,
                 },
                 {
                     headers: {
@@ -68,7 +69,7 @@ const FolderList = ({ address, network, type, setFolderIsOpen, Description = '',
                 {
                     hash: address,
                     case: id,
-                    network: network,
+                    network: Networks.find(item => item.id === network).uuid,
                 },
                 {
                     headers: {

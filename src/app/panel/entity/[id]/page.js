@@ -101,7 +101,7 @@ const AddressPage = () => {
           return (
             <div className="flex items-center gap-2">
               <img
-                src={`/images/${String(net).toUpperCase()}.png`}
+                src={`/images/${String(Networks.find(item => item.symbole2.toUpperCase() === net.toUpperCase()).symbole).toUpperCase()}.png`}
                 className="w-5 h-5"
                 alt={String(net)}
                 loading="lazy"
@@ -135,7 +135,7 @@ const AddressPage = () => {
       const url =
         `${API_BASE}/entity/addresses/?` +
         `entity_uid=${encodeURIComponent(ENTITY_UID)}` +
-        `&network=${encodeURIComponent(String(networkSelected).toLowerCase())}` +
+        `&network=${encodeURIComponent(String(Networks.find(item => item.symbole.toUpperCase() === networkSelected.toUpperCase()).symbole2).toLowerCase())}` +
         `&page_number=${encodeURIComponent(String(requestedPage))}` +
         `&page_size=${encodeURIComponent(String(PAGE_SIZE))}`
 
