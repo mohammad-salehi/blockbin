@@ -35,12 +35,12 @@ const AddressPage = () => {
     const onSubmit = () => {
         GetRequest(`${serverAddress}/explorer/network-detection/?query=${inputText}`)
             .then((response) => {
-                Setquery2(response.data.query)
-                if (response.data.network.length > 1) {
-                    SetNetworkFounded(response.data.network)
+                Setquery2(response.data.data.query)
+                if (response.data.data.network.length > 1) {
+                    SetNetworkFounded(response.data.data.network)
                     SetShowSelection(true)
-                } else if (response.data.network.length === 1) {
-                    window.location.assign(`/panel/dashboard/${response.data.query}/${response.data.network}/${inputText}`)
+                } else if (response.data.data.network.length === 1) {
+                    window.location.assign(`/panel/dashboard/${response.data.data.query}/${response.data.data.network}/${inputText}`)
                 }
             })
             .catch((err) => {

@@ -29,7 +29,7 @@ const RoundedColorBox = (props) => {
       )}&symbol=${symbolForPrice}`
     )
       .then((response) => {
-        setPrice(response?.data?.price ?? null);
+        setPrice(response?.data?.data?.price ?? null);
       })
       .catch(() => setPrice(null));
 
@@ -37,7 +37,7 @@ const RoundedColorBox = (props) => {
       `${serverAddress}/explorer/latest-block-info/?network=${props.symbol}`
     )
       .then((response) => {
-        if (response.status === 200) setBlock(response?.data?.block_number ?? null);
+        if (response.status === 200) setBlock(response?.data?.data?.block_number ?? null);
       })
       .catch(() => setBlock(null));
     // eslint-disable-next-line react-hooks/exhaustive-deps

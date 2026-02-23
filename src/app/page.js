@@ -50,6 +50,7 @@ export default function Home() {
         Cookies.set("refresh", payload.refresh, { expires: 1 });
         Cookies.set("access", payload.access, { expires: 1 });
 
+        Cookies.set("id", payload.user_id || "");
         Cookies.set("role_id", payload.role?.role_id || "");
         Cookies.set("role_name", payload.role?.role_name || "");
         Cookies.set("name", payload.user_firstname || "");

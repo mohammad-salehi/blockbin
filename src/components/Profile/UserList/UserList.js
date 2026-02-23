@@ -48,6 +48,52 @@ const UserList = () => {
             }
             )
     }, [Reload])
+
+    const buildChangedPayload = () => {
+        if (!users) return null
+
+        const current = {
+            first_name: inputValue ?? "",
+            last_name: inputLastValue ?? "",
+            email: inputEmailValue ?? "",
+            username: inputUsernameValue ?? "",
+            phone_number: inputNumberValue ?? "",
+            role_id: selectedOption ? String(selectedOption) : null,
+            is_active: !!inputIsActive,
+        }
+
+        // اگر initialUser نداریم، همه رو بفرست (fallback)
+        if (!initialUser) return current
+
+        // initial role_id را از روی رول فعلی کاربر بساز (با Rolls)
+        const initRoleId =
+            Rolls?.find((r) => r.name === users.role)?.id != null
+                ? String(Rolls.find((r) => r.name === users.role).id)
+                : null
+
+        const initial = {
+            first_name: initialUser.first_name ?? "",
+            last_name: initialUser.last_name ?? "",
+            email: initialUser.email ?? "",
+            username: initialUser.username ?? "",
+            phone_number: initialUser.phone_number ?? "",
+            role_id: initRoleId,
+            is_active: !!initialUser.is_active,
+        }
+
+        const payload = {}
+        for (const key of Object.keys(current)) {
+            // اگر نقش انتخاب نشده، نفرست
+            if (key === "role_id" && current.role_id == null) continue
+
+            if (String(current[key]) !== String(initial[key])) {
+                payload[key] = current[key]
+            }
+        }
+
+        return payload
+    }
+
     const columns = [
         {
             header: "آی‌دی",
@@ -110,6 +156,15 @@ const UserList = () => {
                         handleEdit()
                         SetNumber(row.id)
                         Setusers(row)
+                        setInitialUser({
+                            first_name: row.first_name ?? "",
+                            last_name: row.last_name ?? "",
+                            email: row.email ?? "",
+                            username: row.username ?? "",
+                            phone_number: row.phone_number ?? "",
+                            role_id: null,
+                            is_active: !!row.is_active,
+                        })
                     }}
                 >
                     <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" className='cursor-pointer'>
@@ -156,6 +211,9 @@ const UserList = () => {
     const [inputIsActive, setInputIsActive] = useState(null)
 
     const [Rolls, SetRolls] = useState([])
+
+
+    const [initialUser, setInitialUser] = useState(null)
 
     const numberHandler = (event) => {
         const value = event.target.value
@@ -361,46 +419,29 @@ const UserList = () => {
                     if (LastnameValue !== '') {
                         if (UsernameValue !== '') {
                             if (nameValue !== '') {
-                                // register
-                                SetLoading(true)
-                                axios.put(`${serverAddress}/accounts/users/${users.id}/`,
-                                    {
-                                        first_name: document.getElementById('NameAddUserAdmin2').value,
-                                        last_name: document.getElementById('lastNameMulti2').value,
-                                        email: document.getElementById('AdminAddUserEmailInput2').value,
-                                        role_id: String(selectedOption),
-                                        username: document.getElementById('AdminAddUserUsernameInput2').value,
-                                        phone_number: document.getElementById('AdminAddUserPhoneNumber2').value,
-                                        is_active: inputIsActive
-                                    },
-                                    {
-                                        headers: {
-                                            Authorization: `Bearer ${Cookies.get('access')}`,
-                                            'Content-Type': 'application/json'
-                                        }
-                                    })
-                                    .then((response) => {
-                                        if (response.data.status === 200) {
-                                            SetLoading(false)
-                                            if (response.data.data.message === 'success') {
-                                                handleEdit()
-                                                SetReload(!Reload)
-                                                return toast.success('انجام شد', {
-                                                    position: 'bottom-left'
-                                                })
-                                            } else {
-                                                return toast.error('ناموفق', {
-                                                    position: 'bottom-left'
-                                                })
-                                            }
-                                        } else {
-                                            ErrorHandler(response)
-                                        }
+                                const payload = buildChangedPayload()
 
+                                if (!payload || Object.keys(payload).length === 0) {
+                                    return toast('هیچ تغییری اعمال نشده است.', { position: 'bottom-left' })
+                                }
+
+                                SetLoading(true)
+                                axios.put(`${serverAddress}/accounts/users/${users.id}/`, payload, {
+                                    headers: {
+                                        Authorization: `Bearer ${Cookies.get('access')}`,
+                                        'Content-Type': 'application/json'
+                                    }
+                                })
+                                    .then((response) => {
+                                        SetLoading(false)
+                                        if (response.status === 200) {
+                                            handleEdit()
+                                            SetReload(!Reload)
+                                            return toast.success('انجام شد', { position: 'bottom-left' })
+                                        }
+                                        return toast.error('ناموفق', { position: 'bottom-left' })
                                     })
                                     .catch((err) => {
-                                        console.log('err')
-                                        console.log(err)
                                         SetLoading(false)
                                         ErrorHandler(err)
                                     })

@@ -163,7 +163,7 @@ const AdressActivity = ({ SetTokenSelected, TokenSelected, SetMiladi, Miladi, Se
             ) : (
               <div className="p-4 h-full">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-textColor items-stretch">
-                  <div className="group rounded-2xl bg-bgColor/50 border border-boxBorderColor p-4 shadow-sm backdrop-blur hover:bg-bgColor/70 hover:shadow-md transition h-full relative z-60">
+                  <div className="group rounded-2xl bg-bgColor/50 border border-boxBorderColor p-4 shadow-sm backdrop-blur hover:bg-bgColor/70 hover:shadow-md transition h-full relative z-2">
                     <p className="text-textTitleColor text-xs mb-2">انتخاب توکن</p>
   
                     <div className="relative w-full">

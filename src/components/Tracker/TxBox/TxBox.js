@@ -952,178 +952,222 @@ const TxBox = ({ Data, SetData, AddressSelectedData, Reload, SetReload }) => {
     ];
 
     return (
-        <div className='text-textColor'>
-            <h6 className="p-3 pb-0">
-                <span>
-                    <img src={`/images/${network}.png`} className='w-8 inline-block ' />
-                    مشخصات تراکنش {Networks.find((item) => item.symbole === network).name}
-                </span>
-                <span className="float-left">
-
-                    {AddressFormat(AddressSelectedData.id, 10, 'transaction', network)}
-                    <svg width="20" height="20" xmlns="http://www.w3.org/2000/svg" className='inline-block cursor-pointer mr-2' onClick={() => { RemoveAddress(AddressSelectedData.id) }}>
-                        <path fill="currentColor" d="M14,3 C14.5522847,3 15,3.44771525 15,4 C15,4.55228475 14.5522847,5 14,5 L13.846,5 L13.1420511,14.1534404 C13.0618518,15.1954311 12.1930072,16 11.1479,16 L4.85206,16 C3.80698826,16 2.93809469,15.1953857 2.8579545,14.1533833 L2.154,5 L2,5 C1.44771525,5 1,4.55228475 1,4 C1,3.44771525 1.44771525,3 2,3 L5,3 L5,2 C5,0.945642739 5.81588212,0.0818352903 6.85073825,0.00548576453 L7,0 L9,0 C10.0543573,0 10.9181647,0.815882118 10.9945142,1.85073825 L11,2 L11,3 L14,3 Z M11.84,5 L4.159,5 L4.85206449,14.0000111 L11.1479,14.0000111 L11.84,5 Z M9,2 L7,2 L7,3 L9,3 L9,2 Z" />
-                    </svg>
-                </span>
-            </h6>
-
-            <div className="w-full m-0 mt-0 p-0">
-                {ActivityLoading ? (
-                    <div
-                        className="pt-5"
-                    >
-                        <ExploreTopBoxLoading />
-                    </div>
-                ) : (
-                    <div
-                        className="flex flex-wrap m-0 p-3 pb-0"
-                    >
-                        {/* ستون ۱ */}
-                        <div className="w-full md:w-1/2 m-0 mt-0 p-0">
-                            <p className="text-[13px] text-textTitleColor mb-0">حجم تراکنش</p>
-
-                            {true ? (
-                                <div className="flex items-center font-bold">
-                                    <svg fill="currentColor" height="20" width="20" className='inline-block ml-1' version="1.1" id="Filled_Icons"
-                                        viewBox="0 0 24 24" enableBackground="new 0 0 24 24">
-                                        <g id="Transaction-Filled">
-                                            <path d="M14,11V8H1V4h13V1l7,5L14,11z M3,18l7,5v-3h13v-4H10v-3L3,18z" />
-                                        </g>
-                                    </svg>
-                                    <small className="ml-1 font-bold">
-                                        {network !== "BSC" ? network : "BNB"}
-                                    </small>
-                                    {Value}
-
-                                </div>
-                            ) : (
-                                <p className="font-bold flex items-center">
-                                    {/* <UserCheck
-                                        size={15}
-                                        style={{ color: "rgb(150,150,150)", marginLeft: "4px" }}
-                                    /> */}
-                                    نامشخص
-                                </p>
-                            )}
-                        </div>
-
-                        {/* ستون ۲ */}
-                        <div className="w-full md:w-1/2 m-0 mt-0 p-0">
-                            <p className="text-[13px] text-textTitleColor mb-0">کارمزد</p>
-                            <p className="font-bold flex items-center">
-                                <svg width="20" height="20" className='ml-1 inline-block' viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                    <path d="M7 14H17M7 10H17M6.2 18H17.8C18.9201 18 19.4802 18 19.908 17.782C20.2843 17.5903 20.5903 17.2843 20.782 16.908C21 16.4802 21 15.9201 21 14.8V9.2C21 8.07989 21 7.51984 20.782 7.09202C20.5903 6.71569 20.2843 6.40973 19.908 6.21799C19.4802 6 18.9201 6 17.8 6H6.2C5.0799 6 4.51984 6 4.09202 6.21799C3.71569 6.40973 3.40973 6.71569 3.21799 7.09202C3 7.51984 3 8.07989 3 9.2V14.8C3 15.9201 3 16.4802 3.21799 16.908C3.40973 17.2843 3.71569 17.5903 4.09202 17.782C4.51984 18 5.07989 18 6.2 18Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
-                                </svg>
-                                <small className="ml-1">{network}</small>
-                                {Fee}
-
-                            </p>
-                        </div>
-
-                        {/* ستون ۳ */}
-                        <div className="w-full md:w-1/2 m-0 mt-0 p-0">
-                            <p className="text-[13px] text-textTitleColor mb-0">زمان بلاک</p>
-                            <p className="font-bold flex items-center">
-                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" className='inline-block ml-1'>
-                                    <path d="M7 10H17M7 14H12M7 3V5M17 3V5M6.2 21H17.8C18.9201 21 19.4802 21 19.908 20.782C20.2843 20.5903 20.5903 20.2843 20.782 19.908C21 19.4802 21 18.9201 21 17.8V8.2C21 7.07989 21 6.51984 20.782 6.09202C20.5903 5.71569 20.2843 5.40973 19.908 5.21799C19.4802 5 18.9201 5 17.8 5H6.2C5.0799 5 4.51984 5 4.09202 5.21799C3.71569 5.40973 3.40973 5.71569 3.21799 6.09202C3 6.51984 3 7.07989 3 8.2V17.8C3 18.9201 3 19.4802 3.21799 19.908C3.40973 20.2843 3.71569 20.5903 4.09202 20.782C4.51984 21 5.07989 21 6.2 21Z" stroke="currentColor" />
-                                </svg>
-                                ({MiladiCalendar(BlockDate).hour}:{MiladiCalendar(BlockDate).minute}){" "}
-                                {MiladiCalendar(BlockDate).year}/{MiladiCalendar(BlockDate).month}/
-                                {MiladiCalendar(BlockDate).day}
-                            </p>
-                        </div>
-
-                        <div className="w-full md:w-1/2 m-0 mt-0 p-0">
-                            <p className="text-[13px] text-textTitleColor mb-0">شماره بلاک</p>
-                            <p className="font-bold flex items-center">
-                                <svg fill="currentColor" width="20" height="20" className='inline-block ml-1' viewBox="0 0 56 56" xmlns="http://www.w3.org/2000/svg"><path d="M 27.9999 51.9063 C 41.0546 51.9063 51.9063 41.0781 51.9063 28 C 51.9063 14.9453 41.0312 4.0937 27.9765 4.0937 C 14.8983 4.0937 4.0937 14.9453 4.0937 28 C 4.0937 41.0781 14.9218 51.9063 27.9999 51.9063 Z M 27.9999 47.9219 C 16.9374 47.9219 8.1014 39.0625 8.1014 28 C 8.1014 16.9609 16.9140 8.0781 27.9765 8.0781 C 39.0155 8.0781 47.8983 16.9609 47.9219 28 C 47.9454 39.0625 39.0390 47.9219 27.9999 47.9219 Z M 21.9530 39.4375 C 22.8671 39.4375 23.4296 38.9922 23.6171 38.1016 L 24.6718 33.0859 L 29.0312 33.0859 L 28.0702 37.6797 C 27.8593 38.6406 28.5390 39.4375 29.4999 39.4375 C 30.4374 39.4375 31.0468 38.9922 31.2343 38.1016 L 32.2890 33.0625 L 34.7265 33.0625 C 35.6405 33.0625 36.2968 32.3828 36.2968 31.4688 C 36.2968 30.6719 35.7343 30.0859 34.9609 30.0859 L 32.9218 30.0859 L 33.9296 25.3516 L 36.3905 25.3516 C 37.3046 25.3516 37.9609 24.6719 37.9609 23.7578 C 37.9609 22.9609 37.3983 22.3750 36.6249 22.3750 L 34.5390 22.3750 L 35.4530 18.0156 C 35.6405 17.0547 34.9374 16.2344 33.9765 16.2344 C 33.0624 16.2344 32.4765 16.7031 32.2890 17.5703 L 31.2812 22.3750 L 26.9218 22.3750 L 27.8124 18.0156 C 28.0234 17.0781 27.3671 16.2344 26.3827 16.2344 C 25.4452 16.2344 24.8593 16.7031 24.6718 17.5703 L 23.6874 22.3750 L 21.2030 22.3750 C 20.3124 22.3750 19.6327 23.0781 19.6327 23.9688 C 19.6327 24.7656 20.1952 25.3516 20.9921 25.3516 L 23.0312 25.3516 L 22.0468 30.0859 L 19.5390 30.0859 C 18.6249 30.0859 17.9687 30.7890 17.9687 31.6797 C 17.9687 32.4766 18.5312 33.0625 19.3280 33.0625 L 21.4374 33.0625 L 20.4765 37.6797 C 20.2890 38.6406 20.9921 39.4375 21.9530 39.4375 Z M 25.0936 30.3672 L 26.1718 25.1172 L 30.9062 25.1172 L 29.8046 30.3672 Z" /></svg>
-                                {blockNumber}
-                            </p>
-                        </div>
-                    </div>
-                )}
-            </div>
-
-            <h6 className='p-3 pb-0 mb-0'>تنظیمات</h6>
-
-            <div className="w-full m-0 mt-0 p-0">
-                <div className="flex flex-wrap m-0 p-0 me-1">
-                    <div className="w-full md:w-1/2 m-0 mt-0 p-0 flex items-center">
-                        <Switch
-                            checked={ShowUSD}
-                            id="ShowPriceCheckbox"
-                            onChange={(e) => setShowUSD(e.target.checked)}
-                        />
-                        <label
-                            htmlFor="ShowPriceCheckbox"
-                            className="ml-2 mt-0 cursor-pointer"
-                        >
-                            نمایش قیمت
-                        </label>
-                    </div>
+        <div className="text-textColor">
+          {/* Header */}
+          <div className="rounded-2xl border border-boxBorderColor bg-boxColor/60 backdrop-blur p-4 md:p-5 shadow-sm">
+            <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-3">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-xl bg-TableBorder flex items-center justify-center overflow-hidden border border-boxBorderColor">
+                  <img
+                    src={`/images/${network}.png`}
+                    className="w-8 h-8 object-contain"
+                    alt={network}
+                  />
                 </div>
+      
+                <div className="leading-tight">
+                  <div className="text-[12px] text-textTitleColor">مشخصات تراکنش</div>
+                  <div className="font-bold text-[15px]">
+                    {Networks.find((item) => item.symbole === network).name}
+                  </div>
+                </div>
+              </div>
+      
+              <div className="flex items-center justify-between md:justify-end gap-2">
+                <div className="px-3 py-2 rounded-xl bg-TableBorder border border-boxBorderColor font-mono text-[12px]">
+                  {AddressFormat(AddressSelectedData.id, 10, "transaction", network)}
+                </div>
+      
+                <button
+                  type="button"
+                  onClick={() => RemoveAddress(AddressSelectedData.id)}
+                  className="inline-flex items-center gap-2 px-3 py-2 rounded-xl border border-boxBorderColor bg-boxColor hover:bg-TableBorder transition"
+                  title="حذف"
+                >
+                  <svg width="18" height="18" xmlns="http://www.w3.org/2000/svg">
+                    <path
+                      fill="currentColor"
+                      d="M14,3 C14.5522847,3 15,3.44771525 15,4 C15,4.55228475 14.5522847,5 14,5 L13.846,5 L13.1420511,14.1534404 C13.0618518,15.1954311 12.1930072,16 11.1479,16 L4.85206,16 C3.80698826,16 2.93809469,15.1953857 2.8579545,14.1533833 L2.154,5 L2,5 C1.44771525,5 1,4.55228475 1,4 C1,3.44771525 1.44771525,3 2,3 L5,3 L5,2 C5,0.945642739 5.81588212,0.0818352903 6.85073825,0.00548576453 L7,0 L9,0 C10.0543573,0 10.9181647,0.815882118 10.9945142,1.85073825 L11,2 L11,3 L14,3 Z M11.84,5 L4.159,5 L4.85206449,14.0000111 L11.1479,14.0000111 L11.84,5 Z M9,2 L7,2 L7,3 L9,3 L9,2 Z"
+                    />
+                  </svg>
+                  <span className="text-[12px]">حذف</span>
+                </button>
+              </div>
             </div>
-
-            <h6 className='mt-3 p-3 pb-0'>
-                مقادیر ورودی
-            </h6>
-            <div className='mt-2'>
-                {
-                    !InputLoading ?
-                        <ExpandableTable
-                            data={InputsData}
-                            columns={inputColumns}
-                            rowDetailsMode="row"
-                            rowDetailsClassName="rounded-xl p-3"
-                        />
-                        :
-                        <SkeletonLoading />
-                }
-                {
-                    Networks.find(item => item.symbole === network).type !== 'account' ?
-                        <Pagination
-                            rtl
-                            totalItems={InputTrNumber}
-                            pageSize={10}
-                            currentPage={InputFirst}
-                            onPageChange={handlePaginationInput}
-                        />
-                        :
-                        null
-                }
+      
+            {/* Transaction Top Details */}
+            <div className="mt-4">
+              {ActivityLoading ? (
+                <div className="rounded-2xl border border-boxBorderColor bg-TableBorder p-3">
+                  <ExploreTopBoxLoading />
+                </div>
+              ) : (
+                <div className="rounded-2xl border border-boxBorderColor bg-TableBorder p-4">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    {/* Value */}
+                    <div className="rounded-xl bg-boxColor/60 border border-boxBorderColor p-3">
+                      <p className="text-[12px] text-textTitleColor mb-1">حجم تراکنش</p>
+                      <div className="font-bold flex items-center gap-2">
+                        <svg
+                          fill="currentColor"
+                          height="18"
+                          width="18"
+                          viewBox="0 0 24 24"
+                          className="inline-block"
+                        >
+                          <path d="M14,11V8H1V4h13V1l7,5L14,11z M3,18l7,5v-3h13v-4H10v-3L3,18z" />
+                        </svg>
+                        <small className="text-textTitleColor font-bold">
+                          {network !== "BSC" ? network : "BNB"}
+                        </small>
+                        <span className="font-mono">{Value}</span>
+                      </div>
+                    </div>
+      
+                    {/* Fee */}
+                    <div className="rounded-xl bg-boxColor/60 border border-boxBorderColor p-3">
+                      <p className="text-[12px] text-textTitleColor mb-1">کارمزد</p>
+                      <div className="font-bold flex items-center gap-2">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" className="inline-block">
+                          <path
+                            d="M7 14H17M7 10H17M6.2 18H17.8C18.9201 18 19.4802 18 19.908 17.782C20.2843 17.5903 20.5903 17.2843 20.782 16.908C21 16.4802 21 15.9201 21 14.8V9.2C21 8.07989 21 7.51984 20.782 7.09202C20.5903 6.71569 20.2843 6.40973 19.908 6.21799C19.4802 6 18.9201 6 17.8 6H6.2C5.0799 6 4.51984 6 4.09202 6.21799C3.71569 6.40973 3.40973 6.71569 3.21799 7.09202C3 7.51984 3 8.07989 3 9.2V14.8C3 15.9201 3 16.4802 3.21799 16.908C3.40973 17.2843 3.71569 17.5903 4.09202 17.782C4.51984 18 5.07989 18 6.2 18Z"
+                            stroke="currentColor"
+                            strokeWidth="2"
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                          />
+                        </svg>
+                        <small className="text-textTitleColor">{network}</small>
+                        <span className="font-mono">{Fee}</span>
+                      </div>
+                    </div>
+      
+                    {/* Block Time */}
+                    <div className="rounded-xl bg-boxColor/60 border border-boxBorderColor p-3">
+                      <p className="text-[12px] text-textTitleColor mb-1">زمان بلاک</p>
+                      <p className="font-bold flex items-center gap-2">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" className="inline-block">
+                          <path
+                            d="M7 10H17M7 14H12M7 3V5M17 3V5M6.2 21H17.8C18.9201 21 19.4802 21 19.908 20.782C20.2843 20.5903 20.5903 20.2843 20.782 19.908C21 19.4802 21 18.9201 21 17.8V8.2C21 7.07989 21 6.51984 20.782 6.09202C20.5903 5.71569 20.2843 5.40973 19.908 5.21799C19.4802 5 18.9201 5 17.8 5H6.2C5.0799 5 4.51984 5 4.09202 5.21799C3.71569 5.40973 3.40973 5.71569 3.21799 6.09202C3 6.51984 3 7.07989 3 8.2V17.8C3 18.9201 3 19.4802 3.21799 19.908C3.40973 20.2843 3.71569 20.5903 4.09202 20.782C4.51984 21 5.07989 21 6.2 21Z"
+                            stroke="currentColor"
+                            strokeWidth="2"
+                            strokeLinecap="round"
+                          />
+                        </svg>
+                        <span className="font-mono">
+                          ({MiladiCalendar(BlockDate).hour}:{MiladiCalendar(BlockDate).minute}){" "}
+                          {MiladiCalendar(BlockDate).year}/{MiladiCalendar(BlockDate).month}/{MiladiCalendar(BlockDate).day}
+                        </span>
+                      </p>
+                    </div>
+      
+                    {/* Block Number */}
+                    <div className="rounded-xl bg-boxColor/60 border border-boxBorderColor p-3">
+                      <p className="text-[12px] text-textTitleColor mb-1">شماره بلاک</p>
+                      <p className="font-bold flex items-center gap-2">
+                        <svg fill="currentColor" width="18" height="18" viewBox="0 0 56 56" className="inline-block">
+                          <path d="M 27.9999 51.9063 C 41.0546 51.9063 51.9063 41.0781 51.9063 28 C 51.9063 14.9453 41.0312 4.0937 27.9765 4.0937 C 14.8983 4.0937 4.0937 14.9453 4.0937 28 C 4.0937 41.0781 14.9218 51.9063 27.9999 51.9063 Z M 27.9999 47.9219 C 16.9374 47.9219 8.1014 39.0625 8.1014 28 C 8.1014 16.9609 16.9140 8.0781 27.9765 8.0781 C 39.0155 8.0781 47.8983 16.9609 47.9219 28 C 47.9454 39.0625 39.0390 47.9219 27.9999 47.9219 Z" />
+                        </svg>
+                        <span className="font-mono">{blockNumber}</span>
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              )}
             </div>
-
-            <h6 className='mt-3 p-3 pb-0'>
-                مقادیر خروجی
-            </h6>
-            <div className='mt-2 mb-4'>
-                {
-                    !OutputLoading ?
-                        <ExpandableTable
-                            data={OutputsData}
-                            columns={outputColumns}
-                            rowDetailsMode="row"
-                            rowDetailsClassName="rounded-xl p-3"
-                        />
-                        :
-                        <SkeletonLoading />
-                }
-                {
-                    Networks.find(item => item.symbole === network).type !== 'account' ?
-                        <Pagination
-                            rtl
-                            totalItems={OutputTrNumber}
-                            pageSize={10}
-                            currentPage={OutputFirst}
-                            onPageChange={handlePaginationOutput}
-                        />
-                        :
-                        null
-                }
-
+          </div>
+      
+          {/* Settings */}
+          <div className="mt-4 rounded-2xl border border-boxBorderColor bg-boxColor/60 backdrop-blur p-4 md:p-5 shadow-sm">
+            <h6 className="font-bold mb-3">تنظیمات</h6>
+      
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="flex items-center justify-between rounded-xl border border-boxBorderColor bg-TableBorder px-3 py-3">
+                <div className="flex items-center gap-2">
+                  <Switch
+                    checked={ShowUSD}
+                    id="ShowPriceCheckbox"
+                    onChange={(e) => setShowUSD(e.target.checked)}
+                  />
+                  <label htmlFor="ShowPriceCheckbox" className="cursor-pointer text-[13px]">
+                    نمایش قیمت
+                  </label>
+                </div>
+              </div>
             </div>
+          </div>
+      
+          {/* Inputs */}
+          <div className="mt-4 rounded-2xl border border-boxBorderColor bg-boxColor/60 backdrop-blur p-4 md:p-5 shadow-sm">
+            <div className="flex items-center justify-between mb-3">
+              <h6 className="font-bold mb-0">مقادیر ورودی</h6>
+              {Networks.find((item) => item.symbole === network).type !== "account" ? (
+                <span className="text-[12px] text-textTitleColor">مجموع: {InputTrNumber}</span>
+              ) : null}
+            </div>
+      
+            {!InputLoading ? (
+              <div className="rounded-2xl border border-boxBorderColor bg-TableBorder p-2 md:p-3">
+                <ExpandableTable
+                  data={InputsData}
+                  columns={inputColumns}
+                  rowDetailsMode="row"
+                  rowDetailsClassName="rounded-xl p-3"
+                />
+              </div>
+            ) : (
+              <SkeletonLoading />
+            )}
+      
+            {Networks.find((item) => item.symbole === network).type !== "account" ? (
+              <div className="mt-3">
+                <Pagination
+                  rtl
+                  totalItems={InputTrNumber}
+                  pageSize={10}
+                  currentPage={InputFirst}
+                  onPageChange={handlePaginationInput}
+                />
+              </div>
+            ) : null}
+          </div>
+      
+          {/* Outputs */}
+          <div className="mt-4 mb-4 rounded-2xl border border-boxBorderColor bg-boxColor/60 backdrop-blur p-4 md:p-5 shadow-sm">
+            <div className="flex items-center justify-between mb-3">
+              <h6 className="font-bold mb-0">مقادیر خروجی</h6>
+              {Networks.find((item) => item.symbole === network).type !== "account" ? (
+                <span className="text-[12px] text-textTitleColor">مجموع: {OutputTrNumber}</span>
+              ) : null}
+            </div>
+      
+            {!OutputLoading ? (
+              <div className="rounded-2xl border border-boxBorderColor bg-TableBorder p-2 md:p-3">
+                <ExpandableTable
+                  data={OutputsData}
+                  columns={outputColumns}
+                  rowDetailsMode="row"
+                  rowDetailsClassName="rounded-xl p-3"
+                />
+              </div>
+            ) : (
+              <SkeletonLoading />
+            )}
+      
+            {Networks.find((item) => item.symbole === network).type !== "account" ? (
+              <div className="mt-3">
+                <Pagination
+                  rtl
+                  totalItems={OutputTrNumber}
+                  pageSize={10}
+                  currentPage={OutputFirst}
+                  onPageChange={handlePaginationOutput}
+                />
+              </div>
+            ) : null}
+          </div>
         </div>
-    )
+      );
 }
 
 export default TxBox

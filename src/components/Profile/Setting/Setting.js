@@ -18,9 +18,9 @@ const Setting = () => {
         }
     )
     useEffect(() => {
-        GetRequest(`${serverAddress}/accounts/user_profile/`)
+        GetRequest(`${serverAddress}/accounts/users/${Cookies.get('id')}`)
             .then((response) => {
-                SetData(response.data.results[0])
+                SetData(response.data.data)
             })
             .catch((err) => {
                 console.log(err)
@@ -45,7 +45,7 @@ const Setting = () => {
               });
         }
         setcpLoading(true)
-        axios.put(`${serverAddress}/accounts/change_password/`,
+        axios.put(`${serverAddress}/accounts/change_password/${Cookies.get('id')}/`,
             {
                 old_password: oldPassword,
                 password: newPassword,

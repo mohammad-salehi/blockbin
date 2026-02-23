@@ -26,25 +26,26 @@ const SavedLabel = () => {
         GetRequest(`${serverAddress}/address-labels/label`)
             .then((response) => {
                 const getResults = [];
-                if (response.data.results.length === 0) {
+                if (response.data.data.results.length === 0) {
                     setIsEmpty(true);
                 } else {
                     setIsEmpty(false);
                 }
 
-                for (let i = 0; i < response.data.results.length; i++) {
+                for (let i = 0; i < response.data.data.results.length; i++) {
                     getResults.push({
-                        network: Networks.find(item => item.id === response.data.results[i].network).name,
-                        networkEN: Networks.find(item => item.id === response.data.results[i].network).symbole,
-                        address: response.data.results[i].address,
-                        label: response.data.results[i].label,
-                        is_wallet: response.data.results[i].is_wallet,
-                        id: response.data.results[i].id,
+                        network: Networks.find(item => item.uuid === response.data.data.results[i].network).name,
+                        networkEN: Networks.find(item => item.uuid === response.data.data.results[i].network).symbole,
+                        address: response.data.data.results[i].address,
+                        label: response.data.data.results[i].label,
+                        is_wallet: response.data.data.results[i].is_wallet,
+                        id: response.data.data.results[i].id,
                     });
                 }
                 setData(getResults);
             })
             .catch((err) => {
+                console.log(err)
                 try {
                     if (err.response.status === 403 || err.response.status === 401) {
                         Cookies.set('refresh', '');
@@ -134,7 +135,7 @@ const SavedLabel = () => {
             })
             .then((response) => {
                 setLoading(false);
-                if (response.status === 200) {
+                if (response.status === 204) {
                     // حذف از state لوکال
                     setData((prev) => prev.filter((item) => item.id !== deleteId));
                     setOpenDeleteBox(false);

@@ -155,7 +155,7 @@ const AddUser = () => {
                                     })
                                     .then((response) => {
                                         SetLoading(false)
-                                        if (response.data.message === 'successfully create user') {
+                                        if (response.status === 201) {
                                             return toast.success('انجام شد', {
                                                 position: 'bottom-left'
                                             })
@@ -264,8 +264,8 @@ const AddUser = () => {
     useEffect(() => {
         GetRequest(`${serverAddress}/accounts/role/`)
             .then((response) => {
-                if (response.data.results.length > 0) {
-                    SetRolls(response.data.results)
+                if (response.data.data.results.length > 0) {
+                    SetRolls(response.data.data.results)
                 }
             })
             .catch((err) => {

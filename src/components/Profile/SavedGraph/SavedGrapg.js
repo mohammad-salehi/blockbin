@@ -21,10 +21,10 @@ const SavedGraph = () => {
 
   // گرفتن لیست گراف‌های ذخیره‌شده
   useEffect(() => {
-    GetRequest(`${serverAddress}/tracing/graph/`)
+    GetRequest(`${serverAddress}/explorer/graph/`)
       .then((response) => {
         console.log(response)
-        const results = response.data?.results || [];
+        const results = response.data?.data?.results || [];
         if (results.length === 0) {
           setIsEmpty(true);
         } else {
@@ -66,7 +66,7 @@ const SavedGraph = () => {
     setLoading(true);
 
     axios
-      .delete(`${serverAddress}/tracing/graph/${deleteId}/`, {
+      .delete(`${serverAddress}/explorer/graph/${deleteId}/`, {
         headers: {
           Authorization: `Bearer ${Cookies.get('access')}`,
         },
