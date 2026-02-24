@@ -44,14 +44,12 @@ const AddressTransactions = ({ TokenTransfered, Miladi, TokenSelected, Transacti
       return (
         <div className='py-1 px-2 rounded-2xl m-0 text-TextGreen bg-BgGreen' style={{ textAlign: 'center' }}>
           ورودی
-          {/* <CornerLeftDown size={15} style={{ marginRight: "4px" }} /> */}
         </div>
       )
     } else {
       return (
         <div className='py-1 px-2 rounded-2xl m-0 text-TextRed bg-BgRed' style={{ textAlign: 'center' }}>
           خروجی
-          {/* <CornerUpRight size={15} style={{ marginRight: "4px" }} /> */}
         </div>
       )
     }
@@ -164,7 +162,6 @@ const AddressTransactions = ({ TokenTransfered, Miladi, TokenSelected, Transacti
     let cancelled = false;
     GetRequest(address)
       .then((response) => {
-        console.log(response)
         let raw
         if (TokenSelected === network) {
           raw = ExploreProcessor(hash, response, null) || [];
@@ -209,7 +206,7 @@ const AddressTransactions = ({ TokenTransfered, Miladi, TokenSelected, Transacti
         !Loading ?
           <>
             <ExpandableTable
-              data={filteredData}          // ← فقط دیتای فیلترشده را بده
+              data={filteredData}        
               columns={columns}
               rowDetailsMode="row"
               rowDetailsClassName="rounded-xl p-3"

@@ -88,25 +88,19 @@ const PlusIcon = ({ className = "" }) => (
 );
 
 const Page = () => {
-  // Form
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
 
-  // Data
   const [data, setData] = useState([]);
   const [totalItem, setTotalItem] = useState(0);
 
-  // UI state
   const [reload, setReload] = useState(false);
   const [loading, setLoading] = useState(true);
 
-  // Pagination
   const [page, setPage] = useState(1);
 
-  // Search
   const [search, setSearch] = useState("");
 
-  // Modals
   const [addBox, setAddBox] = useState(false);
   const [addLoading, setAddLoading] = useState(false);
 
@@ -114,7 +108,6 @@ const Page = () => {
   const [deleteLoading, setDeleteLoading] = useState(false);
   const [deleteId, setDeleteId] = useState("");
 
-  // Columns
   const columns = useMemo(
     () => [
       {
@@ -164,7 +157,6 @@ const Page = () => {
     []
   );
 
-  // Fetch
   useEffect(() => {
     setLoading(true);
 
@@ -172,7 +164,6 @@ const Page = () => {
       .then((response) => {
         const raw = response?.data?.data;
 
-        // ✅ normalize: always array
         const rows =
           Array.isArray(raw)
             ? raw
@@ -193,7 +184,6 @@ const Page = () => {
       });
   }, [reload]);
 
-  // Filter
   const filteredData = useMemo(() => {
     const rows = Array.isArray(data) ? data : [];
     const q = search.trim().toLowerCase();
@@ -206,13 +196,11 @@ const Page = () => {
     });
   }, [data, search]);
 
-  // Reset page when search changes
   useEffect(() => {
     setTotalItem(filteredData.length);
     setPage(1);
-  }, [search]); // فقط با تغییر سرچ
+  }, [search]);
 
-  // Pagination
   const pagedData = useMemo(() => {
     const rows = Array.isArray(filteredData) ? filteredData : [];
     const pageSize = 10;
@@ -220,7 +208,6 @@ const Page = () => {
     return rows.slice(start, start + pageSize);
   }, [filteredData, page]);
 
-  // Actions
   const addCase = () => {
     if (title.trim() === "" || description.trim() === "") {
       return toast.error("عنوان و توضیحات پرونده نباید خالی باشد", {
@@ -284,7 +271,6 @@ const Page = () => {
 
   return (
     <div className="space-y-4 text-textColor">
-      {/* Header */}
       <div className="rounded-2xl border border-boxBorderColor bg-boxColor/60 backdrop-blur p-4 md:p-5">
         <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-3">
           <div>
@@ -305,7 +291,6 @@ const Page = () => {
           </button>
         </div>
 
-        {/* Search */}
         <div className="mt-4 flex flex-col md:flex-row gap-3 md:items-center">
           <div className="flex-1">
             <Input
@@ -320,7 +305,6 @@ const Page = () => {
         </div>
       </div>
 
-      {/* Table Box */}
       <div className="rounded-2xl border border-boxBorderColor bg-boxColor/40 backdrop-blur p-3 md:p-4">
         {loading ? (
           <div className="py-14 text-center text-sm text-textColor/80">
@@ -359,7 +343,6 @@ const Page = () => {
         )}
       </div>
 
-      {/* Add Modal */}
       <Modal open={addBox} onClose={() => (!addLoading ? setAddBox(false) : null)}>
         <Modal.Backdrop />
         <div className="fixed inset-0 flex z-50 items-center justify-center backdrop-blur-sm bg-black/30 p-3">
@@ -417,7 +400,6 @@ const Page = () => {
         </div>
       </Modal>
 
-      {/* Delete Modal */}
       <Modal
         open={deleteBox}
         onClose={() => (!deleteLoading ? setDeleteBox(false) : null)}

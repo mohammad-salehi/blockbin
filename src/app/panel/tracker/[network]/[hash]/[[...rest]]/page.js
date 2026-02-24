@@ -31,12 +31,10 @@ const Page = () => {
   const contractAddress = rest[1];
   const id = rest[2];
 
-  //actions
   const [Reload, SetReload] = useState(false);
   const [TakeSceenShot, SetTakeSceenShot] = useState(false);
   const [Loading, SetLoading] = useState(true);
 
-  //graph Draw values
   const [NodesPosition, SetNodesPosition] = useState([]);
   const [SavedPositions, SetSavedPositions] = useState([]);
   const [Distance, SetDistance] = useState(300);
@@ -49,14 +47,12 @@ const Page = () => {
   const [Name, SetName] = useState("");
   const [Description, SetDescription] = useState("");
 
-  //graph setting
   const [ShowPrice, SetShowPrice] = useState(false);
   const [ShowValues, SetShowValues] = useState(true);
   const [ShowTimes, SetShowTimes] = useState(true);
   const [OpenSaveBox, SetOpenSaveBox] = useState(false);
   const [OpenFolderBox, SetOpenFolderBox] = useState(false);
 
-  //start graph drawing
   const [ShowGraph, SetShowGraph] = useState(false);
   const [SelectTokenBox, SetSelectTokenBox] = useState(false);
   const [ReportBox, SetReportBox] = useState(false);
@@ -1089,7 +1085,6 @@ const Page = () => {
   const [Tokens, SetTokens] = useState([]);
   const [TokenSelectionLoading, setTokenSelectionLoading] = useState(false);
 
-  //token selection
   useEffect(() => {
     if (hash !== undefined) {
       setTokenSelectionLoading(true)
@@ -1227,9 +1222,7 @@ const Page = () => {
         }}
       ></div>
 
-      {/* آکاردیون */}
       <div className="fixed top-20 right-0 h-[calc(100vh-60px)] flex items-start justify-end z-50">
-        {/* دکمه باز و بسته شدن */}
         <button
           onClick={() => setOpen(!open)}
           className="bg-boxColor text-textColor px-3 py-2 rounded-l-md shadow-md cursor-pointer hover:bg-boxbordercolor2 transition-all"
@@ -1237,13 +1230,11 @@ const Page = () => {
           {open ? "→" : "←"}
         </button>
 
-        {/* محتوای آکاردیون */}
         <div
           className={`bg-boxColor text-textColor shadow-lg transition-all duration-500 overflow-hidden p-2 ${open ? "w-100 opacity-100 overflow-visible" : "w-0 opacity-0 overflow-hidden"}`}
         >
           <div className="w-full m-0 p-0">
 
-            {/* سوئیچ‌ها */}
             <div className="mt-3 space-y-2">
               <div className="grid grid-cols-2 items-center px-2">
                 <span className="py-2">نمایش حجم</span>
@@ -1276,7 +1267,6 @@ const Page = () => {
               </div>
             </div>
 
-            {/* سوییچر شبکه/توکن */}
             <div className="mt-3 px-2">
               <label className="block mb-1">ترسیم بر اساس</label>
 
@@ -1352,7 +1342,6 @@ const Page = () => {
 
             </div>
 
-            {/* افزودن رنگ (تم‌محور) */}
             <div className="mt-3 px-2">
               <label className="block mb-2">افزودن رنگ</label>
               <div className="flex items-center gap-2">
@@ -1434,7 +1423,6 @@ const Page = () => {
               </div>
             </div>
 
-            {/* دکمه گزارش (فقط برای اکانت بیس) */}
             {Networks.find(item => item.symbole === network).type === 'account' && (
               <div className="m-0 p-0 mt-4">
                 <button
@@ -1472,7 +1460,6 @@ const Page = () => {
               </div>
             )}
 
-            {/* ذخیره */}
             <div className="m-0 p-0 mt-2">
               <button
                 onClick={() => SetOpenSaveBox(true)}
@@ -1491,7 +1478,6 @@ const Page = () => {
               </button>
             </div>
 
-            {/* پرونده */}
             {
               id !== undefined ?
                 <div className="m-0 p-0 mt-2">
@@ -1520,7 +1506,6 @@ const Page = () => {
         </div>
       </div>
 
-      {/* ذخیره */}
       <Modal
         open={OpenSaveBox}
         onClose={() => SetOpenSaveBox(false)}
@@ -1558,7 +1543,6 @@ const Page = () => {
         </div>
       </Modal>
 
-      {/* گزارش */}
       <Modal
         open={ReportBox}
         onClose={() => SetReportBox(false)}
@@ -1572,7 +1556,6 @@ const Page = () => {
         </div>
       </Modal>
 
-      {/* تغییر شبکه */}
       <Modal
         open={ChangeNetworkBox}
         onClose={() => setChangeNetworkBox(false)}
@@ -1596,7 +1579,6 @@ const Page = () => {
         </div>
       </Modal>
 
-      {/* انتخاب توکن */}
       <Modal
         open={SelectTokenBox}
         onClose={() => { }}
@@ -1663,7 +1645,6 @@ const Page = () => {
         </div>
       </Modal>
 
-      {/* پرونده */}
       <Modal open={OpenFolderBox} onClose={() => { SetOpenFolderBox(false) }}>
         <Modal.Backdrop />
         <div className="fixed inset-0 flex z-50 backdrop-blur-sm bg-white/10">

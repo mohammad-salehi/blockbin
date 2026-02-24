@@ -13,13 +13,11 @@ import { serverAddress } from '@/functions/ServerAddress'
 
 
 
-// فیلدهایی که عمداً نمایش داده نمی‌شوند (مثل currency که گفتی)
 const HIDDEN_KEYS = new Set([
   'currency',
   'addresses',
 ])
 
-// اگر آرایه خیلی بزرگ بود، نمایش داده نشود
 const MAX_ARRAY_PREVIEW = 20
 
 const AddressPage = () => {
@@ -353,7 +351,7 @@ const AddressPage = () => {
                 <div className="w-full lg:w-105">
                   <div className="rounded-3xl border border-boxBorderColor bg-boxColor/55 backdrop-blur p-5">
                     <div className="flex items-center justify-between gap-3">
-                      <div className="text-sm font-semibold text-textColor">ریسک صرافی</div>
+                      <div className="text-sm font-semibold text-textColor">ریسک موجودیت</div>
                       <span className="px-3 py-1 rounded-full border border-boxBorderColor bg-bgColor/60 text-xs text-textColor backdrop-blur">
                         سطح: <b>{riskLevel.label}</b>
                       </span>

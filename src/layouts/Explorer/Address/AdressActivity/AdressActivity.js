@@ -30,7 +30,6 @@ const AdressActivity = ({ SetTokenSelected, TokenSelected, SetMiladi, Miladi, Se
       
       GetRequest(`${serverAddress}/explorer/address-aggregation/?query=${hash}&network=${network}`)
         .then((response) => {
-          console.log(response)
           if (response.status === 200) {
             SetBalance(response.data.data.balance)
             SetFirstActivity(response.data.data.first_activity)
@@ -116,9 +115,7 @@ const AdressActivity = ({ SetTokenSelected, TokenSelected, SetMiladi, Miladi, Se
       className="relative rounded-2xl border border-boxBorderColor main-animated-border-box overflow-visible h-full"
       style={{ "--dynamic-color": `${Networks.find(item => item.symbole === network.toUpperCase()).color}` }}
     >
-      {/* ✅ inner clip wrapper */}
       <div className="relative rounded-2xl overflow-hidden h-full">
-        {/* bg */}
         <div className="absolute inset-0 bg-gradient-main-2" />
         <div
           className="absolute -top-24 -right-24 h-72 w-72 blur-3xl opacity-30"
@@ -219,7 +216,6 @@ const AdressActivity = ({ SetTokenSelected, TokenSelected, SetMiladi, Miladi, Se
                     </div>
                   </div>
   
-                  {/* Calendar switch card */}
                   <div className="group rounded-2xl bg-bgColor/50 border border-boxBorderColor p-4 shadow-sm backdrop-blur hover:bg-bgColor/70 hover:shadow-md transition h-full">
                     <p className="text-textTitleColor text-xs mb-2">نوع تاریخ</p>
                     <div className="pt-1">
@@ -227,7 +223,6 @@ const AdressActivity = ({ SetTokenSelected, TokenSelected, SetMiladi, Miladi, Se
                     </div>
                   </div>
   
-                  {/* Balance */}
                   <div className="group rounded-2xl bg-bgColor/50 border border-boxBorderColor p-4 shadow-sm backdrop-blur hover:bg-bgColor/70 hover:shadow-md transition h-full">
                     <p className="text-textTitleColor text-xs mb-2">موجودی</p>
                     <p className="text-base font-extrabold flex items-center gap-2 tabular-nums">
@@ -260,7 +255,6 @@ const AdressActivity = ({ SetTokenSelected, TokenSelected, SetMiladi, Miladi, Se
                     </p>
                   </div>
   
-                  {/* Transactions */}
                   <div className="group rounded-2xl bg-bgColor/50 border border-boxBorderColor p-4 shadow-sm backdrop-blur hover:bg-bgColor/70 hover:shadow-md transition h-full">
                     <p className="text-textTitleColor text-xs mb-2">تعداد تراکنش‌ها</p>
                     <p className="text-base font-extrabold flex items-center gap-2 tabular-nums">
@@ -273,7 +267,6 @@ const AdressActivity = ({ SetTokenSelected, TokenSelected, SetMiladi, Miladi, Se
                     </p>
                   </div>
   
-                  {/* First Activity */}
                   <div className="group rounded-2xl bg-bgColor/50 border border-boxBorderColor p-4 shadow-sm backdrop-blur hover:bg-bgColor/70 hover:shadow-md transition h-full">
                     <p className="text-textTitleColor text-xs mb-2">اولین فعالیت</p>
                     <p className="text-base font-extrabold flex items-center gap-2">
@@ -298,7 +291,6 @@ const AdressActivity = ({ SetTokenSelected, TokenSelected, SetMiladi, Miladi, Se
                     </p>
                   </div>
   
-                  {/* Last Activity */}
                   <div className="group rounded-2xl bg-bgColor/50 border border-boxBorderColor p-4 shadow-sm backdrop-blur hover:bg-bgColor/70 hover:shadow-md transition h-full">
                     <p className="text-textTitleColor text-xs mb-2">آخرین فعالیت</p>
                     <p className="text-base font-extrabold flex items-center gap-2">

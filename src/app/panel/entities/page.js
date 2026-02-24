@@ -1,32 +1,25 @@
 'use client'
 
 import React, { useEffect, useState } from 'react'
-import MainInput from '@/components/MainInput/MainInput'  // وارد کردن کامپوننت ورودی
-import { GetRequest } from '@/functions/GetRequest'  // برای ارسال درخواست‌های API
-import { serverAddress } from '@/functions/ServerAddress'  // برای آدرس سرور
-import EntityTypes from '@/components/EntityTypes/EntityTypes'  // کامپوننت نمایش موجودیت‌ها
-import FullPageLoading from '@/components/FullPageLoading/FullPageLoading'  // برای نشان دادن صفحه بارگذاری
-import EntityList from '@/layouts/Entities/EntityList/EntityList'  // برای نمایش لیست موجودیت‌ها
+import MainInput from '@/components/MainInput/MainInput'  
+import { GetRequest } from '@/functions/GetRequest' 
+import { serverAddress } from '@/functions/ServerAddress' 
+import EntityTypes from '@/components/EntityTypes/EntityTypes' 
+import FullPageLoading from '@/components/FullPageLoading/FullPageLoading' 
+import EntityList from '@/layouts/Entities/EntityList/EntityList'
 
 const Page = () => {
 
-  // وضعیت‌ها برای ذخیره داده‌ها و وضعیت‌های مختلف صفحه
-  const [pageNumber, SetpageNumber] = useState(1)  // صفحه فعلی
-  const [EntityNumber, SetEntityNumber] = useState(0)  // تعداد موجودیت‌ها
-  const [Data, SetData] = useState([])  // داده‌های موجودیت‌ها
-  const [Types, SetTypes] = useState([])  // دسته‌بندی‌های موجودیت‌ها
-  const [Loading, SetLoading] = useState(false)  // وضعیت بارگذاری
-  const [TableLoading, SetTableLoading] = useState(false)  // وضعیت بارگذاری جدول
-  const [ShowEntityList, SetShowEntityList] = useState(false)  // نمایش یا عدم نمایش لیست موجودیت‌ها
+  const [pageNumber, SetpageNumber] = useState(1)
+  const [EntityNumber, SetEntityNumber] = useState(0)
+  const [Data, SetData] = useState([])
+  const [Types, SetTypes] = useState([])
+  const [Loading, SetLoading] = useState(false)
+  const [TableLoading, SetTableLoading] = useState(false)
+  const [ShowEntityList, SetShowEntityList] = useState(false)
 
-  const [inputText, SetInputText] = useState('')  // ذخیره متن جستجو
+  const [inputText, SetInputText] = useState('')
 
-  // برای ارسال درخواست جستجو
-  const onSubmit = () => {
-    // فعلاً خالی است، اگر نیاز به عملکرد خاصی داشتید می‌توانید اینجا اضافه کنید
-  }
-
-  // بارگذاری دسته‌بندی‌ها از API
   useEffect(() => {
     SetLoading(true)
     GetRequest(`${serverAddress}/entity/categories/?page_number=1&page_size=100`)

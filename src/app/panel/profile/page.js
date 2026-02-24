@@ -45,19 +45,16 @@ const Page = () => {
           scrollButtons="auto"
           className="p-0"
           sx={{
-            // مهم: اجازه بده container تب‌ها اسکرول افقی داشته باشه
             '& .MuiTabs-scroller': {
               overflowX: 'auto',
             },
-            // اختیاری: اسکرول نرم‌تر روی iOS
             '& .MuiTabs-scroller::-webkit-scrollbar': { display: 'none' },
             '& .MuiTabs-flexContainer': {
-              gap: 1, // اختیاری برای فاصله
+              gap: 1,
             },
 
             '& .MuiTab-root': {
               color: 'var(--color-textColor)',
-              // بهتر برای موبایل: تب‌ها خودشون جمع نشن و خوانا بمونن
               minWidth: 'max-content',
               whiteSpace: 'nowrap',
             },
