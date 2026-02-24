@@ -42,6 +42,7 @@ export default function MainInput({
           disabled={!inputText.trim()}
           className="
             shrink-0 whitespace-nowrap
+            cursor-pointer
             flex items-center gap-1
             px-3 sm:px-4 py-2.5
             rounded-full bg-primary text-white

@@ -108,9 +108,7 @@ const AddressInfo = () => {
       className="relative rounded-2xl border border-boxBorderColor main-animated-border-box overflow-visible h-full"
       style={{ "--dynamic-color": `${Networks.find(item => item.symbole === network).color}` }}
     >
-      {/* ✅ inner clip wrapper (پس‌زمینه و محتوا کلیپ میشن، بوردر بیرونی سالم میمونه) */}
       <div className="relative rounded-2xl overflow-hidden h-full">
-        {/* subtle bg */}
         <div className="absolute inset-0 bg-gradient-main-2" />
         <div
           className="absolute -top-24 -right-24 h-72 w-72 blur-3xl opacity-30"
@@ -122,7 +120,6 @@ const AddressInfo = () => {
         />
 
         <div className="relative">
-          {/* Header */}
           <div className="flex flex-col xl:flex-row xl:justify-between xl:items-center gap-3 p-4 border-b border-b-boxBorderColor/70">
             <div className="flex items-center gap-3 min-w-0">
               <div className="h-11 w-11 rounded-2xl bg-bgColor/70 border border-boxBorderColor flex items-center justify-center overflow-hidden shadow-sm backdrop-blur">
@@ -136,7 +133,6 @@ const AddressInfo = () => {
               </div>
             </div>
 
-            {/* actions */}
             <div className="flex flex-wrap items-center gap-2 xl:gap-3 text-primary">
               {(Tag === null || Tag.length === 0) ? (
                 <button
@@ -188,11 +184,9 @@ const AddressInfo = () => {
             </div>
           </div>
 
-          {/* Body */}
           {!Loading1 && !Loading2 ? (
             <div className="p-4">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-textColor">
-                {/* Risk */}
                 <div className="group rounded-2xl bg-bgColor/50 border border-boxBorderColor p-4 shadow-sm backdrop-blur hover:bg-bgColor/70 hover:shadow-md transition">
                   <p className="text-textTitleColor text-xs mb-2">ریسک</p>
                   <p className="text-base font-extrabold flex items-center gap-2 tabular-nums">
@@ -216,7 +210,6 @@ const AddressInfo = () => {
                   </p>
                 </div>
 
-                {/* Owner */}
                 <div className="group rounded-2xl bg-bgColor/50 border border-boxBorderColor p-4 shadow-sm backdrop-blur hover:bg-bgColor/70 hover:shadow-md transition">
                   <p className="text-textTitleColor text-xs mb-2">مالک</p>
                   <p className="text-base font-extrabold flex items-center gap-2">
@@ -229,7 +222,7 @@ const AddressInfo = () => {
                     </span>
 
                     <a
-                      href={`/panel/entity/${Owner?.uuid}`}
+                      href={`/panel/entity/${Owner?.id}`}
                       className={`${Owner !== null ? "text-primary" : "text-textColor"} hover:underline`}
                     >
                       {Owner !== null ? Owner.name : "نامشخص"}
@@ -237,7 +230,6 @@ const AddressInfo = () => {
                   </p>
                 </div>
 
-                {/* IdentificationBy */}
                 <div className="group rounded-2xl bg-bgColor/50 border border-boxBorderColor p-4 shadow-sm backdrop-blur hover:bg-bgColor/70 hover:shadow-md transition">
                   <p className="text-textTitleColor text-xs mb-2">شناسایی شده توسط</p>
                   <p className="text-base font-extrabold flex items-center gap-2">
@@ -253,7 +245,6 @@ const AddressInfo = () => {
                   </p>
                 </div>
 
-                {/* Type */}
                 <div className="group rounded-2xl bg-bgColor/50 border border-boxBorderColor p-4 shadow-sm backdrop-blur hover:bg-bgColor/70 hover:shadow-md transition">
                   <p className="text-textTitleColor text-xs mb-2">نوع آدرس</p>
                   <p className="text-base font-extrabold flex items-center gap-2">
@@ -276,7 +267,6 @@ const AddressInfo = () => {
                 </div>
               </div>
 
-              {/* CTA row */}
               <div className="grid grid-cols-1 md:grid-cols-2 gap-3 mt-4 h-full">
                 <button
                   className=" rounded-2xl bg-primary text-white shadow-sm
@@ -314,7 +304,6 @@ const AddressInfo = () => {
             <ExploreTopBoxLoading />
           )}
 
-          {/* Label Modal */}
           <Modal open={isOpen} onClose={() => setIsOpen(false)}>
             <Modal.Backdrop />
             <div className="fixed inset-0 flex z-50 backdrop-blur-sm bg-black/30">
@@ -340,7 +329,6 @@ const AddressInfo = () => {
             </div>
           </Modal>
 
-          {/* Folder Modal */}
           <Modal open={isFolderOpen} onClose={() => setFolderIsOpen(false)}>
             <Modal.Backdrop />
             <div className="fixed inset-0 flex z-50 backdrop-blur-sm bg-black/30">

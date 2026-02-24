@@ -127,7 +127,7 @@ const RoundedColorBox = (props) => {
               {block === null ? (
                 <div className="h-6 w-24 rounded-lg bg-boxBorderColor/40 animate-pulse" />
               ) : (
-                <div className="text-textColor font-extrabold text-lg leading-6">
+                <div className="text-textColor font-extrabold text-md leading-6">
                   {Number(block).toLocaleString()}
                 </div>
               )}
@@ -151,7 +151,7 @@ const RoundedColorBox = (props) => {
                 <div className="h-6 w-28 rounded-lg bg-boxBorderColor/40 animate-pulse" />
               ) : (
                 <>
-                  <div className="text-textColor font-extrabold text-lg leading-6">
+                  <div className="text-textColor font-extrabold text-md leading-6">
                     {Number(price).toLocaleString()}
                   </div>
                   <div className="text-textColor/75 text-sm">$</div>

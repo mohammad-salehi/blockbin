@@ -312,7 +312,7 @@ const TransactionInfo = ({ TotalUSDValue, SetTotalUSDValue }) => {
                                 <button
 
                                     className="h-11 rounded-2xl bg-primary text-white shadow-sm
-                               hover:opacity-95 transition active:scale-[0.99] flex items-center justify-center gap-2"
+                               hover:opacity-95 transition active:scale-[0.99] flex items-center justify-center gap-2 cursor-pointer"
                                     onClick={() => window.location.assign(`/panel/tracker/${network}/${hash}`)}
                                 >
                                     <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
@@ -369,7 +369,6 @@ const TransactionInfo = ({ TotalUSDValue, SetTotalUSDValue }) => {
                         </div>
                     </Modal>
 
-                    {/* Folder Modal */}
                     <Modal open={isFolderOpen} onClose={() => setFolderIsOpen(false)}>
                         <Modal.Backdrop />
                         <div className="fixed inset-0 flex z-50 backdrop-blur-sm bg-black/30">

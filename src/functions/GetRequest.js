@@ -7,18 +7,17 @@ const reloadToken = async () => {
   bodyFormData.append('refresh', Cookies.get('refresh'));
   try {
     const response = await axios.post(
-      `${serverAddress}/accounts/api/token/refresh/`,
+      `${serverAddress}/accounts/token/refresh/`,
       bodyFormData,
       { headers: { 'Content-Type': 'multipart/form-data' } }
     );
-    console.log(response)
-    if (response.status === 403) {
+    if (response.status === 403 || response.status === 401 || response.status === 404) {
       Cookies.remove('access');
       Cookies.remove('refresh');
       window.location.assign('/');
       return false;
     }
-    Cookies.set('access', response.data.access);
+    Cookies.set('access', response.data.data.access);
     return true;
   } catch (err) {
     console.error('Error refreshing token:', err);

@@ -335,3 +335,45 @@ body {
   inherits: true;
   initial-value: 0turn;
 }
+
+/* ===== Web3 Glass Utilities ===== */
+.glass {
+  background: rgba(255, 255, 255, 0.03);
+  backdrop-filter: blur(14px);
+}
+
+.grad-border {
+  position: relative;
+}
+
+.grad-border::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  padding: 1px;
+  border-radius: 1.25rem; /* matches rounded-2xl */
+  background: linear-gradient(
+    135deg,
+    rgba(0, 255, 255, 0.10),
+    rgba(120, 0, 255, 0.08),
+    rgba(0, 255, 255, 0.06)
+  );
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  pointer-events: none;
+}
+
+/* darker & stronger border on dark theme */
+.dark .grad-border::before {
+  background: linear-gradient(
+    135deg,
+    rgba(0, 255, 255, 0.22),
+    rgba(120, 0, 255, 0.18),
+    rgba(0, 255, 255, 0.10)
+  );
+}
+
+.soft-glow {
+  box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.04), 0 10px 40px rgba(0, 0, 0, 0.35);
+}

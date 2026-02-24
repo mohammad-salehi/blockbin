@@ -430,8 +430,6 @@ const AddressBox = ({ Data, SetData, AddressSelectedData, Reload, SetReload }) =
             const idx = tmp.findIndex(item => item.hash === row.hash);
             if (idx !== -1) tmp[idx].loading = true;
             SetAddressTransactions(tmp);
-              console.log('row')
-              console.log(row)
               ProccessData.push(
                 {
                   id: row.address,
@@ -634,7 +632,7 @@ const AddressBox = ({ Data, SetData, AddressSelectedData, Reload, SetReload }) =
           }}
         >
           <a
-            href={`/panel/entity/${row.entity.uuid}`}
+            href={`/panel/entity/${row.entity.id}`}
             className={row.mode === 'in' ? `bg-BgGreen text-TextGreen` : `bg-BgRed text-TextRed`}
             style={{
 
@@ -647,7 +645,7 @@ const AddressBox = ({ Data, SetData, AddressSelectedData, Reload, SetReload }) =
           {ShowAddress ? (
             <div>
               <br />
-              {AddressFormat(row.address, 4, 'transaction', network)}
+              {AddressFormat(row.address, 4, 'address', network)}
             </div>
           ) : null}
         </p>
@@ -977,238 +975,246 @@ const AddressBox = ({ Data, SetData, AddressSelectedData, Reload, SetReload }) =
   return (
     <div className="text-textColor">
       {/* Header Card */}
-      <div className="rounded-2xl border border-boxBorderColor bg-boxColor/60 backdrop-blur p-4 md:p-5 shadow-sm">
-        <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-3">
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl bg-TableBorder flex items-center justify-center overflow-hidden border border-boxBorderColor">
-              <img
-                src={`/images/${network}.png`}
-                className="w-8 h-8 object-contain"
-                alt={network}
-              />
-            </div>
+      <div className="relative rounded-2xl grad-border glass soft-glow overflow-hidden">
+        {/* neon blobs (subtle in light) */}
+        <div className="pointer-events-none absolute -top-24 -right-24 h-56 w-56 rounded-full bg-cyan-500/3 dark:bg-cyan-500/12 blur-3xl" />
+        <div className="pointer-events-none absolute -bottom-24 -left-24 h-56 w-56 rounded-full bg-fuchsia-500/3 dark:bg-fuchsia-500/12 blur-3xl" />
   
-            <div className="leading-tight">
-              <div className="text-[12px] text-textTitleColor">مشخصات آدرس</div>
-              <div className="font-bold text-[15px]">
-                {Networks.find((item) => item.symbole === network).name}
-              </div>
-            </div>
-          </div>
-  
-          <div className="flex items-center justify-between md:justify-end gap-2">
-            <div className="px-3 py-2 rounded-xl bg-TableBorder border border-boxBorderColor font-mono text-[12px]">
-              {AddressFormat(AddressSelectedData.id, 10, "transaction", network)}
-            </div>
-  
-            <button
-              type="button"
-              onClick={() => RemoveAddress(AddressSelectedData.id)}
-              className="inline-flex items-center gap-2 px-3 py-2 rounded-xl border border-boxBorderColor bg-boxColor hover:bg-TableBorder transition cursor-pointer"
-              title="حذف آدرس"
-            >
-              <svg width="18" height="18" xmlns="http://www.w3.org/2000/svg">
-                <path
-                  fill="currentColor"
-                  d="M14,3 C14.5522847,3 15,3.44771525 15,4 C15,4.55228475 14.5522847,5 14,5 L13.846,5 L13.1420511,14.1534404 C13.0618518,15.1954311 12.1930072,16 11.1479,16 L4.85206,16 C3.80698826,16 2.93809469,15.1953857 2.8579545,14.1533833 L2.154,5 L2,5 C1.44771525,5 1,4.55228475 1,4 C1,3.44771525 1.44771525,3 2,3 L5,3 L5,2 C5,0.945642739 5.81588212,0.0818352903 6.85073825,0.00548576453 L7,0 L9,0 C10.0543573,0 10.9181647,0.815882118 10.9945142,1.85073825 L11,2 L11,3 L14,3 Z M11.84,5 L4.159,5 L4.85206449,14.0000111 L11.1479,14.0000111 L11.84,5 Z M9,2 L7,2 L7,3 L9,3 L9,2 Z"
+        <div className="relative p-4 md:p-6">
+          <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+            <div className="flex items-center gap-3">
+              <div className="relative w-11 h-11 rounded-2xl grid place-items-center border border-white/10 bg-white/5">
+                <div className="absolute inset-0 rounded-2xl bg-linear-to-br from-cyan-500/8 via-transparent to-fuchsia-500/8 dark:from-cyan-500/12 dark:to-fuchsia-500/12" />
+                <img
+                  src={`/images/${network}.png`}
+                  className="relative w-7 h-7 object-contain drop-shadow"
+                  alt={network}
                 />
-              </svg>
-              <span className="text-[12px]">حذف</span>
-            </button>
-          </div>
-        </div>
+              </div>
   
-        {/* Details */}
-        <div className="mt-4">
-          {ActivityLoading ? (
-            <div className="rounded-2xl border border-boxBorderColor bg-TableBorder p-3">
-              <ExploreTopBoxLoading />
-            </div>
-          ) : (
-            <div className="rounded-2xl border border-boxBorderColor bg-TableBorder p-4">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                {/* Owner */}
-                <div className="rounded-xl bg-boxColor/60 border border-boxBorderColor p-3">
-                  <p className="text-[12px] text-textTitleColor mb-1">مالک</p>
-                  {AddressSelectedData.entity !== null ? (
-                    <a
-                      className="inline-flex items-center px-3 py-1 rounded-lg bg-BgGreen text-TextGreen border border-TextGreen/20 hover:opacity-90 transition"
-                      href={`/panel/entity/${AddressSelectedData.entity.uuid}`}
-                    >
-                      {AddressSelectedData.entity.name}
-                    </a>
-                  ) : (
-                    <p className="font-bold">نامشخص</p>
-                  )}
+              <div className="leading-tight">
+                <div className="text-[11px] tracking-wide text-textTitleColor/80">مشخصات آدرس</div>
+                <div className="font-extrabold text-[16px] md:text-[17px]">
+                  {Networks.find((item) => item.symbole === network).name}
                 </div>
-  
-                {/* Risk */}
-                <div className="rounded-xl bg-boxColor/60 border border-boxBorderColor p-3">
-                  <p className="text-[12px] text-textTitleColor mb-1">ریسک</p>
-                  {AddressSelectedData.risk !== null ? (
-                    <div className="flex items-center gap-2">
-                      <span
-                        className={[
-                          "inline-flex items-center gap-1 px-2.5 py-1 rounded-lg text-[12px] border",
-                          AddressSelectedData.risk < 25
-                            ? "bg-BgGreen text-TextGreen border-TextGreen/20"
-                            : AddressSelectedData.risk < 50
-                              ? "bg-blue-500/10 text-blue-500 border-blue-500/20"
-                              : AddressSelectedData.risk < 70
-                                ? "bg-orange-500/10 text-orange-500 border-orange-500/20"
-                                : "bg-BgRed text-TextRed border-TextRed/20",
-                        ].join(" ")}
-                      >
-                        <svg
-                          height="16"
-                          width="16"
-                          viewBox="0 0 512 512"
-                          className="inline-block"
-                          fill="currentColor"
-                        >
-                          <path d="M507.494,426.066L282.864,53.537c-5.677-9.415-15.87-15.172-26.865-15.172c-10.995,0-21.188,5.756-26.865,15.172L4.506,426.066c-5.842,9.689-6.015,21.774-0.451,31.625c5.564,9.852,16.001,15.944,27.315,15.944h449.259c11.314,0,21.751-6.093,27.315-15.944C513.508,447.839,513.336,435.755,507.494,426.066z M256.167,167.227c12.901,0,23.817,7.278,23.817,20.178c0,39.363-4.631,95.929-4.631,135.292c0,10.255-11.247,14.554-19.186,14.554c-10.584,0-19.516-4.3-19.516-14.554c0-39.363-4.63-95.929-4.63-135.292C232.021,174.505,242.605,167.227,256.167,167.227z M256.498,411.018c-14.554,0-25.471-11.908-25.471-25.47c0-13.893,10.916-25.47,25.471-25.47c13.562,0,25.14,11.577,25.14,25.47C281.638,399.11,270.06,411.018,256.498,411.018z" />
-                        </svg>
-                        <span>{AddressSelectedData.risk}%</span>
-                      </span>
-                    </div>
-                  ) : (
-                    <p className="font-bold">نامشخص</p>
-                  )}
-                </div>
-  
-                {/* First Activity */}
-                <div className="rounded-xl bg-boxColor/60 border border-boxBorderColor p-3">
-                  <p className="text-[12px] text-textTitleColor mb-1">اولین فعالیت</p>
-                  <p className="font-bold flex items-center gap-2">
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
-                      <path
-                        d="M12 12V7M21 12C21 16.9706 16.9706 21 12 21C7.02944 21 3 16.9706 3 12C3 7.02944 7.02944 3 12 3C16.9706 3 21 7.02944 21 12Z"
-                        stroke="currentColor"
-                        strokeWidth="2"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                      />
-                    </svg>
-                    {MiladiFirstActivity}
-                  </p>
-                </div>
-  
-                {/* Last Activity */}
-                <div className="rounded-xl bg-boxColor/60 border border-boxBorderColor p-3">
-                  <p className="text-[12px] text-textTitleColor mb-1">آخرین فعالیت</p>
-                  <p className="font-bold flex items-center gap-2">
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
-                      <path
-                        d="M12 12V17M21 12C21 16.9706 16.9706 21 12 21C7.02944 21 3 16.9706 3 12C3 7.02944 7.02944 3 12 3C16.9706 3 21 7.02944 21 12Z"
-                        stroke="currentColor"
-                        strokeWidth="2"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                      />
-                    </svg>
-                    {MiladiLastActivity}
-                  </p>
-                </div>
-  
-                {/* Balance */}
-                <div className="rounded-xl bg-boxColor/60 border border-boxBorderColor p-3">
-                  <p className="text-[12px] text-textTitleColor mb-1">موجودی</p>
-                  <p className="font-bold flex items-center gap-2">
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" className="inline-block">
-                      <path d="M6 8H10" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-                      <path d="M22 10.5C22 10.4226 22 9.96726 21.9977 9.9346C21.9623 9.43384 21.5328 9.03496 20.9935 9.00214C20.9583 9 20.9167 9 20.8333 9H18.2308C16.4465 9 15 10.3431 15 12C15 13.6569 16.4465 15 18.2308 15H20.8333C20.9167 15 20.9583 15 20.9935 14.9979C21.5328 14.965 21.9623 14.5662 21.9977 14.0654C22 14.0327 22 13.5774 22 13.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
-                      <circle cx="18" cy="12" r="1" fill="currentColor" />
-                      <path d="M13 4C16.7712 4 18.6569 4 19.8284 5.17157C20.6366 5.97975 20.8873 7.1277 20.965 9M10 20H13C16.7712 20 18.6569 20 19.8284 18.8284C20.6366 18.0203 20.8873 16.8723 20.965 15M9 4.00093C5.8857 4.01004 4.23467 4.10848 3.17157 5.17157C2 6.34315 2 8.22876 2 12C2 15.7712 2 17.6569 3.17157 18.8284C3.82475 19.4816 4.69989 19.7706 6 19.8985" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
-                    </svg>
-                    <span>{Balance.toLocaleString()}</span>
-                    <small className="text-textTitleColor">{token}</small>
-                  </p>
-                </div>
-  
-                {/* Transactions Count */}
-                <div className="rounded-xl bg-boxColor/60 border border-boxBorderColor p-3">
-                  <p className="text-[12px] text-textTitleColor mb-1">تعداد تراکنش‌ها</p>
-                  <p className="font-bold flex items-center gap-2">
-                    <svg fill="currentColor" width="18" height="18" viewBox="0 0 24 24">
-                      <path d="M17.0020048,13 C17.5542895,13 18.0020048,13.4477153 18.0020048,14 C18.0020048,14.5128358 17.6159646,14.9355072 17.1186259,14.9932723 L17.0020048,15 L5.41700475,15 L8.70911154,18.2928932 C9.0695955,18.6533772 9.09732503,19.2206082 8.79230014,19.6128994 L8.70911154,19.7071068 C8.34862757,20.0675907 7.78139652,20.0953203 7.38910531,19.7902954 L7.29489797,19.7071068 L2.29489797,14.7071068 C1.69232289,14.1045317 2.07433707,13.0928192 2.88837381,13.0059833 L3.00200475,13 L17.0020048,13 Z" />
-                      <path d="M16.6128994,4.20970461 L16.7071068,4.29289322 L21.7071068,9.29289322 C22.3096819,9.8954683 21.9276677,10.9071808 21.1136309,10.9940167 L21,11 L7,11 C6.44771525,11 6,10.5522847 6,10 C6,9.48716416 6.38604019,9.06449284 6.88337887,9.00672773 L7,9 L18.585,9 L15.2928932,5.70710678 C14.9324093,5.34662282 14.9046797,4.77939176 15.2097046,4.38710056 L15.2928932,4.29289322 C15.6533772,3.93240926 16.2206082,3.90467972 16.6128994,4.20970461 Z" />
-                    </svg>
-                    {TrNumber}
-                  </p>
-                </div>
+                <div className="mt-1 text-[11px] text-textTitleColor/70">Network • Explorer</div>
               </div>
             </div>
-          )}
+  
+            <div className="flex items-center justify-between md:justify-end gap-2">
+              <div className="px-3 py-2 rounded-2xl border border-white/10 bg-black/10 dark:bg-black/20 font-mono text-[12px]">
+                {AddressFormat(AddressSelectedData.id, 10, "transaction", network)}
+              </div>
+  
+              <button
+                type="button"
+                onClick={() => RemoveAddress(AddressSelectedData.id)}
+                className="group inline-flex items-center gap-2 px-3 py-2 rounded-2xl border border-white/10 bg-white/5 hover:bg-white/10 transition active:scale-[0.98]"
+                title="حذف آدرس"
+              >
+                <svg width="18" height="18" xmlns="http://www.w3.org/2000/svg" className="opacity-90 group-hover:opacity-100">
+                  <path
+                    fill="currentColor"
+                    d="M14,3 C14.5522847,3 15,3.44771525 15,4 C15,4.55228475 14.5522847,5 14,5 L13.846,5 L13.1420511,14.1534404 C13.0618518,15.1954311 12.1930072,16 11.1479,16 L4.85206,16 C3.80698826,16 2.93809469,15.1953857 2.8579545,14.1533833 L2.154,5 L2,5 C1.44771525,5 1,4.55228475 1,4 C1,3.44771525 1.44771525,3 2,3 L5,3 L5,2 C5,0.945642739 5.81588212,0.0818352903 6.85073825,0.00548576453 L7,0 L9,0 C10.0543573,0 10.9181647,0.815882118 10.9945142,1.85073825 L11,2 L11,3 L14,3 Z M11.84,5 L4.159,5 L4.85206449,14.0000111 L11.1479,14.0000111 L11.84,5 Z M9,2 L7,2 L7,3 L9,3 L9,2 Z"
+                  />
+                </svg>
+                <span className="text-[12px] font-semibold">حذف</span>
+              </button>
+            </div>
+          </div>
+  
+          {/* Details */}
+          <div className="mt-5">
+            {ActivityLoading ? (
+              <div className="rounded-2xl border border-white/10 bg-white/5 p-3">
+                <ExploreTopBoxLoading />
+              </div>
+            ) : (
+              <div className="rounded-2xl border border-white/10 bg-white/5 p-4 md:p-5">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  {/* Owner */}
+                  <div className="rounded-2xl border border-white/10 bg-black/10 dark:bg-black/20 p-4 hover:bg-black/15 dark:hover:bg-black/25 transition">
+                    <p className="text-[11px] tracking-wide text-textTitleColor/80 mb-2">مالک</p>
+                    {AddressSelectedData.entity !== null ? (
+                      <a
+                        className="inline-flex items-center gap-2 px-3 py-1.5 rounded-xl border border-emerald-400/20 bg-emerald-500/10 text-emerald-600 dark:text-emerald-300 hover:bg-emerald-500/15 transition font-semibold"
+                        href={`/panel/entity/${AddressSelectedData.entity.id}`}
+                      >
+                        <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 dark:bg-emerald-300" />
+                        {AddressSelectedData.entity.name}
+                      </a>
+                    ) : (
+                      <p className="font-extrabold">نامشخص</p>
+                    )}
+                  </div>
+  
+                  {/* Risk */}
+                  <div className="rounded-2xl border border-white/10 bg-black/10 dark:bg-black/20 p-4 hover:bg-black/15 dark:hover:bg-black/25 transition">
+                    <p className="text-[11px] tracking-wide text-textTitleColor/80 mb-2">ریسک</p>
+                    {AddressSelectedData.risk !== null ? (
+                      <div className="flex items-center gap-2">
+                        <span
+                          className={[
+                            "inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-[12px] border font-bold",
+                            AddressSelectedData.risk < 25
+                              ? "bg-emerald-500/10 text-emerald-600 dark:text-emerald-300 border-emerald-400/20"
+                              : AddressSelectedData.risk < 50
+                              ? "bg-sky-500/10 text-sky-600 dark:text-sky-300 border-sky-400/20"
+                              : AddressSelectedData.risk < 70
+                              ? "bg-orange-500/10 text-orange-600 dark:text-orange-300 border-orange-400/20"
+                              : "bg-rose-500/10 text-rose-600 dark:text-rose-300 border-rose-400/20",
+                          ].join(" ")}
+                        >
+                          <span className="inline-flex items-center justify-center w-6 h-6 rounded-lg bg-white/5 border border-white/10">
+                            <svg height="14" width="14" viewBox="0 0 512 512" className="inline-block" fill="currentColor">
+                              <path d="M507.494,426.066L282.864,53.537c-5.677-9.415-15.87-15.172-26.865-15.172c-10.995,0-21.188,5.756-26.865,15.172L4.506,426.066c-5.842,9.689-6.015,21.774-0.451,31.625c5.564,9.852,16.001,15.944,27.315,15.944h449.259c11.314,0,21.751-6.093,27.315-15.944C513.508,447.839,513.336,435.755,507.494,426.066z M256.167,167.227c12.901,0,23.817,7.278,23.817,20.178c0,39.363-4.631,95.929-4.631,135.292c0,10.255-11.247,14.554-19.186,14.554c-10.584,0-19.516-4.3-19.516-14.554c0-39.363-4.63-95.929-4.63-135.292C232.021,174.505,242.605,167.227,256.167,167.227z M256.498,411.018c-14.554,0-25.471-11.908-25.471-25.47c0-13.893,10.916-25.47,25.471-25.47c13.562,0,25.14,11.577,25.14,25.47C281.638,399.11,270.06,411.018,256.498,411.018z" />
+                            </svg>
+                          </span>
+                          <span>{AddressSelectedData.risk}%</span>
+                          <span className="text-[11px] opacity-70">Risk</span>
+                        </span>
+                      </div>
+                    ) : (
+                      <p className="font-extrabold">نامشخص</p>
+                    )}
+                  </div>
+  
+                  {/* First Activity */}
+                  <div className="rounded-2xl border border-white/10 bg-black/10 dark:bg-black/20 p-4 hover:bg-black/15 dark:hover:bg-black/25 transition">
+                    <p className="text-[11px] tracking-wide text-textTitleColor/80 mb-2">اولین فعالیت</p>
+                    <p className="font-extrabold flex items-center gap-2">
+                      <span className="inline-flex items-center justify-center w-8 h-8 rounded-xl bg-white/5 border border-white/10">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+                          <path
+                            d="M12 12V7M21 12C21 16.9706 16.9706 21 12 21C7.02944 21 3 16.9706 3 12C3 7.02944 7.02944 3 12 3C16.9706 3 21 7.02944 21 12Z"
+                            stroke="currentColor"
+                            strokeWidth="2"
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                          />
+                        </svg>
+                      </span>
+                      {MiladiFirstActivity}
+                    </p>
+                  </div>
+  
+                  {/* Last Activity */}
+                  <div className="rounded-2xl border border-white/10 bg-black/10 dark:bg-black/20 p-4 hover:bg-black/15 dark:hover:bg-black/25 transition">
+                    <p className="text-[11px] tracking-wide text-textTitleColor/80 mb-2">آخرین فعالیت</p>
+                    <p className="font-extrabold flex items-center gap-2">
+                      <span className="inline-flex items-center justify-center w-8 h-8 rounded-xl bg-white/5 border border-white/10">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+                          <path
+                            d="M12 12V17M21 12C21 16.9706 16.9706 21 12 21C7.02944 21 3 16.9706 3 12C3 7.02944 7.02944 3 12 3C16.9706 3 21 7.02944 21 12Z"
+                            stroke="currentColor"
+                            strokeWidth="2"
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                          />
+                        </svg>
+                      </span>
+                      {MiladiLastActivity}
+                    </p>
+                  </div>
+  
+                  {/* Balance */}
+                  <div className="rounded-2xl border border-white/10 bg-black/10 dark:bg-black/20 p-4 hover:bg-black/15 dark:hover:bg-black/25 transition">
+                    <p className="text-[11px] tracking-wide text-textTitleColor/80 mb-2">موجودی</p>
+                    <p className="font-extrabold flex items-center gap-2">
+                      <span className="inline-flex items-center justify-center w-8 h-8 rounded-xl bg-white/5 border border-white/10">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+                          <path d="M6 8H10" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+                          <path d="M22 10.5C22 10.4226 22 9.96726 21.9977 9.9346C21.9623 9.43384 21.5328 9.03496 20.9935 9.00214C20.9583 9 20.9167 9 20.8333 9H18.2308C16.4465 9 15 10.3431 15 12C15 13.6569 16.4465 15 18.2308 15H20.8333C20.9167 15 20.9583 15 20.9935 14.9979C21.5328 14.965 21.9623 14.5662 21.9977 14.0654C22 14.0327 22 13.5774 22 13.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+                          <circle cx="18" cy="12" r="1" fill="currentColor" />
+                          <path d="M13 4C16.7712 4 18.6569 4 19.8284 5.17157C20.6366 5.97975 20.8873 7.1277 20.965 9M10 20H13C16.7712 20 18.6569 20 19.8284 18.8284C20.6366 18.0203 20.8873 16.8723 20.965 15M9 4.00093C5.8857 4.01004 4.23467 4.10848 3.17157 5.17157C2 6.34315 2 8.22876 2 12C2 15.7712 2 17.6569 3.17157 18.8284C3.82475 19.4816 4.69989 19.7706 6 19.8985" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+                        </svg>
+                      </span>
+                      <span>{Balance.toLocaleString()}</span>
+                      <small className="text-textTitleColor/70 font-medium">{token}</small>
+                    </p>
+                  </div>
+  
+                  {/* Transactions Count */}
+                  <div className="rounded-2xl border border-white/10 bg-black/10 dark:bg-black/20 p-4 hover:bg-black/15 dark:hover:bg-black/25 transition">
+                    <p className="text-[11px] tracking-wide text-textTitleColor/80 mb-2">تعداد تراکنش‌ها</p>
+                    <p className="font-extrabold flex items-center gap-2">
+                      <span className="inline-flex items-center justify-center w-8 h-8 rounded-xl bg-white/5 border border-white/10">
+                        <svg fill="currentColor" width="16" height="16" viewBox="0 0 24 24">
+                          <path d="M17.0020048,13 C17.5542895,13 18.0020048,13.4477153 18.0020048,14 C18.0020048,14.5128358 17.6159646,14.9355072 17.1186259,14.9932723 L17.0020048,15 L5.41700475,15 L8.70911154,18.2928932 C9.0695955,18.6533772 9.09732503,19.2206082 8.79230014,19.6128994 L8.70911154,19.7071068 C8.34862757,20.0675907 7.78139652,20.0953203 7.38910531,19.7902954 L7.29489797,19.7071068 L2.29489797,14.7071068 C1.69232289,14.1045317 2.07433707,13.0928192 2.88837381,13.0059833 L3.00200475,13 L17.0020048,13 Z" />
+                          <path d="M16.6128994,4.20970461 L16.7071068,4.29289322 L21.7071068,9.29289322 C22.3096819,9.8954683 21.9276677,10.9071808 21.1136309,10.9940167 L21,11 L7,11 C6.44771525,11 6,10.5522847 6,10 C6,9.48716416 6.38604019,9.06449284 6.88337887,9.00672773 L7,9 L18.585,9 L15.2928932,5.70710678 C14.9324093,5.34662282 14.9046797,4.77939176 15.2097046,4.38710056 L15.2928932,4.29289322 C15.6533772,3.93240926 16.2206082,3.90467972 16.6128994,4.20970461 Z" />
+                        </svg>
+                      </span>
+                      {TrNumber}
+                    </p>
+                  </div>
+                </div>
+              </div>
+            )}
+          </div>
         </div>
       </div>
   
       {/* Settings */}
-      <div className="mt-4 rounded-2xl border border-boxBorderColor bg-boxColor/60 backdrop-blur p-4 md:p-5 shadow-sm">
-        <div className="flex items-center justify-between">
-          <h6 className="font-bold mb-0">تنظیمات</h6>
-        </div>
-  
-        <div className="mt-3 grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div className="flex items-center justify-between rounded-xl border border-boxBorderColor bg-TableBorder px-3 py-3">
-            <div className="flex items-center gap-2">
-              <Switch
-                checked={ShowUSD}
-                id="ShowPriceCheckbox"
-                onChange={(e) => setShowUSD(e.target.checked)}
-              />
-              <label htmlFor="ShowPriceCheckbox" className="cursor-pointer text-[13px]">
-                نمایش قیمت
-              </label>
-            </div>
+      <div className="mt-4 relative rounded-2xl grad-border glass soft-glow overflow-hidden">
+        <div className="relative p-4 md:p-6">
+          <div className="flex items-center justify-between">
+            <h6 className="font-extrabold mb-0">تنظیمات</h6>
+            <span className="text-[11px] text-textTitleColor/70">Preferences</span>
           </div>
   
-          {Networks.find((item) => item.symbole === network).type === "account" ? (
-            <div className="flex items-center justify-between rounded-xl border border-boxBorderColor bg-TableBorder px-3 py-3">
+          <div className="mt-4 grid grid-cols-1 md:grid-cols-2 gap-3">
+            <div className="flex items-center justify-between rounded-2xl border border-white/10 bg-white/5 px-4 py-3 hover:bg-white/10 transition">
               <div className="flex items-center gap-2">
-                <Switch
-                  checked={ShowAddress}
-                  id="ShowAddressCheckbox"
-                  onChange={(e) => setShowAddress(e.target.checked)}
-                />
-                <label htmlFor="ShowAddressCheckbox" className="cursor-pointer text-[13px]">
-                  نمایش آدرس مقابل
+                <Switch checked={ShowUSD} id="ShowPriceCheckbox" onChange={(e) => setShowUSD(e.target.checked)} />
+                <label htmlFor="ShowPriceCheckbox" className="cursor-pointer text-[13px] font-semibold">
+                  نمایش قیمت
                 </label>
               </div>
             </div>
-          ) : null}
+  
+            {Networks.find((item) => item.symbole === network).type === "account" ? (
+              <div className="flex items-center justify-between rounded-2xl border border-white/10 bg-white/5 px-4 py-3 hover:bg-white/10 transition">
+                <div className="flex items-center gap-2">
+                  <Switch checked={ShowAddress} id="ShowAddressCheckbox" onChange={(e) => setShowAddress(e.target.checked)} />
+                  <label htmlFor="ShowAddressCheckbox" className="cursor-pointer text-[13px] font-semibold">
+                    نمایش آدرس مقابل
+                  </label>
+                </div>
+              </div>
+            ) : null}
+          </div>
         </div>
       </div>
   
       {/* Transactions Table */}
-      <div className="mt-4 mb-4 rounded-2xl border border-boxBorderColor bg-boxColor/60 backdrop-blur p-4 md:p-5 shadow-sm">
-        <div className="flex items-center justify-between mb-3">
-          <h6 className="font-bold mb-0">تراکنش‌ها</h6>
-          <span className="text-[12px] text-textTitleColor">
-            مجموع: {TrNumber}
-          </span>
-        </div>
-  
-        {!TableLoading ? (
-          <div className="rounded-2xl border border-boxBorderColor bg-TableBorder p-2 md:p-3">
-            <ExpandableTable
-              data={AddressTransactions}
-              columns={columns}
-              rowDetailsMode="row"
-              rowDetailsClassName="rounded-xl p-3"
-            />
+      <div className="mt-4 mb-4 relative rounded-2xl grad-border glass soft-glow overflow-hidden">
+        <div className="relative p-4 md:p-6">
+          <div className="flex items-center justify-between mb-3">
+            <div>
+              <h6 className="font-extrabold mb-0">تراکنش‌ها</h6>
+              <div className="text-[11px] text-textTitleColor/70 mt-1">Live activity feed</div>
+            </div>
+            <span className="text-[12px] text-textTitleColor/80">
+              مجموع: <span className="font-bold text-textColor">{TrNumber}</span>
+            </span>
           </div>
-        ) : (
-          <SkeletonLoading />
-        )}
   
-        <div className="mt-3">
-          <Pagination
-            rtl
-            totalItems={TrNumber}
-            pageSize={10}
-            currentPage={first}
-            onPageChange={handlePagination}
-          />
+          {!TableLoading ? (
+            <div className="rounded-2xl border border-white/10 bg-white/5 p-2 md:p-3">
+              <ExpandableTable
+                data={AddressTransactions}
+                columns={columns}
+                rowDetailsMode="row"
+                rowDetailsClassName="rounded-2xl p-3 border border-white/10 bg-black/10 dark:bg-black/20"
+              />
+            </div>
+          ) : (
+            <SkeletonLoading />
+          )}
+  
+          <div className="mt-4">
+            <Pagination rtl totalItems={TrNumber} pageSize={10} currentPage={first} onPageChange={handlePagination} />
+          </div>
         </div>
       </div>
     </div>

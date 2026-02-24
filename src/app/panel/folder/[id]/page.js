@@ -17,31 +17,25 @@ const Page = () => {
   const params = useParams();
   const uuid = params.id;
 
-  // Case info
   const [name, setName] = useState("");
   const [lastUpdate, setLastUpdate] = useState("");
   const [note, setNote] = useState("");
 
-  // Lists
   const [addresses, setAddresses] = useState([]);
   const [transactions, setTransactions] = useState([]);
   const [graphs, setGraphs] = useState([]);
 
-  // UI
   const [loading, setLoading] = useState(true);
 
-  // Pagination
   const [addressPage, setAddressPage] = useState(1);
   const [transactionPage, setTransactionPage] = useState(1);
   const [graphPage, setGraphPage] = useState(1);
   const pageSize = 10;
 
-  // Search
   const [addressSearch, setAddressSearch] = useState("");
   const [transactionSearch, setTransactionSearch] = useState("");
   const [graphSearch, setGraphSearch] = useState("");
 
-  // Network helpers
   const getNetworkSymbolById = (id) => {
     const found = Networks?.find((item) => item.id === id);
     return found?.symbole || found?.symbol || "";
@@ -61,7 +55,6 @@ const Page = () => {
     </div>
   );
 
-  // Columns
   const addressColumns = useMemo(
     () => [
       {
@@ -165,7 +158,7 @@ const Page = () => {
           <button
             type="button"
             onClick={() => openGraph(row.graph_detail.id)}
-            className="text-textColor font-medium hover:underline underline-offset-4"
+            className="text-textColor font-medium hover:underline underline-offset-4 cursor-pointer"
           >
             {row.graph_detail.title}
           </button>
@@ -190,25 +183,20 @@ const Page = () => {
     []
   );
 
-  // Fetch case
   useEffect(() => {
     setLoading(true);
 
     GetRequest(`${serverAddress}/case/management/${uuid}/`)
       .then((response) => {
         const payload = response?.data?.data;
-
         setName(payload?.case_info?.name ?? "");
         setLastUpdate(payload?.case_info?.modified_time ?? "");
         setNote(payload?.case_info?.note_detail ?? "");
-
-        // ✅ normalize lists
         setAddresses(Array.isArray(payload?.addresses) ? payload.addresses : []);
         setTransactions(
           Array.isArray(payload?.transactions) ? payload.transactions : []
         );
         setGraphs(Array.isArray(payload?.graphs) ? payload.graphs : []);
-
         setLoading(false);
       })
       .catch((err) => {
@@ -218,10 +206,8 @@ const Page = () => {
           position: "bottom-left",
         });
       });
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  // Save note
   const sendValueTextarea = async () => {
     try {
       const response = await axios.put(
@@ -244,7 +230,6 @@ const Page = () => {
     }
   };
 
-  // Open graph
   const openGraph = (id) => {
     GetRequest(`${serverAddress}/explorer/graph/${id}/`)
       .then((response2) => {
@@ -255,7 +240,6 @@ const Page = () => {
         window.location.assign(`/panel/tracker/${v.network}/${v.hash}/${v.token}/${v.contractAddress}/${response2.data.data.id}`);
       })
       .catch((err) => {
-        // axios: err.response?.status
         const status = err?.response?.status ?? err?.status;
         if (status === 404) {
           return toast.error("گراف موردنظر یافت نشد", {
@@ -266,7 +250,6 @@ const Page = () => {
       });
   };
 
-  // Filtering
   const filteredAddresses = useMemo(() => {
     const rows = Array.isArray(addresses) ? addresses : [];
     const q = addressSearch.trim().toLowerCase();
@@ -305,12 +288,10 @@ const Page = () => {
     });
   }, [graphs, graphSearch]);
 
-  // Reset pages on search changes
   useEffect(() => setAddressPage(1), [addressSearch]);
   useEffect(() => setTransactionPage(1), [transactionSearch]);
   useEffect(() => setGraphPage(1), [graphSearch]);
 
-  // Pagination slices
   const pagedAddresses = useMemo(() => {
     const rows = Array.isArray(filteredAddresses) ? filteredAddresses : [];
     const start = (addressPage - 1) * pageSize;
@@ -331,7 +312,6 @@ const Page = () => {
 
   return (
     <div className="space-y-5 text-textColor">
-      {/* Header */}
       <div className="rounded-2xl border border-boxBorderColor bg-boxColor/60 backdrop-blur p-4 md:p-5">
         <div className="flex items-start justify-between gap-3">
           <div className="min-w-0">
@@ -377,7 +357,6 @@ const Page = () => {
         </div>
       </div>
 
-      {/* Note */}
       <div className="rounded-2xl border border-boxBorderColor bg-boxColor/40 backdrop-blur p-4 md:p-5">
         <div className="flex items-center justify-between gap-3">
           <h5 className="text-textColor font-bold text-lg">یادداشت</h5>
@@ -392,12 +371,11 @@ const Page = () => {
         <textarea
           value={note}
           onChange={(e) => setNote(e.target.value)}
-          className="border border-boxBorderColor rounded-xl mt-3 w-full outline-none px-4 py-3 text-textColor bg-transparent min-h-[120px]"
+          className="border border-boxBorderColor rounded-xl mt-3 w-full outline-none px-4 py-3 text-textColor bg-transparent min-h-30"
           placeholder="یادداشت پرونده را اینجا بنویسید..."
         />
       </div>
 
-      {/* Addresses */}
       <div className="rounded-2xl border border-boxBorderColor bg-boxColor/40 backdrop-blur p-4 md:p-5">
         <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-3">
           <h5 className="text-textColor font-bold text-lg">آدرس‌های افزوده‌شده</h5>
@@ -428,7 +406,6 @@ const Page = () => {
         </div>
       </div>
 
-      {/* Transactions */}
       <div className="rounded-2xl border border-boxBorderColor bg-boxColor/40 backdrop-blur p-4 md:p-5">
         <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-3">
           <h5 className="text-textColor font-bold text-lg">
@@ -461,7 +438,6 @@ const Page = () => {
         </div>
       </div>
 
-      {/* Graphs */}
       <div className="rounded-2xl border border-boxBorderColor bg-boxColor/40 backdrop-blur p-4 md:p-5">
         <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-3">
           <h5 className="text-textColor font-bold text-lg">گراف‌های افزوده‌شده</h5>

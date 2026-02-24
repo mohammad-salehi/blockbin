@@ -8,10 +8,10 @@ import Pagination from '@/components/Pagination/Pagination'
 import { Networks } from '@/functions/Networks'
 import { AddressFormat } from '@/components/AddressFormat/AddressFormat'
 import { GetRequest } from '@/functions/GetRequest'
+import { useParams } from 'next/navigation'
+import { serverAddress } from '@/functions/ServerAddress'
 
-const ENTITY_UID = 'cca01e70-6dfc-4f77-b98a-63d65b004f9d'
-const PAGE_SIZE = 10
-const API_BASE = 'https://api.bahfara.ir/api/v1'
+
 
 // فیلدهایی که عمداً نمایش داده نمی‌شوند (مثل currency که گفتی)
 const HIDDEN_KEYS = new Set([
@@ -23,6 +23,13 @@ const HIDDEN_KEYS = new Set([
 const MAX_ARRAY_PREVIEW = 20
 
 const AddressPage = () => {
+
+  const params = useParams();
+  const ENTITY_UID = params.id;
+
+  const PAGE_SIZE = 10
+  const API_BASE = serverAddress
+
   const [networkSelected, setNetworkSelected] = useState('btc')
   const [addresses, setAddresses] = useState([])
   const [totalItems, setTotalItems] = useState(0)
@@ -263,7 +270,7 @@ const AddressPage = () => {
 
   return (
     <div className="mx-auto max-w-7xl">
-  
+
       {/* ONE SINGLE BOX: identity + specs + risk */}
       <div className="mt-8">
         {entityLoading ? (
@@ -283,7 +290,7 @@ const AddressPage = () => {
               <div className="absolute -bottom-24 -left-24 w-105 h-105 rounded-full bg-primary/14 blur-3xl" />
               <div className="absolute inset-0 opacity-[0.28] [background:radial-gradient(circle_at_top,rgba(255,255,255,0.10),transparent_52%)]" />
             </div>
-  
+
             <div className="relative p-6 sm:p-8">
               {/* Top identity row */}
               <div className="flex flex-col lg:flex-row lg:items-start gap-6">
@@ -309,31 +316,31 @@ const AddressPage = () => {
                       <div className="text-xs opacity-70 text-textColor">بدون تصویر</div>
                     )}
                   </div>
-  
+
                   <div className="min-w-0 flex-1">
                     <h2 className="text-xl sm:text-2xl font-extrabold text-textColor leading-7">
                       {entityInfo?.persian_name || entityInfo?.name || '—'}
                     </h2>
-  
+
                     <div className="mt-1 text-sm text-textColor">
                       <span className="opacity-70">نام انگلیسی:</span>{' '}
                       <span className="font-semibold">{entityInfo?.name || '—'}</span>
                     </div>
-  
+
                     <div className="mt-4 flex flex-wrap gap-2">
                       <span className="px-3 py-1 rounded-full border border-boxBorderColor bg-boxColor/70 text-xs text-textColor backdrop-blur">
                         <span className="opacity-70">نوع:</span> <b>{metadata?.type || 'نامشخص'}</b>
                       </span>
-  
+
                       <span className="px-3 py-1 rounded-full border border-boxBorderColor bg-boxColor/70 text-xs text-textColor backdrop-blur">
                         <span className="opacity-70">کشور:</span> <b>{entityInfo?.country || 'نامشخص'}</b>
                       </span>
-  
+
                       <span className="px-3 py-1 rounded-full border border-boxBorderColor bg-boxColor/70 text-xs text-textColor backdrop-blur">
                         <span className="opacity-70">دسته‌بندی:</span>{' '}
                         <b>{category?.persian_name || category?.name || 'نامشخص'}</b>
                       </span>
-  
+
                       <span className="px-3 py-1 rounded-full border border-boxBorderColor bg-boxColor/70 text-xs text-textColor backdrop-blur">
                         <span className="opacity-70">وضعیت تحریم:</span>{' '}
                         <b>{metadata?.is_in_sanction_list ? 'تحریم' : 'بدون تحریم'}</b>
@@ -341,7 +348,7 @@ const AddressPage = () => {
                     </div>
                   </div>
                 </div>
-  
+
                 {/* Risk embedded in same box (not a separate box) */}
                 <div className="w-full lg:w-105">
                   <div className="rounded-3xl border border-boxBorderColor bg-boxColor/55 backdrop-blur p-5">
@@ -351,14 +358,14 @@ const AddressPage = () => {
                         سطح: <b>{riskLevel.label}</b>
                       </span>
                     </div>
-  
+
                     <div className="mt-4 flex items-end justify-between">
                       <div className="text-4xl font-extrabold text-textColor">
                         {riskPercent == null ? '--' : `${riskPercent}%`}
                       </div>
                       <div className="text-xs opacity-70 text-textColor">Risk Score</div>
                     </div>
-  
+
                     <div className="mt-4">
                       <div className="h-2.5 w-full rounded-full bg-bgColor/60 border border-boxBorderColor overflow-hidden backdrop-blur">
                         <div
@@ -376,14 +383,14 @@ const AddressPage = () => {
                   </div>
                 </div>
               </div>
-  
+
               {/* Divider */}
               <div className="mt-8 h-px w-full bg-boxBorderColor/60" />
-  
+
               {/* Specs area (beautified tiles) */}
               <div className="mt-6">
                 <h3 className="text-lg font-extrabold text-textColor">مشخصات</h3>
-  
+
                 <div className="mt-4 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                   {/* Website */}
                   <div className="group rounded-2xl border border-boxBorderColor bg-boxColor/55 backdrop-blur p-4">
@@ -406,7 +413,7 @@ const AddressPage = () => {
                       )}
                     </div>
                   </div>
-  
+
                   {/* Legal name */}
                   <div className="group rounded-2xl border border-boxBorderColor bg-boxColor/55 backdrop-blur p-4">
                     <div className="flex items-center justify-between">
@@ -417,7 +424,7 @@ const AddressPage = () => {
                       {metadata?.legal_name || 'ثبت نشده'}
                     </div>
                   </div>
-  
+
                   {/* Registration */}
                   <div className="group rounded-2xl border border-boxBorderColor bg-boxColor/55 backdrop-blur p-4">
                     <div className="flex items-center justify-between">
@@ -428,7 +435,7 @@ const AddressPage = () => {
                       {metadata?.registration_number || 'ثبت نشده'}
                     </div>
                   </div>
-  
+
                   {/* Supervisor */}
                   <div className="group rounded-2xl border border-boxBorderColor bg-boxColor/55 backdrop-blur p-4">
                     <div className="flex items-center justify-between">
@@ -439,7 +446,7 @@ const AddressPage = () => {
                       {metadata?.supervisory_body || 'نامشخص'}
                     </div>
                   </div>
-  
+
                   {/* Establishment */}
                   <div className="group rounded-2xl border border-boxBorderColor bg-boxColor/55 backdrop-blur p-4">
                     <div className="flex items-center justify-between">
@@ -450,7 +457,7 @@ const AddressPage = () => {
                       {metadata?.establishment || 'ثبت نشده'}
                     </div>
                   </div>
-  
+
                   {/* Fiat support */}
                   <div className="group rounded-2xl border border-boxBorderColor bg-boxColor/55 backdrop-blur p-4">
                     <div className="flex items-center justify-between">
@@ -461,7 +468,7 @@ const AddressPage = () => {
                       {metadata?.fiat_support ? 'دارد' : 'ندارد'}
                     </div>
                   </div>
-  
+
                   {/* Private coin */}
                   <div className="group rounded-2xl border border-boxBorderColor bg-boxColor/55 backdrop-blur p-4">
                     <div className="flex items-center justify-between">
@@ -472,7 +479,7 @@ const AddressPage = () => {
                       {metadata?.private_coin ? 'دارد' : 'ندارد'}
                     </div>
                   </div>
-  
+
                   {/* Licence */}
                   <div className="group rounded-2xl border border-boxBorderColor bg-boxColor/55 backdrop-blur p-4">
                     <div className="flex items-center justify-between">
@@ -483,7 +490,7 @@ const AddressPage = () => {
                       {metadata?.licence || 'نامشخص'}
                     </div>
                   </div>
-  
+
                   {/* Twitter */}
                   <div className="group rounded-2xl border border-boxBorderColor bg-boxColor/55 backdrop-blur p-4 sm:col-span-2 lg:col-span-1">
                     <div className="flex items-center justify-between">
@@ -506,7 +513,7 @@ const AddressPage = () => {
                     </div>
                   </div>
                 </div>
-  
+
                 {metadata?.note ? (
                   <div className="mt-6 rounded-2xl border border-boxBorderColor bg-bgColor/60 backdrop-blur p-4">
                     <div className="text-xs opacity-70 text-textColor">یادداشت</div>
@@ -518,18 +525,18 @@ const AddressPage = () => {
           </div>
         )}
       </div>
-  
+
       {/* ADDRESSES SECTION */}
       <div className="mt-8 relative overflow-hidden rounded-3xl border border-boxBorderColor bg-bgColor">
         <div className="absolute inset-0 pointer-events-none">
           <div className="absolute -top-24 -right-24 w-72 h-72 rounded-full bg-primary/10 blur-3xl" />
           <div className="absolute -bottom-24 -left-24 w-72 h-72 rounded-full bg-primary/10 blur-3xl" />
         </div>
-  
+
         <div className="relative p-6 sm:p-8 border-b border-boxBorderColor">
           <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
             <h3 className="text-xl font-extrabold text-textColor">لیست آدرس‌ها</h3>
-  
+
             <div className="flex items-center gap-3 justify-end">
               <Dropdown value={networkSelected} onChange={(val) => setNetworkSelected(val)}>
                 <Dropdown.Trigger className="w-64">
@@ -551,7 +558,7 @@ const AddressPage = () => {
                     <span className="text-xs opacity-70">▼</span>
                   </Button>
                 </Dropdown.Trigger>
-  
+
                 <Dropdown.Options className="mt-2 w-64 bg-bgColor border border-boxBorderColor rounded-2xl p-2 z-50 max-h-72 overflow-y-auto">
                   {Networks.map((item, index) => (
                     <Dropdown.Option value={item.symbole} key={index}>
@@ -563,9 +570,8 @@ const AddressPage = () => {
                             setNetworkSelected(item.symbole)
                             document.activeElement?.blur()
                           }}
-                          className={`rounded-xl border border-boxBorderColor mb-2 text-textColor ${
-                            networkSelected === item.symbole ? 'bg-boxColor' : 'bg-bgColor'
-                          }`}
+                          className={`rounded-xl border border-boxBorderColor mb-2 text-textColor ${networkSelected === item.symbole ? 'bg-boxColor' : 'bg-bgColor'
+                            }`}
                         >
                           <MenuItem.Title>
                             <span className="flex items-center gap-2">
@@ -588,7 +594,7 @@ const AddressPage = () => {
             </div>
           </div>
         </div>
-  
+
         <div className="relative p-4 sm:p-6">
           {tableLoading ? (
             <div className="rounded-[20px] border border-boxBorderColor bg-bgColor p-6">
@@ -618,7 +624,7 @@ const AddressPage = () => {
               />
             </div>
           )}
-  
+
           <div className="mt-6">
             <Pagination
               rtl
