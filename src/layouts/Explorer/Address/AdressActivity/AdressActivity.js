@@ -114,7 +114,7 @@ const AdressActivity = ({ SetTokenSelected, TokenSelected, SetMiladi, Miladi, Se
   return (
     <div
       className="relative rounded-2xl border border-boxBorderColor main-animated-border-box overflow-visible h-full"
-      style={{ "--dynamic-color": `${Networks.find(item => item.symbole === network).color}` }}
+      style={{ "--dynamic-color": `${Networks.find(item => item.symbole === network.toUpperCase()).color}` }}
     >
       {/* ✅ inner clip wrapper */}
       <div className="relative rounded-2xl overflow-hidden h-full">
@@ -122,11 +122,11 @@ const AdressActivity = ({ SetTokenSelected, TokenSelected, SetMiladi, Miladi, Se
         <div className="absolute inset-0 bg-gradient-main-2" />
         <div
           className="absolute -top-24 -right-24 h-72 w-72 blur-3xl opacity-30"
-          style={{ background: `${Networks.find(item => item.symbole === network).color}` }}
+          style={{ background: `${Networks.find(item => item.symbole === network.toUpperCase()).color}` }}
         />
         <div
           className="absolute -bottom-28 -left-28 h-80 w-80 blur-3xl opacity-20"
-          style={{ background: `${Networks.find(item => item.symbole === network).color}` }}
+          style={{ background: `${Networks.find(item => item.symbole === network.toUpperCase()).color}` }}
         />
   
         <div className="relative h-full flex flex-col">

@@ -9,6 +9,12 @@ const EntityTypes = (props) => {
   const [EntityNumber, SetEntityNumber] = useState(0);
   const [imageError, setImageError] = useState(false); // State to track if image fails to load
 
+  const getLogoSrc = (logo) => {
+    if (!logo) return "";
+    if (logo.startsWith("data:image")) return logo; // already data url
+    return `data:image/png;base64,${logo}`; // or jpeg/webp depending on your backend
+  };
+
   useEffect(() => {
     GetRequest(`${serverAddress}/entity/entities/?category=${props.id}&is_iranian=false&page_number=1&page_size=1000`)
       .then((response) => {
@@ -54,7 +60,7 @@ const EntityTypes = (props) => {
               <ImageNotSupportedIcon className="w-16 h-16 text-gray-400" /> // Show icon if image fails to load
             ) : (
               <img
-                src={props.logo}
+                src={getLogoSrc(props.logo)}
                 className="w-16 h-16 object-contain rounded-full border-2 border-white shadow-md"
                 alt="Logo"
                 onError={handleImageError} // Trigger error handler if image fails to load

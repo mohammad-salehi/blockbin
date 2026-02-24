@@ -151,7 +151,7 @@ const AddressTransactions = ({ TokenTransfered, Miladi, TokenSelected, Transacti
     SetLoading(true)
     let address = '';
     if (TokenSelected === network) {
-      if (Networks.find(item => item.symbole === network).type === 'utxo') {
+      if (Networks.find(item => item.symbole === network.toUpperCase()).type === 'utxo') {
         address = `${serverAddress}/explorer/utxo/address/${hash}/?network=${network}&page_number=${First}&page_size=10&sort_order=ascending`;
       } else {
         address = `${serverAddress}/explorer/evm/address/${hash}/?evm_address_type=main&network=${network}&page_number=${First}&page_size=10&sort_order=ascending`

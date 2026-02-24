@@ -66,7 +66,7 @@ const AddressInfo = () => {
         {
           address: hash,
           label: newLabel,
-          network: Networks.find(item => item.symbole === network).uuid
+          network: Networks.find(item => item.symbole === network.toUpperCase()).uuid
         },
         {
           headers: {
@@ -106,17 +106,17 @@ const AddressInfo = () => {
   return (
     <div
       className="relative rounded-2xl border border-boxBorderColor main-animated-border-box overflow-visible h-full"
-      style={{ "--dynamic-color": `${Networks.find(item => item.symbole === network).color}` }}
+      style={{ "--dynamic-color": `${Networks.find(item => item.symbole === network.toUpperCase()).color}` }}
     >
       <div className="relative rounded-2xl overflow-hidden h-full">
         <div className="absolute inset-0 bg-gradient-main-2" />
         <div
           className="absolute -top-24 -right-24 h-72 w-72 blur-3xl opacity-30"
-          style={{ background: `${Networks.find(item => item.symbole === network).color}` }}
+          style={{ background: `${Networks.find(item => item.symbole === network.toUpperCase()).color}` }}
         />
         <div
           className="absolute -bottom-28 -left-28 h-80 w-80 blur-3xl opacity-20"
-          style={{ background: `${Networks.find(item => item.symbole === network).color}` }}
+          style={{ background: `${Networks.find(item => item.symbole === network.toUpperCase()).color}` }}
         />
 
         <div className="relative">
@@ -128,7 +128,7 @@ const AddressInfo = () => {
 
               <div className="leading-tight min-w-0">
                 <h6 className="text-lg xl:text-xl font-extrabold text-textColor truncate">
-                  آدرس {Networks.find(item => item.symbole === network).name}
+                  آدرس {Networks.find(item => item.symbole === network.toUpperCase()).name}
                 </h6>
               </div>
             </div>
@@ -339,7 +339,7 @@ const AddressInfo = () => {
                 <div className="mt-4">
                   <FolderList
                     address={hash}
-                    network={Networks.find(item => item.symbole === network).id}
+                    network={Networks.find(item => item.symbole === network.toUpperCase()).id}
                     type="address"
                     setFolderIsOpen={setFolderIsOpen}
                   />
