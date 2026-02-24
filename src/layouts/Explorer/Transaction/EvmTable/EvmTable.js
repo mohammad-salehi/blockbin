@@ -54,7 +54,7 @@ const EvmTable = ({ SetTotalUSDValue }) => {
       cell: (row) => (
         <div>
 
-          {AddressFormat(row.from.address, 8, 'address', 'TRX', true)}
+          {AddressFormat(row.from.address, 8, 'address', network, true)}
           <span>
         {
           row.from.entity.name ?
@@ -74,7 +74,7 @@ const EvmTable = ({ SetTotalUSDValue }) => {
       cell: (row) => (
         <div>
 
-        {AddressFormat(row.to.address, 8, 'address', 'TRX', true)}
+        {AddressFormat(row.to.address, 8, 'address', network, true)}
         <span>
         {
           row.to.entity.name ?
@@ -113,7 +113,6 @@ const EvmTable = ({ SetTotalUSDValue }) => {
     SetLoading(true)
     GetRequest(`${serverAddress}/explorer/evm/transaction/${hash}/?network=${network}&page_number=1&page_size=100&transaction_type=ALL`)
       .then((response) => {
-        console.log(response)
         const Trlist = (AccountBaseTr(response.data.data.result, network, Networks.find(item => item.symbole === network).name).transfers)
         const getData = []
         for (let i = 0; i < Trlist.length; i++) {

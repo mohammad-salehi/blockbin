@@ -66,33 +66,33 @@ const TransactionInfo = ({ TotalUSDValue, SetTotalUSDValue }) => {
                 })
         } else {
             GetRequest(`${serverAddress}/explorer/evm/transaction/${hash}/?network=${network}&page_number_from=1&page_size_from=1&page_number_to=2&page_size_to=2`)
-            .then((response) => {
-                console.log('trs2')
-                console.log(response)
-                if (Networks.find(item => item.symbole === network).type === 'account') {
-                    SetblockNumber(response.data.data.result.block_number)
-                    SetTrValue(response.data.data.result.value)
-                    SetFee(response.data.data.result.fee)
-                    SetTime(response.data.data.result.time)
-                    if (response.data.data.result.labels_tags.labels.length > 0) {
-                        SetLabel(response.data.data.result.labels_tags.labels)
+                .then((response) => {
+                    console.log('trs2')
+                    console.log(response)
+                    if (Networks.find(item => item.symbole === network).type === 'account') {
+                        SetblockNumber(response.data.data.result.block_number)
+                        SetTrValue(response.data.data.result.value)
+                        SetFee(response.data.data.result.fee)
+                        SetTime(response.data.data.result.time)
+                        if (response.data.data.result.labels_tags.labels.length > 0) {
+                            SetLabel(response.data.data.result.labels_tags.labels)
+                        }
+                    } else {
+                        SetblockNumber(response.data.data.result.block_number)
+                        SetTrValue(response.data.data.result.amount_transacted)
+                        SetFee(response.data.data.result.fee)
+                        SetTime(response.data.data.result.time)
+                        if (response.data.data.result.label_tag.labels.length > 0) {
+                            SetLabel(response.data.data.result.label_tag.labels)
+                        }
                     }
-                } else {
-                    SetblockNumber(response.data.data.result.block_number)
-                    SetTrValue(response.data.data.result.amount_transacted)
-                    SetFee(response.data.data.result.fee)
-                    SetTime(response.data.data.result.time)
-                    if (response.data.data.result.label_tag.labels.length > 0) {
-                        SetLabel(response.data.data.result.label_tag.labels)
-                    }
-                }
 
-                SetLoading1(false)
-            })
-            .catch((err) => {
-                console.log(err)
-                SetLoading1(false)
-            })
+                    SetLoading1(false)
+                })
+                .catch((err) => {
+                    console.log(err)
+                    SetLoading1(false)
+                })
         }
     }, [])
 
@@ -292,7 +292,7 @@ const TransactionInfo = ({ TotalUSDValue, SetTotalUSDValue }) => {
                                         </span>
 
                                         <span className="leading-6">
-                                            {Time !== null ? (
+                                            {Time !== null && Time !== 0 ? (
                                                 <span style={{ margin: "0px" }}>
                                                     {GetMyTime(Time).hour + ":" + GetMyTime(Time).minute + " - " +
                                                         moment(GetMyTime(Time).year + "-" + GetMyTime(Time).month + "-" + GetMyTime(Time).day, "YYYY/MM/DD")
@@ -301,7 +301,9 @@ const TransactionInfo = ({ TotalUSDValue, SetTotalUSDValue }) => {
                                                     <span className="text-xs text-textTitleColor">({timeSince(Time)})</span>
                                                 </span>
                                             ) : (
-                                                "نامشخص"
+                                                <span style={{ margin: "0px" }}>
+                                                    نامشخص
+                                                </span>
                                             )}
                                         </span>
                                     </p>
