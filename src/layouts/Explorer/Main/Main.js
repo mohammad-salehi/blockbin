@@ -84,7 +84,7 @@ const Main = ({ SetLoading }) => {
         <p className='inline-block'>نمونه کاوش</p>
         <p
           className='inline-block mr-2 sm:mr-4 bg-bgColor2 px-4 py-1 rounded-full cursor-pointer'
-          onClick={() => { SetInputText('THVKDNLrcP2MHAxuCP73LjhvzFBcUusk8r') }}
+          onClick={() => { SetInputText('TAngDVCCBBs5Z2v42N9KzvcGfdRhnaXrrG') }}
         >
           آدرس
         </p>

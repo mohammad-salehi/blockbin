@@ -36,10 +36,8 @@ export default function Home() {
           headers: {
             accept: "application/json",
             "Content-Type": "application/json",
-            // اگر واقعاً CSRF لازم داری:
-            // "X-CSRFTOKEN": Cookies.get("csrftoken") || "",
           },
-          withCredentials: true, // اگر بک‌اند کوکی ست می‌کند/CSRF داری
+          withCredentials: true,
         }
       );
 
@@ -63,7 +61,7 @@ export default function Home() {
           window.location.assign(lastPath);
           return;
         }
-
+        console.log(response)
         // چون role_id شما UUID هست، این شرط عددی حذف شد:
         window.location.assign("/panel/dashboard");
       } else {
