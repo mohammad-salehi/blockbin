@@ -99,7 +99,7 @@ const Page = () => {
       </h1>
 
       <div className='mt-4'>
-        <MainInput SetInputText={SetInputText} inputText={inputText} onSubmit={onSubmit} placeholder={'عنوان موجودیت...'} />
+        <MainInput SetInputText={SetInputText} inputText={inputText} placeholder={'عنوان موجودیت...'} />
       </div>
 
       <div className="mt-8">
