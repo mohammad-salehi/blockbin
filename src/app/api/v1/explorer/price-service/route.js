@@ -9,7 +9,7 @@ const NETWORKS = {
   XRP: { price: 1.916, block: null },
   TON: { price: 1.466, block: null },
   SOL: { price: 125.851, block: null },
-  BSC: { price: 865.072, block: null },
+  BNB: { price: 612.072, block: 1025363 },
   ETH: { price: 3035.225, block: 24533138 },
   TRX: { price: 0.288, block: 80448836 },
 };
@@ -43,7 +43,6 @@ export async function GET(req) {
 
   const network = NETWORKS[symbol];
 
-  // اگر symbol نبود یا پیدا نشد
   if (!network) {
     return NextResponse.json({
       data: null,

@@ -17,7 +17,6 @@ export default function Page() {
           null
       }
       <Main SetLoading={SetLoading}/>
-
     </div>
   );
 }

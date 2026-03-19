@@ -318,6 +318,8 @@ const Blockbin_graph_engine = ({
     const newPositionsWork = [...NewPositions];
     for (let i = 0; i < newGraphData.length; i++) {
       const item = newGraphData[i];
+      console.log('item')
+      console.log(item)
       const label =
         item.type === "transaction"
           ? item.network
@@ -349,8 +351,8 @@ const Blockbin_graph_engine = ({
         image:
           item.entity === null
             ? "/images/location.png"
-            : item.entity.metadata?.image !== null
-              ? item.entity.metadata.image
+            :( item.entity.metadata?.image !== null || item.entity?.image !== null)
+              ? item.entity.metadata?.image ?? item.entity?.image
               : "/images/location.png",
         label,
       };

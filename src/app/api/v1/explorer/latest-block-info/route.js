@@ -9,7 +9,7 @@ const BLOCK_BY_NETWORK = {
   XRP: { block_number: 0, hash: "0xxrp_mock_hash" },
   TON: { block_number: 0, hash: "0xton_mock_hash" }, 
   SOL: { block_number: 0, hash: "0xsol_mock_hash" },
-  BSC: { block_number: 0, hash: "0xbsc_mock_hash" },
+  BSC: { block_number: 1025363, hash: "0xbsc_mock_hash" },
   ETH: { block_number: 24533138, hash: "0xeth_mock_hash" },
   TRX: { block_number: 80448836, hash: "0xtrx_mock_hash" },
 };

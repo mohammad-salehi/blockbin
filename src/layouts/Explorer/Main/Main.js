@@ -30,11 +30,9 @@ const Main = ({ SetLoading }) => {
 
         Setquery(foundedQuery || '')
 
-        if (networks.length > 1) {
+        if (networks.length > 0) {
           SetNetworkFounded(networks)
           SetShowSelection(true)
-        } else if (networks.length === 1) {
-          window.location.assign(`/panel/dashboard/${foundedQuery}/${networks[0]}/${q}`)
         } else {
           toast.error('شبکه‌ای برای این ورودی پیدا نشد', { position: 'bottom-left' })
         }

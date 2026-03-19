@@ -1,5 +1,4 @@
 'use client';
-
 import { usePathname } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import Cookies from 'js-cookie';
@@ -14,7 +13,7 @@ export default function Header({
 }) {
   const navItems = [
     {
-      link: 'dashboard',
+      links: ['dashboard','tracker'],
       label: 'کاوشگر',
       icon: (
         <svg
@@ -35,7 +34,7 @@ export default function Header({
       ),
     },
     {
-      link: 'entities',
+      links: ['entities','entity'],
       label: 'موجودیت‌ها',
       icon: (
         <svg
@@ -56,7 +55,7 @@ export default function Header({
       ),
     },
     {
-      link: 'folder',
+      links: ['folder'],
       label: 'پرونده‌ها',
       icon: (
         <svg
@@ -77,7 +76,7 @@ export default function Header({
       ),
     },
     {
-      link: 'profile',
+      links: ['profile'],
       label: 'پروفایل',
       icon: (
         <svg
@@ -129,15 +128,14 @@ export default function Header({
   const renderNavItems = (variant = 'desktop') => (
     <>
       {navItems.map((item) => {
-        const isActive = item.link === pathName;
+        const isActive = item.links.includes(pathName); // ✅ تغییر از item.link به item.links
         const baseBtn =
           variant === 'desktop'
             ? 'flex items-center px-4 py-2 rounded-md transition'
             : 'flex items-center px-4 py-2 rounded-md transition w-full justify-start';
-
         return (
           <a
-            href={`/panel/${item.link}`}
+            href={`/panel/${item.links[0]}`}
             key={item.label}
             className="no-underline text-inherit"
             onClick={() => {
@@ -180,7 +178,6 @@ export default function Header({
           onClick={closeSidebar}
         />
       )}
-
       <header
         className={`relative z-50 w-full h-18 bg-boxColor dark:bg-boxColor-dark flex items-stretch justify-between ${
           isOpen ? 'rounded-bl-md rounded-br-md' : ''
@@ -209,7 +206,6 @@ export default function Header({
               />
             </svg>
           </button>
-
           {/* روی دسکتاپ اگر سایدبار بسته است، آیکن منو نمایش داده شود */}
           {!isOpen && (
             <button
@@ -234,13 +230,11 @@ export default function Header({
               </svg>
             </button>
           )}
-
           <img
             src={isDarkMode ? '/images/logo22.png' : '/images/logo_dark.png'}
             className="w-36"
             alt="logo"
           />
-
           {/* منوی دسکتاپ */}
           <nav
             style={{ display: isOpen ? 'flex' : 'none' }}
@@ -249,7 +243,6 @@ export default function Header({
             {renderNavItems('desktop')}
           </nav>
         </div>
-
         <div className="flex items-center p-4 pl-0">
           {isOpen && (
             <button
@@ -292,7 +285,6 @@ export default function Header({
               )}
             </button>
           )}
-
           <button
             className="flex items-center justify-center border bg-bgColor text-textColor border-boxBorderColor transition ml-2 h-9 w-9 rounded-full cursor-pointer"
             onClick={logout}
@@ -316,7 +308,6 @@ export default function Header({
           </button>
         </div>
       </header>
-
       {/* منوی موبایل زیر هدر */}
       {isMobileOpen && (
         <nav

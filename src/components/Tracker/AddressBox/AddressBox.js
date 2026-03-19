@@ -298,6 +298,9 @@ const AddressBox = ({ Data, SetData, AddressSelectedData, Reload, SetReload }) =
     }
   }
   const addSelectedData = async (row) => {
+
+    console.log('row')
+    console.log(row)
     let ProccessData = Data
 
     if (row.mode === 'out') {
@@ -699,6 +702,8 @@ const AddressBox = ({ Data, SetData, AddressSelectedData, Reload, SetReload }) =
         if (Networks.find(item => item.symbole === network).type === 'account') {
           if (network === token) {
             const getData = (Account_Address(response.data.data.result, AddressSelectedData.id, network, 0))
+            console.log('getData')
+            console.log(getData)
             const getTransactions = []
             for (let i = 0; i < getData.inputs.length; i++) {
               getTransactions.push(
@@ -718,8 +723,8 @@ const AddressBox = ({ Data, SetData, AddressSelectedData, Reload, SetReload }) =
                   address: getData.inputs[i].address,
                   entity: getData.inputs[i].entity,
                   label: getData.inputs[i].Label,
-                  Risk: null,
-                  metadata: null,
+                  Risk: getData.inputs[i].entity?.riskscore ? getData.inputs[i].entity?.riskscore * 100 : null,
+                  metadata: getData.inputs[i].metadata ?? null,
                 }
               )
             }
@@ -741,8 +746,8 @@ const AddressBox = ({ Data, SetData, AddressSelectedData, Reload, SetReload }) =
                   address: getData.outputs[i].address,
                   entity: getData.outputs[i].entity,
                   label: getData.outputs[i].Label,
-                  Risk: null,
-                  metadata: null,
+                  Risk: getData.outputs[i].entity?.riskscore ? getData.outputs[i].entity?.riskscore * 100 : null,
+                  metadata: getData.outputs[i].metadata ?? null,
                 }
               )
             }

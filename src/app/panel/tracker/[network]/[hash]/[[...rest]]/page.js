@@ -430,8 +430,6 @@ const Page = () => {
                           0
                         );
 
-                        console.log('getData')
-                        console.log(getData)
                         let createdData = [];
 
                         createdData.push({
@@ -1177,7 +1175,7 @@ const Page = () => {
 
   return (
     <div>
-      <div id="tracker">
+      <div id="tracker" className="outline-none">
         {ShowGraph ?
           !SelectTokenBox ?
             (

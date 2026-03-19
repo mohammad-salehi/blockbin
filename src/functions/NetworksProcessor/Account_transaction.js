@@ -1,8 +1,10 @@
 /* eslint-disable no-unused-vars */
 export function Account_transaction (array, symbole, decimal) {
 
+    console.log('array')
+    console.log(array)
     const hash = array.hash
-    const blockNumber = array.blockNumber
+    const blockNumber = array.blockNumber? array.blockNumber : array.block_number
     const timestamp = array.time
     const from = array.detail_from.address
     const to = array.detail_to.address

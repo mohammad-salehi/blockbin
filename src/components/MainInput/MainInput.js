@@ -1,5 +1,5 @@
 "use client";
-import React from "react";
+import React, { useEffect } from "react";
 
 export default function MainInput({
   onSubmit,
@@ -13,6 +13,10 @@ export default function MainInput({
     if (!q) return;
     onSubmit?.(q);
   };
+
+  useEffect(() => {
+    document.getElementById("mainExplorerInput").focus()
+  },[inputText])
 
   return (
     <form onSubmit={handleSubmit} dir="rtl" className="w-full mx-auto px-1">
@@ -28,6 +32,7 @@ export default function MainInput({
           onChange={(e) => SetInputText(e.target.value)}
           type="text"
           placeholder={placeholder}
+          id="mainExplorerInput"
           className="
             flex-1 min-w-0
             outline-none px-4 py-3
