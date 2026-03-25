@@ -6,7 +6,7 @@ import axios from "axios";
 import Cookies from "js-cookie";
 import "../style.css";
 import toast from "react-hot-toast";
-import Switch from '@mui/material/Switch';
+import Switch from "@mui/material/Switch";
 import { Networks } from "@/functions/Networks";
 import { GetRequest } from "@/functions/GetRequest";
 import { serverAddress } from "@/functions/ServerAddress";
@@ -18,7 +18,7 @@ import Blockbin_graph_engine from "@/components/Tracker/graph/Graph";
 import FullPageLoading from "@/components/FullPageLoading/FullPageLoading";
 import { Dropdown, MenuItem } from "@heathmont/moon-core-tw";
 import { Modal, Button, Label, Input } from "@heathmont/moon-core-tw";
-import CircularProgress from '@mui/material/CircularProgress';
+import CircularProgress from "@mui/material/CircularProgress";
 import ReportModal from "@/components/Tracker/ReportBox/ReportBox";
 import ExploreTopBoxLoading from "@/components/ExploreTopBoxLoading/ExploreTopBoxLoading";
 import FolderList from "@/components/AddToFolder/FolderList";
@@ -56,13 +56,6 @@ const Page = () => {
   const [ShowGraph, SetShowGraph] = useState(false);
   const [SelectTokenBox, SetSelectTokenBox] = useState(false);
   const [ReportBox, SetReportBox] = useState(false);
-
-
-
-  useEffect(() => {
-    console.log('Data')
-    console.log(Data)
-  },[Data])
 
   useEffect(() => {
     document.title = `بلاک‌بین`;
@@ -137,7 +130,7 @@ const Page = () => {
                   network,
                   token,
                   contractAddress,
-                  hash
+                  hash,
                 },
                 title: GraphName,
               },
@@ -201,7 +194,7 @@ const Page = () => {
                   network,
                   token,
                   contractAddress,
-                  hash
+                  hash,
                 },
                 title: GraphName,
               },
@@ -267,16 +260,19 @@ const Page = () => {
 
   //start Drawing Graph
   useEffect(() => {
-
     // token selection checker
     if (id === undefined) {
       if (token === undefined) {
-        if (Networks.find((item) => item.symbole === network).type === "account") {
+        if (
+          Networks.find((item) => item.symbole === network).type === "account"
+        ) {
           SetSelectTokenBox(true);
-          SetLoading(false)
-          SetShowGraph(true)
+          SetLoading(false);
+          SetShowGraph(true);
         } else {
-          window.location.assign(`/panel/tracker/${network}/${hash}/${network}`);
+          window.location.assign(
+            `/panel/tracker/${network}/${hash}/${network}`
+          );
         }
       } else {
         //Get Trs data
@@ -286,7 +282,10 @@ const Page = () => {
             // آدرس
             if (response.data.data.query === "address") {
               if (token === network) {
-                if (Networks.find((item) => item.symbole === network).type === "account") {
+                if (
+                  Networks.find((item) => item.symbole === network).type ===
+                  "account"
+                ) {
                   GetAddress = `${serverAddress}/explorer/evm/address/${hash}/?evm_address_type=main&network=${network}&page_number=1&page_size=10&sort_order=ascending`;
                 } else {
                   GetAddress = `${serverAddress}/explorer/utxo/address/${hash}/?network=${network}&page_number=1&page_size=10&sort_order=ascending`;
@@ -297,7 +296,8 @@ const Page = () => {
             } else {
               // تراکنش
               if (
-                Networks.find((item) => item.symbole === network).type === "account"
+                Networks.find((item) => item.symbole === network).type ===
+                "account"
               ) {
                 GetAddress = `${serverAddress}/explorer/evm/transaction/${hash}/?network=${network}&page_number=1&page_size=100&transaction_type=ALL`;
               } else {
@@ -307,7 +307,10 @@ const Page = () => {
             GetRequest(GetAddress)
               .then(async (TrsResponse) => {
                 if (TrsResponse.status === 200) {
-                  if (Networks.find((item) => item.symbole === network).type === "account") {
+                  if (
+                    Networks.find((item) => item.symbole === network).type ===
+                    "account"
+                  ) {
                     if (response.data.data.query === "address") {
                       if (network === token) {
                         const getData = Account_Address(
@@ -316,7 +319,9 @@ const Page = () => {
                           network,
                           0
                         );
-                        GetRequest(`${serverAddress}/explorer/risk-score/?address=${hash}&network=${network}`)
+                        GetRequest(
+                          `${serverAddress}/explorer/risk-score/?address=${hash}&network=${network}`
+                        )
                           .then((RiskResponse) => {
                             let risk = null;
                             if (RiskResponse.status === 200) {
@@ -450,8 +455,8 @@ const Page = () => {
                               text: getData.FromLabel
                                 ? getData.FromLabel
                                 : getData.FromEntity
-                                  ? getData.FromEntity.name
-                                  : getData.from,
+                                ? getData.FromEntity.name
+                                : getData.from,
                               DollarValue: getData.valueInDollar,
                               value: getData.value,
                               time: getData.timestamp,
@@ -465,8 +470,8 @@ const Page = () => {
                               text: getData.ToLabel
                                 ? getData.ToLabel
                                 : getData.ToEntity
-                                  ? getData.ToEntity.name
-                                  : getData.to,
+                                ? getData.ToEntity.name
+                                : getData.to,
                               DollarValue: getData.valueInDollar,
                               value: getData.value,
                               time: getData.timestamp,
@@ -632,8 +637,8 @@ const Page = () => {
                                   text: getData.logs[i].FromLabel
                                     ? getData.logs[i].FromLabel
                                     : getData.logs[i].FromEntity
-                                      ? getData.logs[i].FromEntity.name
-                                      : getData.logs[i].from,
+                                    ? getData.logs[i].FromEntity.name
+                                    : getData.logs[i].from,
                                   DollarValue: getData.logs[i].valueInDollar,
                                   value: getData.logs[i].value,
                                   time: getData.timestamp,
@@ -647,8 +652,8 @@ const Page = () => {
                                   text: getData.logs[i].ToLabel
                                     ? getData.logs[i].ToLabel
                                     : getData.logs[i].ToEntity
-                                      ? getData.logs[i].ToEntity.name
-                                      : getData.logs[i].to,
+                                    ? getData.logs[i].ToEntity.name
+                                    : getData.logs[i].to,
                                   DollarValue: getData.logs[i].valueInDollar,
                                   value: getData.logs[i].value,
                                   time: getData.timestamp,
@@ -712,13 +717,15 @@ const Page = () => {
                             )
                               .then((FromRiskResponse) => {
                                 if (FromRiskResponse.status === 200) {
-                                  FromRisk = FromRiskResponse.data.data.risk_score;
+                                  FromRisk =
+                                    FromRiskResponse.data.data.risk_score;
                                   GetRequest(
                                     `${serverAddress}/explorer/risk-score/?address=${getData.logs[i].to}&network=${network}`
                                   )
                                     .then((ToRiskResponse) => {
                                       if (ToRiskResponse.status === 200) {
-                                        ToRisk = ToRiskResponse.data.data.risk_score;
+                                        ToRisk =
+                                          ToRiskResponse.data.data.risk_score;
                                         createdData.find(
                                           (item) =>
                                             item.id === getData.logs[i].from
@@ -747,7 +754,8 @@ const Page = () => {
                                   )
                                     .then((ToRiskResponse) => {
                                       if (ToRiskResponse.status === 200) {
-                                        ToRisk = ToRiskResponse.data.data.risk_score;
+                                        ToRisk =
+                                          ToRiskResponse.data.data.risk_score;
                                         createdData.find(
                                           (item) =>
                                             item.id === getData.logs[i].from
@@ -778,7 +786,8 @@ const Page = () => {
                                 )
                                   .then((ToRiskResponse) => {
                                     if (ToRiskResponse.status === 200) {
-                                      ToRisk = ToRiskResponse.data.data.risk_score;
+                                      ToRisk =
+                                        ToRiskResponse.data.data.risk_score;
                                       createdData.find(
                                         (item) => item.id === getData.logs[i].to
                                       ).risk = ToRisk;
@@ -809,8 +818,8 @@ const Page = () => {
                             `${serverAddress}/explorer/address-detail?query=${hash}`
                           ),
                         ]);
-                        console.log('detailRes')
-                        console.log(detailRes)
+                        console.log("detailRes");
+                        console.log(detailRes);
                         let createdData = [
                           {
                             id: hash,
@@ -818,8 +827,10 @@ const Page = () => {
                             type: "address",
                             label:
                               detailRes.status === 200
-                                ? detailRes.data.data.label_tags.labels.length > 0
-                                  ? detailRes.data.data.label_tags.labels[0].label
+                                ? detailRes.data.data.label_tags.labels.length >
+                                  0
+                                  ? detailRes.data.data.label_tags.labels[0]
+                                      .label
                                   : null
                                 : null,
                             main: true,
@@ -837,9 +848,10 @@ const Page = () => {
                             y: 800,
                             metadata:
                               detailRes.status === 200
-                                ? detailRes.data.data.address_detail.metadata !==
-                                  null
-                                  ? detailRes.data.data.address_detail.metadata.label
+                                ? detailRes.data.data.address_detail
+                                    .metadata !== null
+                                  ? detailRes.data.data.address_detail.metadata
+                                      .label
                                   : null
                                 : null,
                             inputs: [],
@@ -1045,9 +1057,15 @@ const Page = () => {
           for (let i = 0; i < response.data.data.results.length; i++) {
             if (response.data.data.results[i].id === id) {
               SetName(response.data.data.results[i].title);
-              SetDescription(response.data.data.results[i].value.GraphDescription);
-              SetNodesPosition(response.data.data.results[i].value.NodesPosition);
-              SetSavedPositions(response.data.data.results[i].value.SavedPositions);
+              SetDescription(
+                response.data.data.results[i].value.GraphDescription
+              );
+              SetNodesPosition(
+                response.data.data.results[i].value.NodesPosition
+              );
+              SetSavedPositions(
+                response.data.data.results[i].value.SavedPositions
+              );
               SetScale(response.data.data.results[i].value.Scale);
               SetXPosition(response.data.data.results[i].value.XPosition);
               SetYPosition(response.data.data.results[i].value.YPosition);
@@ -1085,51 +1103,55 @@ const Page = () => {
 
   useEffect(() => {
     if (hash !== undefined) {
-      setTokenSelectionLoading(true)
+      setTokenSelectionLoading(true);
       GetRequest(`${serverAddress}/explorer/network-detection/?query=${hash}`)
-      .then((networkDetection) => {
-        if (networkDetection.data.data.query === "address") {
-          GetRequest(`${serverAddress}/explorer/token-transfer-list/?query=${hash}&network=${network}`)
-          .then((response) => {
-            if (response.status === 204) {
-              SetshowNetworkSelectionBox(false);
-            }
-            const getTokens = [];
-            for (let i = 0; i < response.data.data.length; i++) {
-              getTokens.push(response.data.data[i]);
-            }
-            SetTokens(getTokens);
-            setTokenSelectionLoading(false)
-          })
-          .catch((err) => {
-            console.log(err);
-            setTokenSelectionLoading(false)
-          });
-        } else {
-          GetRequest(`${serverAddress}/explorer/evm/transaction/${hash}/?network=${network}&page_number=1&page_size=100&transaction_type=ALL`)
-          .then((networkDetection) => {
-            console.log(networkDetection)
-            const getTokens = [];
-            for (let i = 0; i < networkDetection.data.data.result.logs.length; i++) {
-              getTokens.push(
-                {
-                  symbol:networkDetection.data.data.result.logs[i].symbol,
-                  contract_address:networkDetection.data.data.result.logs[i].contractAddress
+        .then((networkDetection) => {
+          if (networkDetection.data.data.query === "address") {
+            GetRequest(
+              `${serverAddress}/explorer/token-transfer-list/?query=${hash}&network=${network}`
+            )
+              .then((response) => {
+                if (response.status === 204) {
+                  SetshowNetworkSelectionBox(false);
                 }
-              )
-            }
-            SetTokens(getTokens)
-            setTokenSelectionLoading(false)
-          })
-          .catch((err) => {
-            setTokenSelectionLoading(false)
-          })
-        }
-      })
-      .catch((err) => {
-
-      })
-
+                const getTokens = [];
+                for (let i = 0; i < response.data.data.length; i++) {
+                  getTokens.push(response.data.data[i]);
+                }
+                SetTokens(getTokens);
+                setTokenSelectionLoading(false);
+              })
+              .catch((err) => {
+                console.log(err);
+                setTokenSelectionLoading(false);
+              });
+          } else {
+            GetRequest(
+              `${serverAddress}/explorer/evm/transaction/${hash}/?network=${network}&page_number=1&page_size=100&transaction_type=ALL`
+            )
+              .then((networkDetection) => {
+                console.log(networkDetection);
+                const getTokens = [];
+                for (
+                  let i = 0;
+                  i < networkDetection.data.data.result.logs.length;
+                  i++
+                ) {
+                  getTokens.push({
+                    symbol: networkDetection.data.data.result.logs[i].symbol,
+                    contract_address:
+                      networkDetection.data.data.result.logs[i].contractAddress,
+                  });
+                }
+                SetTokens(getTokens);
+                setTokenSelectionLoading(false);
+              })
+              .catch((err) => {
+                setTokenSelectionLoading(false);
+              });
+          }
+        })
+        .catch((err) => {});
     }
   }, []);
   useEffect(() => {
@@ -1159,15 +1181,14 @@ const Page = () => {
     setSelectedValue(found || null);
   }, [token, GraphTokens]);
 
-
   const themeColor = (key) => {
     const isDark = document.documentElement.classList.contains("dark");
     const map = {
-      red: isDark ? "#ff0000" : "#ff0000",  // blue-400 / blue-600
-      success: isDark ? "#16a34a" : "#16a34a",  // green-400 / green-600
-      warning: isDark ? "#f59e0b" : "#f59e0b",  // amber-400 / amber-500
-      yellow: isDark ? "#FFFF00" : "#FFFF00",  // violet-300 / violet-700
-      sky: isDark ? "#9132a8" : "#9132a8",  // blue-300 / sky-400
+      red: isDark ? "#ff0000" : "#ff0000", // blue-400 / blue-600
+      success: isDark ? "#16a34a" : "#16a34a", // green-400 / green-600
+      warning: isDark ? "#f59e0b" : "#f59e0b", // amber-400 / amber-500
+      yellow: isDark ? "#FFFF00" : "#FFFF00", // violet-300 / violet-700
+      sky: isDark ? "#9132a8" : "#9132a8", // blue-300 / sky-400
     };
     return map[key];
   };
@@ -1176,39 +1197,36 @@ const Page = () => {
   return (
     <div>
       <div id="tracker" className="outline-none">
-        {ShowGraph ?
-          !SelectTokenBox ?
-            (
-              <Blockbin_graph_engine
-                Data={Data}
-                SetReload={SetReload}
-                Reload={Reload}
-                SetData={SetData}
-                SetNodesPosition={SetNodesPosition}
-                NodesPosition={NodesPosition}
-                Distance={Distance}
-                SetSavedPositions={SetSavedPositions}
-                SavedPositions={SavedPositions}
-                SetScale={SetScale}
-                Scale={Scale}
-                SetXPosition={SetXPosition}
-                XPosition={XPosition}
-                SetYPosition={SetYPosition}
-                YPosition={YPosition}
-                ShowTimes={ShowTimes}
-                ShowValues={ShowValues}
-                TakeSceenShot={TakeSceenShot}
-                ShowPrice={ShowPrice}
-                SetSelectedEdges={SetSelectedEdges}
-                SelectedEdges={SelectedEdges}
-                PaintedEdges={PaintedEdges}
-              />
-            )
-            :
-            null
-          : (
-            <FullPageLoading />
-          )}
+        {ShowGraph ? (
+          !SelectTokenBox ? (
+            <Blockbin_graph_engine
+              Data={Data}
+              SetReload={SetReload}
+              Reload={Reload}
+              SetData={SetData}
+              SetNodesPosition={SetNodesPosition}
+              NodesPosition={NodesPosition}
+              Distance={Distance}
+              SetSavedPositions={SetSavedPositions}
+              SavedPositions={SavedPositions}
+              SetScale={SetScale}
+              Scale={Scale}
+              SetXPosition={SetXPosition}
+              XPosition={XPosition}
+              SetYPosition={SetYPosition}
+              YPosition={YPosition}
+              ShowTimes={ShowTimes}
+              ShowValues={ShowValues}
+              TakeSceenShot={TakeSceenShot}
+              ShowPrice={ShowPrice}
+              SetSelectedEdges={SetSelectedEdges}
+              SelectedEdges={SelectedEdges}
+              PaintedEdges={PaintedEdges}
+            />
+          ) : null
+        ) : (
+          <FullPageLoading />
+        )}
       </div>
       <div
         style={{
@@ -1220,191 +1238,154 @@ const Page = () => {
         }}
       ></div>
 
-      <div className="fixed top-20 right-0 h-[calc(100vh-60px)] flex items-start justify-end z-50">
-        <button
-          onClick={() => setOpen(!open)}
-          className="bg-boxColor text-textColor px-3 py-2 rounded-l-md shadow-md cursor-pointer hover:bg-boxbordercolor2 transition-all"
-        >
-          {open ? "→" : "←"}
-        </button>
-
-        <div
-          className={`bg-boxColor text-textColor shadow-lg transition-all duration-500 overflow-hidden p-2 ${open ? "w-100 opacity-100 overflow-visible" : "w-0 opacity-0 overflow-hidden"}`}
-        >
-          <div className="w-full m-0 p-0">
-
-            <div className="mt-3 space-y-2">
-              <div className="grid grid-cols-2 items-center px-2">
-                <span className="py-2">نمایش حجم</span>
-                <div className="text-left">
-                  <Switch
-                    defaultChecked={true}
-                    onChange={(e) => SetShowValues(e.target.checked)}
-                  />
-                </div>
-              </div>
-
-              <div className="grid grid-cols-2 items-center px-2 -mt-2">
-                <span className="py-2">نمایش زمان</span>
-                <div className="text-left">
-                  <Switch
-                    defaultChecked={true}
-                    onChange={(e) => SetShowTimes(e.target.checked)}
-                  />
-                </div>
-              </div>
-
-              <div className="grid grid-cols-2 items-center px-2 -mt-2">
-                <span className="py-2">نمایش قیمت(دلار)</span>
-                <div className="text-left">
-                  <Switch
-                    defaultChecked={false}
-                    onChange={(e) => SetShowPrice(e.target.checked)}
-                  />
-                </div>
-              </div>
-            </div>
-
-            <div className="mt-3 px-2">
-              <label className="block mb-1">ترسیم بر اساس</label>
-
-              <Dropdown
-                value={selectedValue?.value || ""}
-                onChange={() => { }}
+<div className="fixed top-20 right-0 h-[calc(100vh-60px)] flex items-start justify-end z-50">
+  <button
+    onClick={() => setOpen(!open)}
+    className="bg-boxColor/80 backdrop-blur-sm text-textColor px-3 py-2 rounded-l-md shadow-lg transition-all duration-300 hover:bg-boxBorderColor/30 hover:shadow-md"
+  >
+    {open ? "→" : "←"}
+  </button>
+  <div
+    className={`bg-boxColor/80 backdrop-blur-md shadow-lg transition-all duration-500 overflow-hidden p-2 ${
+      open
+      ? "w-100 opacity-100 overflow-visible"
+      : "w-0 opacity-0 overflow-hidden"
+    }`}
+  >
+    <div className="w-full m-0 p-0">
+      <div className="mt-3 space-y-3">
+        {[
+          { label: "نمایش حجم", state: ShowValues, setState: SetShowValues },
+          { label: "نمایش زمان", state: ShowTimes, setState: SetShowTimes },
+          { label: "نمایش قیمت(دلار)", state: ShowPrice, setState: SetShowPrice },
+        ].map((item, index) => (
+          <div
+            key={index}
+            className="grid grid-cols-2 items-center px-2 py-1.5 rounded-lg bg-boxColor/30 backdrop-blur-sm"
+          >
+            <span className="py-1 text-textColor/80">{item.label}</span>
+            <div className="text-left">
+              <Switch
+                checked={item.state}
+                onChange={(e) => item.setState(e.target.checked)}
+                className={`${
+                  item.state ? "bg-primary" : "bg-boxBorderColor"
+                } relative inline-flex h-6 w-11 items-center rounded-full transition-colors`}
               >
-                <Dropdown.Trigger className="w-full">
-                  <Button
-                    as="span"
-                    role="button"
-                    variant="ghost"
-                    className="flex items-center justify-between w-full px-10 py-2 cursor-pointer
-        text-gray-700 border border-boxBorderColor
-        rounded-lg dark:border-buttonBorderColor-dark focus:outline-none 
-        dark:text-gray-100 appearance-none relative"
-                  >
-                    {selectedValue ? (
-                      <span className="text-textColor flex items-center">
-                        <img
-                          src={`/images/${selectedValue.value}.png`}
-                          alt={selectedValue.value}
-                          className="w-5 h-5 inline-block ml-2"
-                        />
-                        {selectedValue.label || selectedValue.value}
-                      </span>
-                    ) : (
-                      <span className="text-textColor opacity-70">Select token...</span>
-                    )}
-                  </Button>
-                </Dropdown.Trigger>
-
-                <Dropdown.Options
-                  className="absolute right-0 mt-2 w-72 px-2 py-1
-      text-gray-700 bg-bgColor dark:bg-buttonColor-dark
-      border border-boxBorderColor dark:border-buttonBorderColor-dark 
-      rounded-lg dark:text-gray-100 appearance-none z-50
-      max-h-60 overflow-y-auto"
-                >
-                  {GraphTokens.map((item, index) => (
-                    <Dropdown.Option value={item.value} key={index}>
-                      {({ active }) => (
-                        <MenuItem
-                          isActive={active}
-                          isSelected={false}
-                          onClick={() => {
-                            if (Networks.find(item => item.symbole === network).type === 'account') {
-                              setAddselectedToken({ value: item.value, contract: item.contract });
-                              setChangeNetworkBox(true);
-                            }
-                            document.activeElement?.blur();
-
-                          }}
-                          className={`border mt-2 mb-1 rounded-md border-gray-100 dark:border-buttonBorderColor-dark ${selectedValue?.value === item.value
-                            ? "bg-boxColor border-boxBorderColor dark:bg-gray-700"
-                            : "border-boxBorderColor"
-                            } text-textColor`}
-                        >
-                          <MenuItem.Title>
-                            <img
-                              src={`/images/${item.value}.png`}
-                              alt={item.value}
-                              className="w-5 h-5 inline-block ml-2"
-                            />
-                            {item.label || item.value}
-                          </MenuItem.Title>
-                        </MenuItem>
-                      )}
-                    </Dropdown.Option>
-                  ))}
-                </Dropdown.Options>
-              </Dropdown>
-
+                <span
+                  className={`${
+                    item.state ? "translate-x-6" : "translate-x-1"
+                  } inline-block h-4 w-4 transform rounded-full bg-white transition-transform`}
+                />
+              </Switch>
             </div>
+          </div>
+        ))}
+      </div>
 
-            <div className="mt-3 px-2">
-              <label className="block mb-2">افزودن رنگ</label>
-              <div className="flex items-center gap-2">
-                <button
-                  onClick={() => {
-                    SetSelectedEdges([]);
-                    SetColor(themeColor("red"));
-                  }}
-                  className="h-6 w-6 rounded ring-1 ring-black/10"
-                  style={{
-                    background: "var(--tw-ring-offset-shadow,0 0 #0000)",
-                    backgroundColor: "transparent",
-                  }}
-                >
-                  <span className="block cursor-pointer h-full w-full rounded bg-red-600" />
-                </button>
+      {/* انتخاب توکن */}
+      <div className="mt-4 px-2">
+        <label className="block mb-1.5 text-textColor/80 font-medium">ترسیم بر اساس</label>
+        <Dropdown value={selectedValue?.value || ""} onChange={() => {}}>
+          <Dropdown.Trigger className="w-full">
+            <Button
+              as="span"
+              role="button"
+              variant="ghost"
+              className="flex items-center justify-between w-full px-3 py-2.5 cursor-pointer
+        text-textColor border border-boxBorderColor/30 rounded-xl
+        bg-boxColor/50 backdrop-blur-sm hover:bg-boxColor/70 transition-all duration-200"
+            >
+              {selectedValue ? (
+                <span className="flex items-center">
+                  <img
+                    src={`/images/${selectedValue.value}.png`}
+                    alt={selectedValue.value}
+                    className="w-5 h-5 inline-block ml-1"
+                  />
+                  {selectedValue.label || selectedValue.value}
+                </span>
+              ) : (
+                <span className="text-textColor/60">انتخاب توکن...</span>
+              )}
+            </Button>
+          </Dropdown.Trigger>
+          <Dropdown.Options
+            className="absolute right-0 mt-2 w-full max-w-xs px-2 py-1.5
+      text-textColor bg-boxColor/80 backdrop-blur-md
+      border border-boxBorderColor/20 rounded-xl shadow-lg"
+          >
+            {GraphTokens.map((item, index) => (
+              <Dropdown.Option value={item.value} key={index}>
+                {({ active }) => (
+                  <MenuItem
+                    isActive={active}
+                    isSelected={selectedValue?.value === item.value}
+                    onClick={() => {
+                      if (
+                        Networks.find((item) => item.symbole === network)
+                          .type === "account"
+                      ) {
+                        setAddselectedToken({
+                          value: item.value,
+                          contract: item.contract,
+                        });
+                        setChangeNetworkBox(true);
+                      }
+                      document.activeElement?.blur();
+                    }}
+                    className={`border mt-1 mb-1 rounded-xl border-boxBorderColor/20
+          ${selectedValue?.value === item.value
+            ? "bg-primary/10 border-primary/30 shadow-md"
+            : "bg-boxColor/20 hover:bg-boxColor/30 hover:border-boxBorderColor/30"
+          } text-textColor transition-all duration-200`}
+                  >
+                    <MenuItem.Title>
+                      <img
+                        src={`/images/${item.value}.png`}
+                        alt={item.value}
+                        className="w-5 h-5 inline-block ml-1"
+                      />
+                      {item.label || item.value}
+                    </MenuItem.Title>
+                  </MenuItem>
+                )}
+              </Dropdown.Option>
+            ))}
+          </Dropdown.Options>
+        </Dropdown>
+      </div>
 
-                <button
-                  onClick={() => {
-                    SetSelectedEdges([]);
-                    SetColor(themeColor("success"));
-                  }}
-                  className="h-6 w-6 rounded ring-1 ring-black/10"
-                >
-                  <span className="block cursor-pointer h-full w-full rounded bg-green-400" />
-                </button>
-
-                <button
-                  onClick={() => {
-                    SetSelectedEdges([]);
-                    SetColor(themeColor("warning"));
-                  }}
-                  className="h-6 w-6 rounded ring-1 ring-black/10"
-                >
-                  <span className="block cursor-pointer h-full w-full rounded bg-amber-500 " />
-                </button>
-
-                <button
-                  onClick={() => {
-                    SetSelectedEdges([]);
-                    SetColor(themeColor("yellow"));
-                  }}
-                  className="h-6 w-6 rounded ring-1 ring-black/10"
-                >
-                  <span className="block cursor-pointer h-full w-full rounded bg-yellow-300" />
-                </button>
-
-                <button
-                  onClick={() => {
-                    SetSelectedEdges([]);
-                    SetColor(themeColor("sky"));
-                  }}
-                  className="h-6 w-6 rounded ring-1 ring-black/10"
-                >
-                  <span className="block cursor-pointer h-full w-full rounded bg-purple-500" />
-                </button>
-
-                <button
-                  onClick={() => {
-                    SetSelectedEdges([]);
-                    DeleteColor();
-                  }}
-                  title="حذف رنگ"
-                  className="ml-1 p-1 cursor-pointer rounded text-textColor transition"
-                >
+      {/* افزودن رنگ */}
+      <div className="mt-4 px-2">
+        <label className="block mb-1.5 text-textColor/80 font-medium">افزودن رنگ</label>
+        <div className="flex items-center gap-2 pb-1">
+          {[
+            { color: "red", label: "قرمز" },
+            { color: "success", label: "سبز" },
+            { color: "warning", label: "نارنجی" },
+            { color: "yellow", label: "زرد" },
+            { color: "sky", label: "بنفش" },
+          ].map((color, index) => (
+            <button
+              key={index}
+              onClick={() => {
+                SetSelectedEdges([]);
+                SetColor(themeColor(color.color));
+              }}
+              className={`h-6 w-6 rounded-full ring-1 ring-boxBorderColor/20 transition-all duration-200
+                ${"hover:ring-2 hover:ring-primary/30"}`}
+              style={{ backgroundColor: themeColor(color.color) }}
+            />
+          ))}
+          <button
+            onClick={() => {
+              SetSelectedEdges([]);
+              DeleteColor();
+            }}
+            title="حذف رنگ"
+            className="ml-1  rounded-full text-textColor/60 hover:text-textColor transition-all duration-200"
+          >
                   <svg
                     width="24"
                     height="24"
@@ -1417,92 +1398,82 @@ const Page = () => {
                       transform="translate(-152 -1035)"
                     />
                   </svg>
-                </button>
-              </div>
-            </div>
-
-            {Networks.find(item => item.symbole === network).type === 'account' && (
-              <div className="m-0 p-0 mt-4">
-                <button
-                  onClick={() => SetReportBox(true)}
-                  className="hover:bg-bgPrimary cursor-pointer flex items-center gap-2 w-full px-2 py-2 rounded-md transition text-textColor"
-                >
-                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
-                    <path
-                      d="M8 12H9M16 12H12"
-                      stroke="currentColor"
-                      strokeWidth="1.5"
-                      strokeLinecap="round"
-                    />
-                    <path
-                      d="M16 8H15M12 8H8"
-                      stroke="currentColor"
-                      strokeWidth="1.5"
-                      strokeLinecap="round"
-                    />
-                    <path
-                      d="M8 16H13"
-                      stroke="currentColor"
-                      strokeWidth="1.5"
-                      strokeLinecap="round"
-                    />
-                    <path
-                      d="M3 14V10C3 6.22876 3 4.34315 4.17157 3.17157C5.34315 2 7.22876 2 11 2H13C16.7712 2 18.6569 2 19.8284 3.17157C20.4816 3.82476 20.7706 4.69989 20.8985 6M21 10V14C21 17.7712 21 19.6569 19.8284 20.8284C18.6569 22 16.7712 22 13 22H11C7.22876 22 5.34315 22 4.17157 20.8284C3.51839 20.1752 3.22937 19.3001 3.10149 18"
-                      stroke="currentColor"
-                      strokeWidth="1.5"
-                      strokeLinecap="round"
-                    />
-                  </svg>
-                  <span className="text-textColor">دریافت گزارش</span>
-                </button>
-              </div>
-            )}
-
-            <div className="m-0 p-0 mt-2">
-              <button
-                onClick={() => SetOpenSaveBox(true)}
-                className="hover:bg-bgPrimary cursor-pointer flex items-center gap-2 w-full px-2 py-2 rounded-md transition text-textColor"
-              >
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
-                  <path
-                    d="M15 8H8.6C8.03995 8 7.75992 8 7.54601 7.89101C7.35785 7.79513 7.20487 7.64215 7.10899 7.45399C7 7.24008 7 6.96005 7 6.4V3M17 21V14.6C17 14.0399 17 13.7599 16.891 13.546C16.7951 13.3578 16.6422 13.2049 16.454 13.109C16.2401 13 15.9601 13 15.4 13H8.6C8.03995 13 7.75992 13 7.54601 13.109C7.35785 13.2049 7.20487 13.3578 7.10899 13.546C7 13.7599 7 14.0399 7 14.6V21M21 9.32548V16.2C21 17.8802 21 18.7202 20.673 19.362C20.3854 19.9265 19.9265 20.3854 19.362 20.673C18.7202 21 17.8802 21 16.2 21H7.8C6.11984 21 5.27976 21 4.63803 20.673C4.07354 20.3854 3.6146 19.9265 3.32698 19.362C3 18.7202 3 17.8802 3 16.2V7.8C3 6.11984 3 5.27976 3.32698 4.63803C3.6146 4.07354 4.07354 3.6146 4.63803 3.32698C5.27976 3 6.11984 3 7.8 3H14.6745C15.1637 3 15.4083 3 15.6385 3.05526C15.8425 3.10425 16.0376 3.18506 16.2166 3.29472C16.4184 3.4184 16.5914 3.59135 16.9373 3.93726L20.0627 7.06274C20.4086 7.40865 20.5816 7.5816 20.7053 7.78343C20.8149 7.96237 20.8957 8.15746 20.9447 8.36154C21 8.59171 21 8.8363 21 9.32548Z"
-                    stroke="currentColor"
-                    strokeWidth="2"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  />
-                </svg>
-                <span className="text-textColor">ذخیره</span>
-              </button>
-            </div>
-
-            {
-              id !== undefined ?
-                <div className="m-0 p-0 mt-2">
-                  <button
-                    onClick={() => SetOpenFolderBox(true)}
-                    className="hover:bg-bgPrimary cursor-pointer flex items-center gap-2 w-full px-2 py-2 rounded-md transition text-textColor"
-                  >
-                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
-                      <path
-                        d="M15 8H8.6C8.03995 8 7.75992 8 7.54601 7.89101C7.35785 7.79513 7.20487 7.64215 7.10899 7.45399C7 7.24008 7 6.96005 7 6.4V3M17 21V14.6C17 14.0399 17 13.7599 16.891 13.546C16.7951 13.3578 16.6422 13.2049 16.454 13.109C16.2401 13 15.9601 13 15.4 13H8.6C8.03995 13 7.75992 13 7.54601 13.109C7.35785 13.2049 7.20487 13.3578 7.10899 13.546C7 13.7599 7 14.0399 7 14.6V21M21 9.32548V16.2C21 17.8802 21 18.7202 20.673 19.362C20.3854 19.9265 19.9265 20.3854 19.362 20.673C18.7202 21 17.8802 21 16.2 21H7.8C6.11984 21 5.27976 21 4.63803 20.673C4.07354 20.3854 3.6146 19.9265 3.32698 19.362C3 18.7202 3 17.8802 3 16.2V7.8C3 6.11984 3 5.27976 3.32698 4.63803C3.6146 4.07354 4.07354 3.6146 4.63803 3.32698C5.27976 3 6.11984 3 7.8 3H14.6745C15.1637 3 15.4083 3 15.6385 3.05526C15.8425 3.10425 16.0376 3.18506 16.2166 3.29472C16.4184 3.4184 16.5914 3.59135 16.9373 3.93726L20.0627 7.06274C20.4086 7.40865 20.5816 7.5816 20.7053 7.78343C20.8149 7.96237 20.8957 8.15746 20.9447 8.36154C21 8.59171 21 8.8363 21 9.32548Z"
-                        stroke="currentColor"
-                        strokeWidth="2"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                      />
-                    </svg>
-                    <span className="text-textColor">افزودن به پرونده</span>
-                  </button>
-                </div>
-                :
-                null
-            }
-
-
-          </div>
+          </button>
         </div>
       </div>
+
+      {/* دکمه‌های اصلی */}
+      <div className="mt-5 space-y-2">
+        {Networks.find((item) => item.symbole === network).type === "account" && (
+          <button
+            onClick={() => SetReportBox(true)}
+            className="flex items-center gap-2 w-full px-3 py-2.5  cursor-pointer rounded-xl bg-boxColor/30 backdrop-blur-sm text-textColor hover:bg-boxColor/50 transition-all duration-200 shadow-sm hover:shadow-md"
+          >
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+              <path
+                d="M8 12H9M16 12H12"
+                stroke="currentColor"
+                strokeWidth="1.5"
+                strokeLinecap="round"
+              />
+              <path
+                d="M16 8H15M12 8H8"
+                stroke="currentColor"
+                strokeWidth="1.5"
+                strokeLinecap="round"
+              />
+              <path
+                d="M8 16H13"
+                stroke="currentColor"
+                strokeWidth="1.5"
+                strokeLinecap="round"
+              />
+              <path
+                d="M3 14V10C3 6.22876 3 4.34315 4.17157 3.17157C5.34315 2 7.22876 2 11 2H13C16.7712 2 18.6569 2 19.8284 3.17157C20.4816 3.82476 20.7706 4.69989 20.8985 6M21 10V14C21 17.7712 21 19.6569 19.8284 20.8284C18.6569 22 16.7712 22 13 22H11C7.22876 22 5.34315 22 4.17157 20.8284C3.51839 20.1752 3.22937 19.3001 3.10149 18"
+                stroke="currentColor"
+                strokeWidth="1.5"
+                strokeLinecap="round"
+              />
+            </svg>
+            <span className="text-textColor">دریافت گزارش</span>
+          </button>
+        )}
+        <button
+          onClick={() => SetOpenSaveBox(true)}
+          className="flex items-center gap-2 w-full px-3 py-2.5 rounded-xl cursor-pointer bg-boxColor/30 backdrop-blur-sm text-textColor hover:bg-boxColor/50 transition-all duration-200 shadow-sm hover:shadow-md"
+        >
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+            <path
+              d="M15 8H8.6C8.03995 8 7.75992 8 7.54601 7.89101C7.35785 7.79513 7.20487 7.64215 7.10899 7.45399C7 7.24008 7 6.96005 7 6.4V3M17 21V14.6C17 14.0399 17 13.7599 16.891 13.546C16.7951 13.3578 16.6422 13.2049 16.454 13.109C16.2401 13 15.9601 13 15.4 13H8.6C8.03995 13 7.75992 13 7.54601 13.109C7.35785 13.2049 7.20487 13.3578 7.10899 13.546C7 13.7599 7 14.0399 7 14.6V21M21 9.32548V16.2C21 17.8802 21 18.7202 20.673 19.362C20.3854 19.9265 19.9265 20.3854 19.362 20.673C18.7202 21 17.8802 21 16.2 21H7.8C6.11984 21 5.27976 21 4.63803 20.673C4.07354 20.3854 3.6146 19.9265 3.32698 19.362C3 18.7202 3 17.8802 3 16.2V7.8C3 6.11984 3 5.27976 3.32698 4.63803C3.6146 4.07354 4.07354 3.6146 4.63803 3.32698C5.27976 3 6.11984 3 7.8 3H14.6745C15.1637 3 15.4083 3 15.6385 3.05526C15.8425 3.10425 16.0376 3.18506 16.2166 3.29472C16.4184 3.4184 16.5914 3.59135 16.9373 3.93726L20.0627 7.06274C20.4086 7.40865 20.5816 7.5816 20.7053 7.78343C20.8149 7.96237 20.8957 8.15746 20.9447 8.36154C21 8.59171 21 8.8363 21 9.32548Z"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            />
+          </svg>
+          <span className="text-textColor">ذخیره</span>
+        </button>
+        {id !== undefined && (
+          <button
+            onClick={() => SetOpenFolderBox(true)}
+            className="flex items-center gap-2 w-full px-3 py-2.5 rounded-xl bg-boxColor/30 backdrop-blur-sm text-textColor hover:bg-boxColor/50 transition-all duration-200 shadow-sm hover:shadow-md"
+          >
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+              <path
+                d="M15 8H8.6C8.03995 8 7.75992 8 7.54601 7.89101C7.35785 7.79513 7.20487 7.64215 7.10899 7.45399C7 7.24008 7 6.96005 7 6.4V3M17 21V14.6C17 14.0399 17 13.7599 16.891 13.546C16.7951 13.3578 16.6422 13.2049 16.454 13.109C16.2401 13 15.9601 13 15.4 13H8.6C8.03995 13 7.75992 13 7.54601 13.109C7.35785 13.2049 7.20487 13.3578 7.10899 13.546C7 13.7599 7 14.0399 7 14.6V21M21 9.32548V16.2C21 17.8802 21 18.7202 20.673 19.362C20.3854 19.9265 19.9265 20.3854 19.362 20.673C18.7202 21 17.8802 21 16.2 21H7.8C6.11984 21 5.27976 21 4.63803 20.673C4.07354 20.3854 3.6146 19.9265 3.32698 19.362C3 18.7202 3 17.8802 3 16.2V7.8C3 6.11984 3 5.27976 3.32698 4.63803C3.6146 4.07354 4.07354 3.6146 4.63803 3.32698C5.27976 3 6.11984 3 7.8 3H14.6745C15.1637 3 15.4083 3 15.6385 3.05526C15.8425 3.10425 16.0376 3.18506 16.2166 3.29472C16.4184 3.4184 16.5914 3.59135 16.9373 3.93726L20.0627 7.06274C20.4086 7.40865 20.5816 7.5816 20.7053 7.78343C20.8149 7.96237 20.8957 8.15746 20.9447 8.36154C21 8.59171 21 8.8363 21 9.32548Z"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              />
+            </svg>
+            <span className="text-textColor">افزودن به پرونده</span>
+          </button>
+        )}
+      </div>
+    </div>
+  </div>
+</div>
 
       <Modal
         open={OpenSaveBox}
@@ -1514,28 +1485,44 @@ const Page = () => {
           <Modal.Panel className="w-full max-w-xl rounded-lg bg-boxColor  shadow-lg mt-12.5 text-textColor p-4">
             <>
               <h6>ذخیره گراف</h6>
-              <Input className='border border-boxBorderColor rounded-md mt-4' placeholder='عنوان گراف' id='GraphName' defaultValue={Name} />
-              <Input className='border border-boxBorderColor rounded-md mt-4'
-                id='GraphDescription'
-                name='text'
+              <Input
+                className="border border-boxBorderColor rounded-md mt-4"
+                placeholder="عنوان گراف"
+                id="GraphName"
+                defaultValue={Name}
+              />
+              <Input
+                className="border border-boxBorderColor rounded-md mt-4"
+                id="GraphDescription"
+                name="text"
                 defaultValue={Description}
-                placeholder='توضیحات'
+                placeholder="توضیحات"
               />
             </>
-            <Button onClick={() => {
-              SetName(document.getElementById('GraphName').value)
-              SetDescription(document.getElementById('GraphDescription').value)
-              saveGraph()
-            }}
-              className='bg-boxBorderColor border border-boxBorderColor rounded-lg text-textColor w-full py-1 cursor-pointer mt-4'
-              color={'secondary'} style={{ height: '37px', width: '100%' }} >
-              {
-                Loading ?
-                  // <LoadingButton />
-                  <CircularProgress style={{ width: '25px', height: '25px', marginBottom: '-4px' }} />
-                  :
-                  <span>ذخیره</span>
-              }
+            <Button
+              onClick={() => {
+                SetName(document.getElementById("GraphName").value);
+                SetDescription(
+                  document.getElementById("GraphDescription").value
+                );
+                saveGraph();
+              }}
+              className="bg-boxBorderColor border border-boxBorderColor rounded-lg text-textColor w-full py-1 cursor-pointer mt-4"
+              color={"secondary"}
+              style={{ height: "37px", width: "100%" }}
+            >
+              {Loading ? (
+                // <LoadingButton />
+                <CircularProgress
+                  style={{
+                    width: "25px",
+                    height: "25px",
+                    marginBottom: "-4px",
+                  }}
+                />
+              ) : (
+                <span>ذخیره</span>
+              )}
             </Button>
           </Modal.Panel>
         </div>
@@ -1563,12 +1550,24 @@ const Page = () => {
         <div className="fixed inset-0 flex z-50 backdrop-blur-sm bg-white/10">
           <Modal.Panel className="w-full max-w-xl rounded-lg bg-boxColor  shadow-lg mt-12.5 text-textColor p-4">
             <h6> آیا از تغییر شبکه مورد نظر مطمئن هستید؟</h6>
-            <small className="font-bold"> در صورتی که گراف ذخیره نشده باشد، اطلاعات مورد نظرتان از بین خواهد رفت</small>
+            <small className="font-bold">
+              {" "}
+              در صورتی که گراف ذخیره نشده باشد، اطلاعات مورد نظرتان از بین خواهد
+              رفت
+            </small>
             <br />
-            <Button color={'warning'} style={{ height: '37px', width: '100%', marginRight: '4px' }}
-              className='bg-boxBorderColor border border-boxBorderColor rounded-lg text-textColor w-full py-1 cursor-pointer mt-4'
+            <Button
+              color={"warning"}
+              style={{ height: "37px", width: "100%", marginRight: "4px" }}
+              className="bg-boxBorderColor border border-boxBorderColor rounded-lg text-textColor w-full py-1 cursor-pointer mt-4"
               onClick={() => {
-                window.location.assign(`/panel/tracker/${network}/${hash}/${selectedToken.value}/${selectedToken.contract !== undefined ? selectedToken.contract : ''}`)
+                window.location.assign(
+                  `/panel/tracker/${network}/${hash}/${selectedToken.value}/${
+                    selectedToken.contract !== undefined
+                      ? selectedToken.contract
+                      : ""
+                  }`
+                );
               }}
             >
               تغییر
@@ -1577,83 +1576,163 @@ const Page = () => {
         </div>
       </Modal>
 
-      <Modal
-        open={SelectTokenBox}
-        onClose={() => { }}
-        className="p-0"
-      >
+      <Modal open={SelectTokenBox} onClose={() => {}} className="p-0">
         <Modal.Backdrop />
-        <div className="fixed inset-0 flex z-50 backdrop-blur-sm bg-white/10">
-          <Modal.Panel className="w-full max-w-xl rounded-lg bg-boxColor  shadow-lg mt-12.5 text-textColor p-4">
-            <h6> توکن مورد نظرتان را انتخاب کنید</h6>
+        <div className="fixed inset-0 flex items-center justify-center z-50 p-4">
+          <Modal.Panel
+            className="w-full max-w-md bg-boxColor/80 rounded-3xl shadow-2xl overflow-hidden border border-boxBorderColor/20 flex flex-col max-h-[85vh] backdrop-blur-xl"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <header className="px-6 py-4 border-b border-boxBorderColor/15 flex justify-between items-center shrink-0 bg-boxColor/40 backdrop-blur-md">
+              <h6 className="text-xl font-bold text-textColor tracking-tight bg-clip-text">
+                انتخاب توکن جهت رسم گراف
+              </h6>
+              <button
+                onClick={() => window.location.assign(`/panel/dashboard`)}
+                className="text-textColor/60 hover:text-textColor transition-all duration-200 p-2 rounded-full hover:bg-boxBorderColor/20"
+                aria-label="بستن"
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  className="h-6 w-6"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M6 18L18 6M6 6l12 12"
+                  />
+                </svg>
+              </button>
+            </header>
 
-            {
-              TokenSelectionLoading ?
-                <ExploreTopBoxLoading />
-                :
-                <div className={`relative `}>
-                  <div
-                    className=" right-0 mt-2 w-full
-        text-textColor  dark:bg-buttonColor-dark
-         dark:border-buttonBorderColor-dark 
-        rounded-lg dark:text-gray-100 appearance-none z-50
-        max-h-60 overflow-y-auto"
-                  >
-                    {GraphTokens.map((item, index) => (
-                      <a href={`/panel/tracker/${network}/${hash}/${item.value}/${item.contract !== undefined ? item.contract : ''}`}>
-                        <div key={index} className="w-full">
-                          <MenuItem
-                            isActive={false}
-                            isSelected={false}
-                            onClick={() => {
-
-                            }}
-                            className={`border mt-2 mb-1 rounded-md border-gray-100 dark:border-buttonBorderColor-dark 
-                ${selectedValue?.value === item.value
-                                ? "bg-boxColor border-boxBorderColor dark:bg-gray-700" // اگر خواستی هایلایت
-                                : "border-boxBorderColor"
-                              } text-textColor`}
-                          >
-                            <MenuItem.Title>
+            <div
+              className="p-3 overflow-y-auto flex-1"
+              style={{
+                scrollbarWidth: "thin",
+                scrollbarColor: "rgba(156, 163, 175, 0.2) transparent",
+                WebkitScrollbarWidth: "thin",
+                WebkitScrollbarColor: "rgba(156, 163, 175, 0.2) transparent",
+              }}
+            >
+              {TokenSelectionLoading ? (
+                <div className="flex justify-center items-center py-8">
+                  <ExploreTopBoxLoading />
+                </div>
+              ) : (
+                <div className="space-y-1">
+                  {GraphTokens.map((item, index) => {
+                    const isSelected = selectedValue?.value === item.value;
+                    return (
+                      <div
+                        key={index}
+                        onClick={() => {
+                          window.location.assign(
+                            `/panel/tracker/${network}/${hash}/${item.value}/${
+                              item.contract !== undefined ? item.contract : ""
+                            }`
+                          );
+                        }}
+                        className={`
+                    group relative flex items-center p-2 rounded-xl cursor-pointer transition-all duration-350
+                    ${
+                      isSelected
+                        ? "bg-primary/15 backdrop-blur-md border-2 border-primary/50 shadow-lg shadow-primary/20"
+                        : "bg-boxColor/15 backdrop-blur-md border border-boxBorderColor/15 hover:bg-boxColor/25 hover:border-boxBorderColor/30 hover:shadow-md group-hover:scale-[1.02]"
+                    }
+                  `}
+                      >
+                        <div className="relative shrink-0">
+                          <div className="relative ">
+                            <div className="rounded-full w-12 h-12 align-middle items-center pt-1 border-2 border-boxBorderColor/30">
                               <img
                                 src={`/images/${item.value}.png`}
                                 alt={item.value}
-                                className="w-5 h-5 inline-block ml-2"
+                                className="w-10 h-10 p-1  object-cover"
+                                onError={(e) => {
+                                  e.target.src = "/images/default-token.png";
+                                }}
                               />
-                              {item.label || item.value}
-                            </MenuItem.Title>
-                          </MenuItem>
+                            </div>
+
+                            {isSelected && (
+                              <div className="absolute -top-1 -right-1 bg-primary text-white rounded-full p-1.5 shadow-lg border-2 border-boxColor/50">
+                                <svg
+                                  xmlns="http://www.w3.org/2000/svg"
+                                  className="h-4 w-4"
+                                  viewBox="0 0 20 20"
+                                  fill="currentColor"
+                                >
+                                  <path
+                                    fillRule="evenodd"
+                                    d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                                    clipRule="evenodd"
+                                  />
+                                </svg>
+                              </div>
+                            )}
+                          </div>
                         </div>
-                      </a>
 
-                    ))}
-                  </div>
+                        <div className="ml-4 flex-1 min-w-0 mr-2">
+                          <p className="text-base font-semibold text-textColor truncate group-hover:text-primary transition-colors">
+                            {item.label || item.value}
+                          </p>
+                        </div>
+
+                        <div className="text-textColor/40 group-hover:text-primary transition-colors duration-200">
+                          <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            className="h-5 w-5"
+                            fill="none"
+                            viewBox="0 0 24 24"
+                            stroke="currentColor"
+                          >
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              strokeWidth={2}
+                              d="M9 5l7 7-7 7"
+                            />
+                          </svg>
+                        </div>
+                      </div>
+                    );
+                  })}
                 </div>
-            }
+              )}
+            </div>
 
-            <Button color={'warning'} style={{ height: '37px', width: '100%' }}
-              className='bg-boxBorderColor border border-boxBorderColor rounded-lg text-textColor w-full cursor-pointer mt-4 outline-none shadow-none border-none'
-              onClick={() => {
-                window.location.assign(`/panel/dashboard`)
-              }}
-            >
-              بازگشت به کاوشگر
-            </Button>
+            <footer className="p-4 border-t border-boxBorderColor/15 shrink-0 bg-boxColor/30 backdrop-blur-md">
+              <Button
+                color={"warning"}
+                className="w-full py-3 rounded-xl font-semibold text-base transition-all cursor-pointer duration-350 hover:shadow-lg hover:shadow-primary/20 hover:scale-[1.02] active:scale-[0.98] bg-boxBorderColor border border-boxBorderColor text-textColor"
+                onClick={() => window.location.assign(`/panel/dashboard`)}
+              >
+                بازگشت به کاوشگر
+              </Button>
+            </footer>
           </Modal.Panel>
         </div>
       </Modal>
 
-      <Modal open={OpenFolderBox} onClose={() => { SetOpenFolderBox(false) }}>
+      <Modal
+        open={OpenFolderBox}
+        onClose={() => {
+          SetOpenFolderBox(false);
+        }}
+      >
         <Modal.Backdrop />
         <div className="fixed inset-0 flex z-50 backdrop-blur-sm bg-white/10">
           <Modal.Panel className="w-full max-w-xl rounded-lg bg-boxColor  shadow-lg mt-50 text-textColor p-4">
-            <h5>
-              پرونده موردنظر را انتخاب کنید
-            </h5>
+            <h5>پرونده موردنظر را انتخاب کنید</h5>
             <FolderList
               address={id}
-              network={Networks.find(item => item.symbole === network).id}
-              type='graph'
+              network={Networks.find((item) => item.symbole === network).id}
+              type="graph"
               title={Name}
               Description={Description}
               setFolderIsOpen={SetOpenFolderBox}

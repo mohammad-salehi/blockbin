@@ -481,11 +481,11 @@ const AddressPage = () => {
                   {/* Licence */}
                   <div className="group rounded-2xl border border-boxBorderColor bg-boxColor/55 backdrop-blur p-4">
                     <div className="flex items-center justify-between">
-                      <div className="text-xs opacity-70 text-textColor">لایسنس</div>
+                      <div className="text-xs opacity-70 text-textColor">مجوز</div>
                       <div className="w-2 h-2 rounded-full bg-primary/50 opacity-0 group-hover:opacity-100 transition-opacity" />
                     </div>
                     <div className="mt-2 text-sm font-bold text-textColor">
-                      {metadata?.licence || 'نامشخص'}
+                      {metadata?.licence ? metadata?.licence ==='dont_have' ? 'بدون مجوز' : metadata?.licence : 'نامشخص'}
                     </div>
                   </div>
 

@@ -73,7 +73,7 @@ export default function DashboardLayout({ children }) {
 
         <footer className="text-textColor mx-auto w-full max-w-screen-xl text-sm py-1">
           <div className="text-center">
-            <p>© طراحی‌ و توسعه توسط شرکت پردازش داده های زنجیره امین (پنتا)</p>
+            <p>© طراحی‌ و توسعه توسط شرکت پردازش داده های زنجیره‌ای امین (پنتا)</p>
           </div>
         </footer>
       </div>

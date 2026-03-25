@@ -9,7 +9,7 @@ export default function Page() {
   const [Loading, SetLoading] = useState(false)
 
   return (
-    <div className="px-0 sm:px-4 xl:px-0"> {/* ← فاصله افقی در موبایل، بدون فاصله در دسکتاپ */}
+    <div className="px-0 sm:px-4 xl:px-0"> 
       {
         Loading ?
           <FullPageLoading />

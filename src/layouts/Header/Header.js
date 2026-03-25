@@ -13,7 +13,7 @@ export default function Header({
 }) {
   const navItems = [
     {
-      links: ['dashboard','tracker'],
+      links: ['dashboard', 'tracker'],
       label: 'کاوشگر',
       icon: (
         <svg
@@ -34,7 +34,7 @@ export default function Header({
       ),
     },
     {
-      links: ['entities','entity'],
+      links: ['entities', 'entity'],
       label: 'موجودیت‌ها',
       icon: (
         <svg
@@ -100,7 +100,6 @@ export default function Header({
 
   const pathname = usePathname();
   const [pathName, setPathName] = useState('');
-
   useEffect(() => {
     const parts = pathname.split('/').filter((p) => p !== '');
     const secondPart = parts[1] || '';
@@ -128,11 +127,11 @@ export default function Header({
   const renderNavItems = (variant = 'desktop') => (
     <>
       {navItems.map((item) => {
-        const isActive = item.links.includes(pathName); // ✅ تغییر از item.link به item.links
+        const isActive = item.links.includes(pathName);
         const baseBtn =
           variant === 'desktop'
-            ? 'flex items-center px-4 py-2 rounded-md transition'
-            : 'flex items-center px-4 py-2 rounded-md transition w-full justify-start';
+            ? 'flex items-center px-4 py-2 rounded-xl transition-all duration-300 cursor-pointer'
+            : 'flex items-center px-4 py-2 rounded-xl transition-all duration-300 w-full justify-start cursor-pointer';
         return (
           <a
             href={`/panel/${item.links[0]}`}
@@ -148,8 +147,8 @@ export default function Header({
               type="button"
               className={`${baseBtn} ${
                 isActive
-                  ? 'bg-bgPrimary text-primary'
-                  : 'hover:bg-bgPrimary text-textColor cursor-pointer'
+                  ? 'bg-bgPrimary/15 backdrop-blur-sm border border-primary/30 text-primary shadow-md shadow-primary/10'
+                  : 'bg-boxColor/15 backdrop-blur-sm border border-boxBorderColor/20 hover:bg-boxColor/25 hover:border-boxBorderColor/30 hover:shadow-md hover:shadow-primary/5 text-textColor'
               }`}
             >
               <span
@@ -171,23 +170,20 @@ export default function Header({
 
   return (
     <>
-      {/* اوورلی برای منوی موبایل */}
       {isMobileOpen && (
         <div
           className="fixed inset-0 z-40 bg-gray-500/50 md:hidden"
           onClick={closeSidebar}
         />
       )}
+
       <header
-        className={`relative z-50 w-full h-18 bg-boxColor dark:bg-boxColor-dark flex items-stretch justify-between ${
-          isOpen ? 'rounded-bl-md rounded-br-md' : ''
-        } shadow-sm px-2 sm:px-6`}
+        className={`relative z-50 w-full h-18 bg-boxColor/80 backdrop-blur-md flex items-stretch justify-between shadow-md px-2 sm:px-6 rounded-b-lg`}
       >
         <div className="flex items-center gap-5 text-textColor">
-          {/* دکمه منو (هم موبایل هم دسکتاپ) */}
           <button
             type="button"
-            className="flex items-center justify-center h-9 w-9 rounded-full hover:bg-bgPrimary cursor-pointer md:hidden"
+            className="flex items-center justify-center h-9 w-9 rounded-full hover:bg-bgPrimary/30 cursor-pointer md:hidden"
             onClick={handleMenuClick}
           >
             <svg
@@ -206,11 +202,10 @@ export default function Header({
               />
             </svg>
           </button>
-          {/* روی دسکتاپ اگر سایدبار بسته است، آیکن منو نمایش داده شود */}
           {!isOpen && (
             <button
               type="button"
-              className="hidden md:flex items-center justify-center h-9 w-9 rounded-full hover:bg-bgPrimary cursor-pointer"
+              className="hidden md:flex items-center justify-center h-9 w-9 rounded-full hover:bg-bgPrimary/30 cursor-pointer"
               onClick={handleMenuClick}
             >
               <svg
@@ -235,7 +230,6 @@ export default function Header({
             className="w-36"
             alt="logo"
           />
-          {/* منوی دسکتاپ */}
           <nav
             style={{ display: isOpen ? 'flex' : 'none' }}
             className="items-center p-2 mt-0 gap-x-2 hidden md:flex"
@@ -244,9 +238,9 @@ export default function Header({
           </nav>
         </div>
         <div className="flex items-center p-4 pl-0">
-          {isOpen && (
+          {true && (
             <button
-              className="flex items-center justify-center border bg-bgColor text-textColor border-boxBorderColor transition ml-2 h-9 w-9 rounded-full cursor-pointer"
+              className="flex items-center justify-center border bg-boxColor/20 backdrop-blur-sm text-textColor border-boxBorderColor transition-all duration-300 h-9 w-9 rounded-full cursor-pointer ml-2"
               onClick={toggleDarkMode}
               type="button"
             >
@@ -286,7 +280,7 @@ export default function Header({
             </button>
           )}
           <button
-            className="flex items-center justify-center border bg-bgColor text-textColor border-boxBorderColor transition ml-2 h-9 w-9 rounded-full cursor-pointer"
+            className="flex items-center justify-center border bg-boxColor/20 backdrop-blur-sm text-textColor border-boxBorderColor transition-all duration-300 h-9 w-9 rounded-full cursor-pointer"
             onClick={logout}
             type="button"
           >
@@ -308,10 +302,10 @@ export default function Header({
           </button>
         </div>
       </header>
-      {/* منوی موبایل زیر هدر */}
+
       {isMobileOpen && (
         <nav
-          className="md:hidden bg-boxColor dark:bg-boxColor-dark px-4 pb-3 pt-2 shadow-md border-t border-boxBorderColor relative z-50"
+          className="md:hidden bg-boxColor/80 backdrop-blur-md px-4 pb-3 pt-2 shadow-md border-t border-boxBorderColor/20 relative z-50"
           dir="rtl"
         >
           <div className="flex flex-col gap-2">{renderNavItems('mobile')}</div>
