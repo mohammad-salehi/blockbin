@@ -8,7 +8,7 @@ import { serverAddress } from '@/functions/ServerAddress'
 import { useParams } from 'next/navigation'
 import ImageNotSupportedIcon from '@mui/icons-material/ImageNotSupported'
 import { utcToJalaliIran } from '@/functions/utcToJalali'
-import Switch from '@mui/material/Switch'  // وارد کردن سوییچ از MUI
+import Switch from '@mui/material/Switch'
 
 const PAGE_SIZE = 10
 
@@ -22,22 +22,20 @@ const Page = () => {
   const [TotalPages, SetTotalPages] = useState(0)
   const [Data, SetData] = useState([])
   const [Name, SetName] = useState('')
-  const [IsIranianFilter, SetIsIranianFilter] = useState(true)  // فیلتر ایرانی بودن
+  const [IsIranianFilter, SetIsIranianFilter] = useState(true)
 
   const getData = useCallback(() => {
     if (!type) return
 
     setLoading(true)
 
-    // پارامترهای ریکوئست طبق نیاز شما
     const queryParams = {
       page_number: First,
       page_size: PAGE_SIZE,
       category: type,
-      ...(IsIranianFilter === false && { is_iranian: true }),  // اگر فیلتر ایرانی بودن انتخاب شده باشد، آن را به ریکوئست اضافه می‌کنیم
+      ...(IsIranianFilter === false && { is_iranian: true }),
     }
 
-    // ارسال ریکوئست با پارامترهای صحیح
     GetRequest(`${serverAddress}/entity/entities/`, queryParams)
       .then((response) => {
         if (response.status !== 200) throw new Error('Failed to load entities')
@@ -70,11 +68,10 @@ const Page = () => {
   }
 
   const handleIranianFilterChange = (event) => {
-    SetIsIranianFilter(event.target.checked ? true : false)  // برای سوییچ ایرانی بودن، true برای ایرانی و null برای همه
+    SetIsIranianFilter(event.target.checked)
   }
 
   const nowrapCell = 'whitespace-nowrap overflow-hidden text-ellipsis'
-  const maxCell = 'max-w-[240px]'
 
   const columns = [
     {
@@ -83,15 +80,21 @@ const Page = () => {
       cell: (row) => (
         <a
           href={`/panel/entity/${row.id}`}
-          className="flex items-center gap-2 min-w-0 whitespace-nowrap overflow-hidden"
+          className="flex items-center gap-3 min-w-0 whitespace-nowrap overflow-hidden hover:text-primary transition"
         >
           {row.metadata.image ? (
-            <img src={row.metadata.image} className="w-6 h-6 shrink-0 inline-block" alt="" />
+            <img
+              src={row.metadata.image}
+              className="w-7 h-7 rounded-full object-cover shrink-0 border border-boxBorderColor"
+              alt=""
+            />
           ) : (
-            <ImageNotSupportedIcon className="shrink-0" />
+            <div className="w-7 h-7 flex items-center justify-center rounded-full bg-boxColor border border-boxBorderColor">
+              <ImageNotSupportedIcon fontSize="small" />
+            </div>
           )}
 
-          <span className="min-w-0 overflow-hidden text-ellipsis" title={row.name}>
+          <span className="min-w-0 overflow-hidden text-ellipsis font-medium" title={row.name}>
             {row.name}
           </span>
         </a>
@@ -100,46 +103,95 @@ const Page = () => {
     {
       header: 'ریسک',
       accessorKey: 'riskscore',
-      cell: (row) => (
-        <div className="whitespace-nowrap">
-          {row.riskscore !== null ? <span>{(row.riskscore * 100).toFixed(2)}%</span> : <span>نامشخص</span>}
-        </div>
-      ),
+      cell: (row) => {
+        if (row.riskscore === null) {
+          return <span className="text-gray-400 whitespace-nowrap">نامشخص</span>
+        }
+    
+        const score = row.riskscore
+        const percent = (score * 100).toFixed(2)
+    
+        let color = ''
+    
+        if (score < 0.3) color = 'text-green-500 bg-green-500/10'
+        else if (score < 0.6) color = 'text-yellow-500 bg-yellow-500/10'
+        else if (score < 0.8) color = 'text-orange-500 bg-orange-500/10'
+        else color = 'text-red-500 bg-red-500/10'
+    
+        return (
+          <div className="whitespace-nowrap">
+            <span
+              className={`px-2.5 py-1 text-xs rounded-lg font-semibold ${color}`}
+            >
+              {percent}%
+            </span>
+          </div>
+        )
+      },
     },
+    
     {
       header: 'کشور',
       accessorKey: 'country',
-      cell: (row) => <div className={nowrapCell}>{row.country || 'نامشخص'}</div>,
+      cell: (row) => (
+        <div className={`${nowrapCell} text-textTitleColor`}>
+          {row.country || 'نامشخص'}
+        </div>
+      ),
     },
     {
       header: 'آخرین به‌روزرسانی',
       accessorKey: 'last_modified',
       cell: (row) => (
-        <div className="whitespace-nowrap" title={row.last_modified ? utcToJalaliIran(row.last_modified) : ''}>
-          {row.last_modified ? <span>{utcToJalaliIran(row.last_modified)}</span> : 'نامشخص'}
+        <div
+          className="whitespace-nowrap text-sm text-textTitleColor"
+          title={row.last_modified ? utcToJalaliIran(row.last_modified) : ''}
+        >
+          {row.last_modified ? utcToJalaliIran(row.last_modified) : 'نامشخص'}
         </div>
       ),
     },
   ]
 
   return (
-    <div>
-      <h3 className="text-textColor text-xl mb-4">لیست موجودیت‌ها - {Name}</h3>
+    <div className="space-y-6">
 
-      {/* فیلتر ایرانی بودن به صورت سوییچ */}
-      <div className="mb-4 flex items-center gap-2">
-        <label htmlFor="iranian-filter" className="font-bold text-textTitleColor">
-          نمایش موجودیت های غیرایرانی:
-        </label>
-        <Switch
-          checked={IsIranianFilter}
-          onChange={handleIranianFilterChange}
-          inputProps={{ 'aria-label': 'Toggle Iranian Filter' }}
-        />
+      {/* Header */}
+      <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+
+        <h3 className="text-xl font-bold text-textColor">
+          لیست موجودیت‌ها
+          <span className="text-primary mr-2">{Name}</span>
+        </h3>
+
+        <div className="text-sm text-textTitleColor">
+          تعداد: {EntitieNumber}
+        </div>
+
       </div>
 
+      {/* Filter Card */}
+      <div className="flex items-center justify-between bg-boxColor border border-boxBorderColor rounded-xl px-5 py-4 shadow-sm">
+
+        <div className="flex items-center gap-3">
+
+          <span className="text-textTitleColor font-medium">
+            نمایش موجودیت‌های غیرایرانی
+          </span>
+
+          <Switch
+            checked={IsIranianFilter}
+            onChange={handleIranianFilterChange}
+          />
+
+        </div>
+
+      </div>
+
+      {/* Table Card */}
       {!Loading ? (
-        <>
+        <div className="bg-boxColor   rounded-2xl shadow-sm overflow-hidden">
+
           <div className="overflow-x-auto">
             <ExpandableTable
               data={Data}
@@ -149,17 +201,20 @@ const Page = () => {
             />
           </div>
 
-          <Pagination
-            rtl
-            totalItems={TotalPages}
-            pageSize={PAGE_SIZE}
-            currentPage={First}
-            totalPages={TotalPages}
-            onPageChange={handlePageChange}
-          />
-        </>
+          <div className="flex justify-center py-6  ">
+            <Pagination
+              rtl
+              totalItems={TotalPages}
+              pageSize={PAGE_SIZE}
+              currentPage={First}
+              totalPages={TotalPages}
+              onPageChange={handlePageChange}
+            />
+          </div>
+
+        </div>
       ) : (
-        <div className="overflow-x-auto rounded-2xl border border-boxBorderColor dark:border-boxColor-dark shadow-sm px-2">
+        <div className="bg-boxColor border border-boxBorderColor rounded-2xl shadow-sm p-4">
           <SkeletonLoading />
         </div>
       )}

@@ -123,7 +123,7 @@ const AddressPage = () => {
         },
       },
       {
-        header: 'لیبل‌ها',
+        header: 'شناسایی توسط',
         accessorKey: 'labels',
         cell: (row) => {
           const labels = row?.labels ?? row?.original?.labels ?? []
