@@ -1,7 +1,7 @@
 'use client'
 
-import React, { useCallback, useEffect, useMemo, useState } from 'react'
-import { Dropdown, MenuItem, Button } from '@heathmont/moon-core-tw'
+import React, { useCallback, useEffect, useMemo, useState, useRef } from 'react'
+import { MenuItem, Button } from '@heathmont/moon-core-tw'
 import SkeletonLoading from '@/components/SkeletonLoading/SkeletonLoading'
 import ExpandableTable from '@/components/ExpandableTable/ExpandableTable'
 import Pagination from '@/components/Pagination/Pagination'
@@ -10,8 +10,11 @@ import { AddressFormat } from '@/components/AddressFormat/AddressFormat'
 import { GetRequest } from '@/functions/GetRequest'
 import { useParams } from 'next/navigation'
 import { serverAddress } from '@/functions/ServerAddress'
-
-
+import Dropdown, {
+  DropdownTrigger,
+  DropdownOptions,
+  DropdownOption
+} from "@/components/Dropdown/Dropdown";
 
 const HIDDEN_KEYS = new Set([
   'currency',
@@ -28,7 +31,8 @@ const AddressPage = () => {
   const PAGE_SIZE = 10
   const API_BASE = serverAddress
 
-  const [networkSelected, setNetworkSelected] = useState('btc')
+  // ✅ اصلاح: مقدار اولیه باید با symbole2 یکی از شبکه‌ها مطابقت داشته باشه
+  const [networkSelected, setNetworkSelected] = useState('BTC')
   const [addresses, setAddresses] = useState([])
   const [totalItems, setTotalItems] = useState(0)
   const [page, setPage] = useState(1)
@@ -42,8 +46,7 @@ const AddressPage = () => {
 
   const selectedNetworkMeta = useMemo(() => {
     return Networks.find(
-      (item) =>
-        (item?.symbole || '').toUpperCase() === (networkSelected || '').toUpperCase()
+      (item) => item.symbole2 === networkSelected  // ✅ مقایسه با symbole2
     )
   }, [networkSelected])
 
@@ -61,7 +64,6 @@ const AddressPage = () => {
     return typeof n === 'number' ? n : Number(n || 0)
   }, [entityPayload])
 
-  // ریسک: اگر 0..1 بود -> درصد، اگر 1..100 بود -> همون درصد
   const riskPercent = useMemo(() => {
     const raw = entityInfo?.riskscore
     const num = typeof raw === 'number' ? raw : Number(raw)
@@ -98,15 +100,16 @@ const AddressPage = () => {
         accessorKey: 'network',
         cell: (row) => {
           const net = row?.network ?? row?.original?.network ?? ''
-          const name =
-            Networks.find(
-              (item) => (item?.symbole || '').toUpperCase() === String(net).toUpperCase()
-            )?.name || net
+          const networkInfo = Networks.find(
+            (item) => item.symbole2.toUpperCase() === String(net).toUpperCase()
+          )
+          const name = networkInfo?.name || net
+          const symbole = networkInfo?.symbole || net
 
           return (
             <div className="flex items-center gap-2">
               <img
-                src={`/images/${String(Networks.find(item => item.symbole2.toUpperCase() === net.toUpperCase()).symbole).toUpperCase()}.png`}
+                src={`/images/${symbole}.png`}
                 className="w-5 h-5"
                 alt={String(net)}
                 loading="lazy"
@@ -137,10 +140,13 @@ const AddressPage = () => {
       setTableLoading(true)
       setTableError('')
 
+      const selectedNetwork = Networks.find(item => item.symbole2 === networkSelected)
+      const networkParam = selectedNetwork?.symbole2.toLowerCase() || networkSelected.toLowerCase()
+
       const url =
         `${API_BASE}/entity/addresses/?` +
         `entity_uid=${encodeURIComponent(ENTITY_UID)}` +
-        `&network=${encodeURIComponent(String(Networks.find(item => item.symbole.toUpperCase() === networkSelected.toUpperCase()).symbole2).toLowerCase())}` +
+        `&network=${encodeURIComponent(networkParam)}` +
         `&page_number=${encodeURIComponent(String(requestedPage))}` +
         `&page_size=${encodeURIComponent(String(PAGE_SIZE))}`
 
@@ -164,7 +170,7 @@ const AddressPage = () => {
         setTableLoading(false)
       }
     },
-    [networkSelected]
+    [networkSelected, ENTITY_UID]
   )
 
   const fetchEntity = useCallback(async () => {
@@ -188,7 +194,7 @@ const AddressPage = () => {
     } finally {
       setEntityLoading(false)
     }
-  }, [])
+  }, [ENTITY_UID])
 
   useEffect(() => {
     fetchEntity()
@@ -202,7 +208,6 @@ const AddressPage = () => {
     fetchAddresses(page)
   }, [fetchAddresses, page])
 
-  // ---------------- helpers for UI ----------------
   const showValue = (v) => {
     if (v === null) return '—'
     if (v === undefined) return '—'
@@ -211,7 +216,6 @@ const AddressPage = () => {
     if (typeof v === 'string') return v.trim() ? v : '—'
     if (Array.isArray(v)) {
       if (v.length === 0) return '—'
-      // اگر آرایه بزرگ بود نمایش داده نشود
       if (v.length > MAX_ARRAY_PREVIEW) return `(${v.length} آیتم) — نمایش داده نمی‌شود`
       return v.join(', ')
     }
@@ -245,9 +249,7 @@ const AddressPage = () => {
     if (!obj || typeof obj !== 'object') return null
     const entries = Object.entries(obj).filter(([k, v]) => {
       if (HIDDEN_KEYS.has(k)) return false
-      // آبجکت‌های تو در تو را نمایش نده (ساده نگه داریم)
       if (typeof v === 'object' && v !== null && !Array.isArray(v)) return false
-      // آرایه‌های خیلی بزرگ را نمایش نده
       if (Array.isArray(v) && v.length > MAX_ARRAY_PREVIEW) return false
       return true
     })
@@ -265,6 +267,88 @@ const AddressPage = () => {
       </div>
     )
   }
+
+  // یک کامپوننت Dropdown ساده که حتماً کار می‌کنه
+  const SimpleDropdown = ({ value, onChange, options }) => {
+    const [isOpen, setIsOpen] = useState(false)
+    const dropdownRef = useRef(null)
+
+    useEffect(() => {
+      const handleClickOutside = (event) => {
+        if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+          setIsOpen(false)
+        }
+      }
+      document.addEventListener('mousedown', handleClickOutside)
+      return () => document.removeEventListener('mousedown', handleClickOutside)
+    }, [])
+
+    const selectedOption = options.find(opt => opt.value === value)
+
+    return (
+      <div className="relative w-64" ref={dropdownRef}>
+        <button
+          type="button"
+          onClick={() => setIsOpen(!isOpen)}
+          className="w-full rounded-2xl border border-boxBorderColor 
+                   bg-boxColor/70 text-textColor backdrop-blur 
+                   flex items-center justify-between 
+                   px-4 py-2.5
+                   hover:bg-boxColor transition-all
+                   focus:outline-none focus:ring-2 focus:ring-primary/30"
+        >
+          <span className="flex items-center gap-2">
+            {selectedOption && (
+              <>
+                <img src={selectedOption.icon} className="w-5 h-5" alt="" />
+                <span className="font-semibold">{selectedOption.label.split(' - ')[0]}</span>
+                <span className="text-xs opacity-70">{selectedOption.name}</span>
+              </>
+            )}
+          </span>
+          <svg className={`w-4 h-4 transition-transform ${isOpen ? 'rotate-180' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+          </svg>
+        </button>
+
+        {isOpen && (
+          <div className="absolute top-full left-0 right-0 mt-2 
+                        bg-bgColor border border-boxBorderColor rounded-2xl 
+                        shadow-2xl z-[100] max-h-72 overflow-y-auto">
+            {options.map((option) => (
+              <button
+                key={option.value}
+                type="button"
+                onClick={() => {
+                  console.log('Selecting:', option.value)
+                  onChange(option.value)
+                  setIsOpen(false)
+                }}
+                className={`w-full text-right px-4 py-2.5 transition-colors flex items-center gap-2
+                hover:bg-boxColor/50
+                ${value === option.value ? 'bg-primary/10 text-primary' : 'text-textColor'}`}
+              >
+                <img src={option.icon} className="w-5 h-5" alt="" />
+                <span className="font-semibold">{option.label.split(' - ')[0]}</span>
+                <span className="text-xs opacity-70">{option.name}</span>
+              </button>
+            ))}
+          </div>
+        )}
+      </div>
+    )
+  }
+
+  // آماده کردن options برای SimpleDropdown
+  const networkOptions = Networks.map(item => ({
+    value: item.symbole2,
+    label: `${String(item.symbole).toUpperCase()} - ${item.name}`,
+    icon: `/images/${item.symbole}.png`,
+    name: item.name,
+    symbole: item.symbole
+  }))
+
+  // جایگزین Dropdown در JSX:
 
   return (
     <div className="mx-auto max-w-7xl">
@@ -347,7 +431,7 @@ const AddressPage = () => {
                   </div>
                 </div>
 
-                {/* Risk embedded in same box (not a separate box) */}
+                {/* Risk embedded in same box */}
                 <div className="w-full lg:w-105">
                   <div className="rounded-3xl border border-boxBorderColor bg-boxColor/55 backdrop-blur p-5">
                     <div className="flex items-center justify-between gap-3">
@@ -385,7 +469,7 @@ const AddressPage = () => {
               {/* Divider */}
               <div className="mt-8 h-px w-full bg-boxBorderColor/60" />
 
-              {/* Specs area (beautified tiles) */}
+              {/* Specs area */}
               <div className="mt-6">
                 <h3 className="text-lg font-extrabold text-textColor">مشخصات</h3>
 
@@ -485,7 +569,7 @@ const AddressPage = () => {
                       <div className="w-2 h-2 rounded-full bg-primary/50 opacity-0 group-hover:opacity-100 transition-opacity" />
                     </div>
                     <div className="mt-2 text-sm font-bold text-textColor">
-                      {metadata?.licence ? metadata?.licence ==='dont_have' ? 'بدون مجوز' : metadata?.licence : 'نامشخص'}
+                      {metadata?.licence ? metadata?.licence === 'dont_have' ? 'بدون مجوز' : metadata?.licence : 'نامشخص'}
                     </div>
                   </div>
 
@@ -536,59 +620,15 @@ const AddressPage = () => {
             <h3 className="text-xl font-extrabold text-textColor">لیست آدرس‌ها</h3>
 
             <div className="flex items-center gap-3 justify-end">
-              <Dropdown value={networkSelected} onChange={(val) => setNetworkSelected(val)}>
-                <Dropdown.Trigger className="w-64">
-                  <Button
-                    as="span"
-                    variant="ghost"
-                    className="w-full rounded-2xl border border-boxBorderColor bg-boxColor/70 text-textColor backdrop-blur flex items-center justify-between hover:bg-boxColor"
-                  >
-                    <span className="flex items-center gap-2 min-w-0">
-                      <img
-                        src={`/images/${networkSelected}.png`}
-                        alt={networkSelected}
-                        className="w-5 h-5"
-                        loading="lazy"
-                      />
-                      <span className="font-semibold">{String(networkSelected).toUpperCase()}</span>
-                      <span className="text-xs opacity-70 truncate">{selectedNetworkMeta?.name || ''}</span>
-                    </span>
-                    <span className="text-xs opacity-70">▼</span>
-                  </Button>
-                </Dropdown.Trigger>
 
-                <Dropdown.Options className="mt-2 w-64 bg-bgColor border border-boxBorderColor rounded-2xl p-2 z-50 max-h-72 overflow-y-auto">
-                  {Networks.map((item, index) => (
-                    <Dropdown.Option value={item.symbole} key={index}>
-                      {({ active }) => (
-                        <MenuItem
-                          isActive={active}
-                          isSelected={networkSelected === item.symbole}
-                          onClick={() => {
-                            setNetworkSelected(item.symbole)
-                            document.activeElement?.blur()
-                          }}
-                          className={`rounded-xl border border-boxBorderColor mb-2 text-textColor ${networkSelected === item.symbole ? 'bg-boxColor' : 'bg-bgColor'
-                            }`}
-                        >
-                          <MenuItem.Title>
-                            <span className="flex items-center gap-2">
-                              <img
-                                src={`/images/${item.symbole}.png`}
-                                alt={item.symbole}
-                                className="w-5 h-5"
-                                loading="lazy"
-                              />
-                              <span className="font-semibold">{String(item.symbole).toUpperCase()}</span>
-                              <span className="text-xs opacity-70">{item?.name || ''}</span>
-                            </span>
-                          </MenuItem.Title>
-                        </MenuItem>
-                      )}
-                    </Dropdown.Option>
-                  ))}
-                </Dropdown.Options>
-              </Dropdown>
+              <SimpleDropdown
+                value={networkSelected}
+                onChange={(val) => {
+                  console.log('onChange called with:', val)
+                  setNetworkSelected(val)
+                }}
+                options={networkOptions}
+              />
             </div>
           </div>
         </div>

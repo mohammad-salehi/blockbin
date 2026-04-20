@@ -378,15 +378,15 @@ const Page = () => {
       <textarea
         value={note}
         onChange={(e) => setNote(e.target.value)}
-        className="mt-5 w-full border border-boxBorderColor/50 rounded-xl px-5 py-4 text-textColor bg-transparent focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary transition-all duration-200 min-h-[120px] resize-vertical"
+        className="mt-5 w-full border border-boxBorderColor/50 rounded-xl px-5 py-4 text-textColor bg-transparent focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary transition-all duration-200 min-h-30 resize-vertical"
         placeholder="یادداشت پرونده را اینجا بنویسید..."
       />
     </div>
   </div>
 
-  {[{ title: 'آدرس/ مالک', data: pagedAddresses, columns: addressColumns, search: addressSearch, setSearch: setAddressSearch, page: addressPage, setPage: setAddressPage, total: filteredAddresses.length },
-    { title: 'تراکنش/ شبکه', data: pagedTransactions, columns: transactionColumns, search: transactionSearch, setSearch: setTransactionSearch, page: transactionPage, setPage: setTransactionPage, total: filteredTransactions.length },
-    { title: 'عنوان/ توضیحات/ شبکه', data: pagedGraphs, columns: graphColumns, search: graphSearch, setSearch: setGraphSearch, page: graphPage, setPage: setGraphPage, total: filteredGraphs.length }
+  {[{ title: 'آدرس‌های ذخیره‌شده', data: pagedAddresses, columns: addressColumns, search: addressSearch, setSearch: setAddressSearch, page: addressPage, setPage: setAddressPage, total: filteredAddresses.length },
+    { title: 'تراکنش‌های ذخیره‌شده', data: pagedTransactions, columns: transactionColumns, search: transactionSearch, setSearch: setTransactionSearch, page: transactionPage, setPage: setTransactionPage, total: filteredTransactions.length },
+    { title: 'گراف‌های ذخیره‌شده', data: pagedGraphs, columns: graphColumns, search: graphSearch, setSearch: setGraphSearch, page: graphPage, setPage: setGraphPage, total: filteredGraphs.length }
   ].map((section, index) => (
     <div key={index} className="rounded-2xl border border-boxBorderColor/50 bg-boxColor/60 backdrop-blur-lg shadow-md transition-shadow duration-300">
       <div className="p-5 md:p-6">

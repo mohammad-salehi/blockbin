@@ -377,3 +377,17 @@ body {
 .soft-glow {
   box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.04), 0 10px 40px rgba(0, 0, 0, 0.35);
 }
+
+.no-focus-outline:focus {
+  outline: none !important;
+  box-shadow: none !important;
+}
+
+#myGraphDiv,
+#myGraphDiv *,
+#myGraphDiv canvas,
+#myGraphDiv div:focus,
+#myGraphDiv canvas:focus {
+  outline: none !important;
+  box-shadow: none !important;
+}
