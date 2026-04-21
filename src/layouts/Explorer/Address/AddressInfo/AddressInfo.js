@@ -186,15 +186,15 @@ const AddressInfo = () => {
                   className="group relative inline-flex items-center justify-center h-10 w-10 rounded-xl
                              bg-bgColor/80 backdrop-blur-md border border-boxBorderColor/60 text-textColor
                              hover:bg-bgColor hover:border-boxBorderColor transition-all duration-300 active:scale-[0.95] shadow-sm
-                             overflow-hidden"
+                             overflow-hidden cursor-pointer"
                   onClick={() => setIsOpen(true)}
                   aria-label="افزودن برچسب"
                   title="افزودن برچسب"
                 >
                   <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/5 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000"></div>
                   <svg
-                    width="20"
-                    height="20"
+                    width="24"
+                    height="24"
                     viewBox="0 0 50 50"
                     fill="currentColor"
                     aria-hidden="true"
@@ -225,7 +225,7 @@ const AddressInfo = () => {
                 type="button"
                 className="group relative inline-flex items-center justify-center h-10 w-10 rounded-xl
                            bg-bgColor/80 backdrop-blur-md border border-boxBorderColor/60 text-textColor
-                           hover:bg-bgColor hover:border-boxBorderColor transition-all duration-300 active:scale-[0.95] shadow-sm
+                           hover:bg-bgColor hover:border-boxBorderColor transition-all duration-300 active:scale-[0.95] shadow-sm cursor-pointer
                            overflow-hidden"
                 onClick={() => {
                   navigator.clipboard.writeText(hash);

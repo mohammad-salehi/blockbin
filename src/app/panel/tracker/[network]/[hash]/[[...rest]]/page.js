@@ -1580,12 +1580,12 @@ const Page = () => {
         <Modal.Backdrop />
         <div className="fixed inset-0 flex items-center justify-center z-50 p-4">
           <Modal.Panel
-            className="w-full max-w-md bg-boxColor/80 rounded-3xl shadow-2xl overflow-hidden border border-boxBorderColor/20 flex flex-col max-h-[85vh] backdrop-blur-xl"
+            className="w-full mt-16 max-w-md bg-boxColor/80 rounded-3xl shadow-2xl overflow-hidden border border-boxBorderColor/20 flex flex-col max-h-[85vh] backdrop-blur-xl"
             onClick={(e) => e.stopPropagation()}
           >
             <header className="px-6 py-4 border-b border-boxBorderColor/15 flex justify-between items-center shrink-0 bg-boxColor/40 backdrop-blur-md">
               <h6 className="text-xl font-bold text-textColor tracking-tight bg-clip-text">
-                انتخاب توکن جهت رسم گراف
+                گراف بر اساس کدام توکن رسم شود؟
               </h6>
               <button
                 onClick={() => window.location.assign(`/panel/dashboard`)}
