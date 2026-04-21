@@ -982,7 +982,7 @@ const TxBox = ({ Data, SetData, AddressSelectedData, Reload, SetReload }) => {
       
                 <div className="flex items-center justify-between md:justify-end gap-2">
                   <div className="px-3 py-2 rounded-2xl border border-white/10 bg-black/10 dark:bg-black/20 font-mono text-[12px]">
-                    {AddressFormat(AddressSelectedData.id, 10, "address", network)}
+                    {AddressFormat(AddressSelectedData.id, 10, "transaction", network)}
                   </div>
       
                   <button
