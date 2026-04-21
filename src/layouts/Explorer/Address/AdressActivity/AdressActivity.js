@@ -269,7 +269,9 @@ const AdressActivity = ({
                   </div>
 
                   {/* First Activity Card */}
-                  <div className="group rounded-xl bg-gradient-to-br from-bgColor/80 to-bgColor/20 border border-boxBorderColor/60 p-5 shadow-md backdrop-blur-md hover:shadow-2xl hover:border-boxBorderColor transition-all duration-500">
+                  <div className="group relative rounded-xl bg-gradient-to-br from-bgColor/80 to-bgColor/20 border border-boxBorderColor/60 p-5 shadow-md backdrop-blur-md hover:shadow-2xl hover:border-boxBorderColor transition-all duration-500 overflow-hidden">
+                    <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/5 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000"></div>
+
                     <p className="text-textTitleColor text-xs mb-3 flex items-center gap-2">
                       <span className="inline-block w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse"></span>
                       اولین فعالیت
@@ -289,7 +291,8 @@ const AdressActivity = ({
                   </div>
 
                   {/* Last Activity Card */}
-                  <div className="group rounded-xl bg-gradient-to-br from-bgColor/80 to-bgColor/20 border border-boxBorderColor/60 p-5 shadow-md backdrop-blur-md hover:shadow-2xl hover:border-boxBorderColor transition-all duration-500">
+                  <div className="group relative rounded-xl bg-gradient-to-br from-bgColor/80 to-bgColor/20 border border-boxBorderColor/60 p-5 shadow-md backdrop-blur-md hover:shadow-2xl hover:border-boxBorderColor transition-all duration-500 overflow-hidden">
+                    <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/5 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000"></div>
                     <p className="text-textTitleColor text-xs mb-3 flex items-center gap-2">
                       <span className="inline-block w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse"></span>
                       آخرین فعالیت
@@ -317,7 +320,7 @@ const AdressActivity = ({
                       </svg>
                       انتخاب توکن
                     </p>
-                    
+
                     {/* ✅ کامپوننت SimpleDropdown جایگزین شده */}
                     <SimpleDropdown
                       value={TokenSelected}
