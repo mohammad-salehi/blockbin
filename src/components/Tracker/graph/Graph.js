@@ -318,8 +318,6 @@ const Blockbin_graph_engine = ({
     const newPositionsWork = [...NewPositions];
     for (let i = 0; i < newGraphData.length; i++) {
       const item = newGraphData[i];
-      console.log('item')
-      console.log(item)
       const label =
         item.type === "transaction"
           ? item.network

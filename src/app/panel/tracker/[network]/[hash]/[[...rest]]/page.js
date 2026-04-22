@@ -17,7 +17,7 @@ import { UTXO_Transaction } from "@/functions/NetworksProcessor/UTXO_Transaction
 import Blockbin_graph_engine from "@/components/Tracker/graph/Graph";
 import FullPageLoading from "@/components/FullPageLoading/FullPageLoading";
 import { Dropdown, MenuItem } from "@heathmont/moon-core-tw";
-import { Modal, Button, Label, Input } from "@heathmont/moon-core-tw";
+import { Modal, Button, Input } from "@heathmont/moon-core-tw";
 import CircularProgress from "@mui/material/CircularProgress";
 import ReportModal from "@/components/Tracker/ReportBox/ReportBox";
 import ExploreTopBoxLoading from "@/components/ExploreTopBoxLoading/ExploreTopBoxLoading";
@@ -887,7 +887,7 @@ const Page = () => {
                         SetShowGraph(true);
                       }
                     } else {
-                      const getData = UTXO_Transaction(
+                      let getData = UTXO_Transaction(
                         TrsResponse.data.data.result,
                         network,
                         0
@@ -899,6 +899,16 @@ const Page = () => {
                       ) {
                         index = 1;
                       }
+                      for (let i = 0; i < getData.inputs.length; i++) {
+                        for (let j = 0; j < getData.outputs.length; j++) {
+                            if (getData.inputs[i].address === getData.outputs[j].address) {
+                                getData.inputs[i].value = getData.inputs[i].value - getData.outputs[j].value
+                                getData.inputs[i].valueInDollar = getData.inputs[i].valueInDollar - getData.outputs[j].valueInDollar
+                                getData.outputs.splice(j, 1)
+                                j = j - 1
+                            }
+                        }
+                    }
                       createdData.push({
                         id: hash,
                         text: hash,
@@ -1176,7 +1186,6 @@ const Page = () => {
   );
 
   useEffect(() => {
-    // وقتی token از بیرون تغییر کرد (مثلاً بعد از fetch)
     const found = GraphTokens.find((item) => item.value === token);
     setSelectedValue(found || null);
   }, [token, GraphTokens]);
@@ -1184,11 +1193,11 @@ const Page = () => {
   const themeColor = (key) => {
     const isDark = document.documentElement.classList.contains("dark");
     const map = {
-      red: isDark ? "#ff0000" : "#ff0000", // blue-400 / blue-600
-      success: isDark ? "#16a34a" : "#16a34a", // green-400 / green-600
-      warning: isDark ? "#f59e0b" : "#f59e0b", // amber-400 / amber-500
-      yellow: isDark ? "#FFFF00" : "#FFFF00", // violet-300 / violet-700
-      sky: isDark ? "#9132a8" : "#9132a8", // blue-300 / sky-400
+      red: isDark ? "#ff0000" : "#ff0000",
+      success: isDark ? "#16a34a" : "#16a34a",
+      warning: isDark ? "#f59e0b" : "#f59e0b",
+      yellow: isDark ? "#FFFF00" : "#FFFF00",
+      sky: isDark ? "#9132a8" : "#9132a8",
     };
     return map[key];
   };
@@ -1402,7 +1411,6 @@ const Page = () => {
         </div>
       </div>
 
-      {/* دکمه‌های اصلی */}
       <div className="mt-5 space-y-2">
         {Networks.find((item) => item.symbole === network).type === "account" && (
           <button
