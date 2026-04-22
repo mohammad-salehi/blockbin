@@ -55,7 +55,7 @@ const Blockbin_graph_engine = ({
   const showValuesRef = useRef(ShowValues);
   const showTimesRef = useRef(ShowTimes);
   const showPriceRef = useRef(ShowPrice);
-
+  
   useEffect(() => { dataRef.current = Data; }, [Data]);
   useEffect(() => { showValuesRef.current = ShowValues; }, [ShowValues]);
   useEffect(() => { showTimesRef.current = ShowTimes; }, [ShowTimes]);

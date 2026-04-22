@@ -24,8 +24,6 @@ const TxBox = ({ Data, SetData, AddressSelectedData, Reload, SetReload }) => {
     const token = rest[0];
     const contractAddress = rest[1];
     const id = rest[2];
-    console.log('rest')
-    console.log(rest)
     const [ShowUSD, setShowUSD] = useState(false);
     const [ShowAddress, setShowAddress] = useState(false);
     const [InputLoading, setInputLoading] = useState(false);
@@ -227,7 +225,7 @@ const TxBox = ({ Data, SetData, AddressSelectedData, Reload, SetReload }) => {
                     inputAddresses.push(
                         {
                             address: data.inputs[i].address,
-                            Label: data.inputs[i].Label ? data.inputs[i].Label : data.inputs[i].entity !== null ? data.inputs[i].entity.name : data.inputs[i].Label,
+                            Label: data.inputs[i].Label ? data.inputs[i].Label : (data.inputs[i].entity !== null && data.inputs[i].entity !== false) ? data.inputs[i].entity.name : null,
                             value: data.inputs[i].value,
                             entity: data.inputs[i].entity,
                             metadata: data.inputs[i].metadata,
@@ -950,6 +948,7 @@ const TxBox = ({ Data, SetData, AddressSelectedData, Reload, SetReload }) => {
             cell: (row) => CounterParty(row),
         },
     ];
+
 
     return (
         <div className="text-textColor">

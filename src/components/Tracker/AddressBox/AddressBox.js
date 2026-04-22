@@ -977,6 +977,11 @@ const AddressBox = ({ Data, SetData, AddressSelectedData, Reload, SetReload }) =
       : []),
   ];
 
+
+  useEffect(() => { console.log('Data:') }, [Data]);
+  useEffect(() => { console.log(Data) }, [Data]);
+
+  
   return (
     <div className="text-textColor">
       {/* Header Card */}

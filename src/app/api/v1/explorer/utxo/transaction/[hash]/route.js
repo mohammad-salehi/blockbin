@@ -71,52 +71,63 @@ export async function GET(req, { params }) {
             "address": {
               "entity": {
                 "image": null,
-                "persian_name": null,
-                "name": "Undefined",
-                "id": "6d7b7a41-51d8-4cdb-bca2-433a145fa994",
-                "is_iranian": false,
+                "persian_name": "نوبیتکس",
+                "name": "Nobitex",
+                "id": "cca01e70-6dfc-4f77-b98a-63d65b004f9d",
+                "is_iranian": true,
                 "metadata": {
-                  "name": "@Undefined____2",
-                  "note": "",
-                  "type": "individual",
-                  "grade": -2.0,
-                  "image": null,
-                  "licence": null,
-                  "service": null,
-                  "twitter": "https://twitter.com/Undefined____2",
-                  "currency": [
-                    1
-                  ],
-                  "web_site": null,
-                  "addresses": null,
-                  "countries": [],
-                  "is_active": false,
-                  "is_deleted": false,
-                  "legal_name": null,
-                  "sample_addr": "0xeeDE9ACD5BbCd64915078323BDA6216dfb6565ef",
-                  "fiat_support": false,
-                  "private_coin": null,
-                  "establishment": null,
-                  "mapping_checked": true,
-                  "supervisory_body": null,
-                  "is_in_sanction_list": false,
-                  "registration_number": null
+                    "name": "Nobitex.ir",
+                    "note": "",
+                    "type": "cex",
+                    "grade": -1.0,
+                    "image": "http://product.blockbin.ir/media/entitylibrary/Nobitex.ir.png",
+                    "licence": "dont_have",
+                    "service": null,
+                    "twitter": "https://twitter.com/nobitexmarket",
+                    "website": "https://nobitex.ir",
+                    "currency": [
+                        1,
+                        2,
+                        3,
+                        4,
+                        5,
+                        7,
+                        9,
+                        10,
+                        11,
+                        12,
+                        13
+                    ],
+                    "web_site": "https://nobitex.ir/",
+                    "addresses": null,
+                    "countries": [
+                        106
+                    ],
+                    "is_active": false,
+                    "is_deleted": false,
+                    "legal_name": "راهکار فناوری نویان",
+                    "fiat_support": true,
+                    "private_coin": false,
+                    "establishment": "1397-04-01",
+                    "supervisory_body": "ندارد",
+                    "is_in_sanction_list": false,
+                    "registration_number": "528163"
                 },
-                "country": "",
+                "country": "Iran,",
                 "riskscore": 1.0,
                 "category": {
-                  "id": "3a05f313-3cc7-47c8-a26c-302bc20564f6",
-                  "name": "dark_market",
-                  "persian_name": "بازار سیاه"
+                    "id": "073c0ba5-88c9-4532-b36d-4bc5acf3c13f",
+                    "name": "sanctions",
+                    "persian_name": "تحریم‌شده"
                 }
-              },
+            },
               "address": "bc1qply5x5ar4ds4ke4llcttx8plt7dn4ssf5fjn9k",
               "labels": [],
               "tags": [],
               "address_label": [
                 "panta"
               ],
-              "metadata": {}
+              "metadata": {"label":"deposit"}
             }
           }
         ],
@@ -170,7 +181,47 @@ export async function GET(req, { params }) {
               "ValueInDollar": 0,
               "value": 0,
               "address": {
-                "entity": {},
+                "entity": {
+                "image": null,
+                "persian_name": null,
+                "name": "Undefined",
+                "id": "6d7b7a41-51d8-4cdb-bca2-433a145fa994",
+                "is_iranian": false,
+                "metadata": {
+                  "name": "@Undefined____2",
+                  "note": "",
+                  "type": "individual",
+                  "grade": -2.0,
+                  "image": null,
+                  "licence": null,
+                  "service": null,
+                  "twitter": "https://twitter.com/Undefined____2",
+                  "currency": [
+                    1
+                  ],
+                  "web_site": null,
+                  "addresses": null,
+                  "countries": [],
+                  "is_active": false,
+                  "is_deleted": false,
+                  "legal_name": null,
+                  "sample_addr": "0xeeDE9ACD5BbCd64915078323BDA6216dfb6565ef",
+                  "fiat_support": false,
+                  "private_coin": null,
+                  "establishment": null,
+                  "mapping_checked": true,
+                  "supervisory_body": null,
+                  "is_in_sanction_list": false,
+                  "registration_number": null
+                },
+                "country": "",
+                "riskscore": 1.0,
+                "category": {
+                  "id": "3a05f313-3cc7-47c8-a26c-302bc20564f6",
+                  "name": "dark_market",
+                  "persian_name": "بازار سیاه"
+                }
+              },
                 "address": "bc1qply5x5ar4ds4ke4llcttx8plt7dn4ssf5fjn9k",
                 "labels": [],
                 "tags": [],
@@ -186,12 +237,63 @@ export async function GET(req, { params }) {
             "ValueInDollar": 300.6564518423514,
             "value": 0.05,
             "address": {
-              "entity": {},
+              "entity": {
+                "image": null,
+                "persian_name": "نوبیتکس",
+                "name": "Nobitex",
+                "id": "cca01e70-6dfc-4f77-b98a-63d65b004f9d",
+                "is_iranian": true,
+                "metadata": {
+                    "name": "Nobitex.ir",
+                    "note": "",
+                    "type": "cex",
+                    "grade": -1.0,
+                    "image": "http://product.blockbin.ir/media/entitylibrary/Nobitex.ir.png",
+                    "licence": "dont_have",
+                    "service": null,
+                    "twitter": "https://twitter.com/nobitexmarket",
+                    "website": "https://nobitex.ir",
+                    "currency": [
+                        1,
+                        2,
+                        3,
+                        4,
+                        5,
+                        7,
+                        9,
+                        10,
+                        11,
+                        12,
+                        13
+                    ],
+                    "web_site": "https://nobitex.ir/",
+                    "addresses": null,
+                    "countries": [
+                        106
+                    ],
+                    "is_active": false,
+                    "is_deleted": false,
+                    "legal_name": "راهکار فناوری نویان",
+                    "fiat_support": true,
+                    "private_coin": false,
+                    "establishment": "1397-04-01",
+                    "supervisory_body": "ندارد",
+                    "is_in_sanction_list": false,
+                    "registration_number": "528163"
+                },
+                "country": "Iran,",
+                "riskscore": 1.0,
+                "category": {
+                    "id": "073c0ba5-88c9-4532-b36d-4bc5acf3c13f",
+                    "name": "sanctions",
+                    "persian_name": "تحریم‌شده"
+                }
+            },
               "address": "bc1qtdggrcmkhz9jdtzsxg43xtc0z7362e8rmyhlsr",
               "labels": [],
               "tags": [],
               "address_label": [],
-              "metadata": {}
+              "metadata": {"label":"hot wallet"}
             }
           },
           {
