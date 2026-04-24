@@ -203,6 +203,9 @@ const TxBox = ({ Data, SetData, AddressSelectedData, Reload, SetReload }) => {
 
     const UTXOTr = (data) => {
 
+        console.log('data')
+        console.log(data)
+
         const blockNumber = data.blockNumber
         const address = data.hash
         const BlockDate = data.time
