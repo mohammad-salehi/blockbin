@@ -203,7 +203,7 @@ const TxBox = ({ Data, SetData, AddressSelectedData, Reload, SetReload }) => {
 
     const UTXOTr = (data) => {
 
-        console.log('data')
+        console.log('UTXOTr')
         console.log(data)
 
         const blockNumber = data.blockNumber
@@ -579,7 +579,7 @@ const TxBox = ({ Data, SetData, AddressSelectedData, Reload, SetReload }) => {
                                 label: row.Label,
                                 entity: row.entity,
                                 risk: row.risk ? row.risk*100 : null,
-                                metadata: row.metadata,
+                                metadata: row.metadata?.label,
                                 x: x,
                                 y: y,
                                 main: row.address === hash,
@@ -618,7 +618,7 @@ const TxBox = ({ Data, SetData, AddressSelectedData, Reload, SetReload }) => {
                                 label: row.Label,
                                 entity: row.entity,
                                 risk: null,
-                                metadata: null,
+                                metadata: row.metadata ? row.metadata : null,
                                 x: x,
                                 y: y,
                                 main: row.address === hash,
@@ -866,7 +866,6 @@ const TxBox = ({ Data, SetData, AddressSelectedData, Reload, SetReload }) => {
             GetRequest(`${serverAddress}/explorer/evm/transaction/${AddressSelectedData.id}/?network=${network}&page_number=1&page_size=10&transaction_type=ALL`)
                 .then((response) => {
                     if (response.status == 200) {
-                        console.log(response)
                         SetFee(response.data.data.result.fee)
                         SetblockNumber(response.data.data.result.block_number)
                         SetBlockDate(response.data.data.result.time)
@@ -888,7 +887,6 @@ const TxBox = ({ Data, SetData, AddressSelectedData, Reload, SetReload }) => {
             GetRequest(`${serverAddress}/explorer/utxo/transaction/${AddressSelectedData.id}/?network=${network}&page_number=1&page_size=10`)
                 .then((response) => {
                     if (response.status == 200) {
-                        console.log(response)
                         SetFee(response.data.data.result.fee)
                         SetblockNumber(response.data.data.result.block_number)
                         SetBlockDate(response.data.data.result.time)

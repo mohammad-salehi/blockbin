@@ -36,7 +36,7 @@ const MOCK_CASES = [
       "38f6f5464e83eb65fc818b7164e5c88bd66c734f3ca7e39dbae9db80e69cea2a",
     response: {
       queryType: "transaction",
-      networks: ["BTC", "BCH", "DOGE"],
+      networks: ["BTC"],
     },
   },
 ];

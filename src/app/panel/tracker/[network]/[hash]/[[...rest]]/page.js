@@ -455,8 +455,8 @@ const Page = () => {
                               text: getData.FromLabel
                                 ? getData.FromLabel
                                 : getData.FromEntity
-                                ? getData.FromEntity.name
-                                : getData.from,
+                                  ? getData.FromEntity.name
+                                  : getData.from,
                               DollarValue: getData.valueInDollar,
                               value: getData.value,
                               time: getData.timestamp,
@@ -470,8 +470,8 @@ const Page = () => {
                               text: getData.ToLabel
                                 ? getData.ToLabel
                                 : getData.ToEntity
-                                ? getData.ToEntity.name
-                                : getData.to,
+                                  ? getData.ToEntity.name
+                                  : getData.to,
                               DollarValue: getData.valueInDollar,
                               value: getData.value,
                               time: getData.timestamp,
@@ -637,8 +637,8 @@ const Page = () => {
                                   text: getData.logs[i].FromLabel
                                     ? getData.logs[i].FromLabel
                                     : getData.logs[i].FromEntity
-                                    ? getData.logs[i].FromEntity.name
-                                    : getData.logs[i].from,
+                                      ? getData.logs[i].FromEntity.name
+                                      : getData.logs[i].from,
                                   DollarValue: getData.logs[i].valueInDollar,
                                   value: getData.logs[i].value,
                                   time: getData.timestamp,
@@ -652,8 +652,8 @@ const Page = () => {
                                   text: getData.logs[i].ToLabel
                                     ? getData.logs[i].ToLabel
                                     : getData.logs[i].ToEntity
-                                    ? getData.logs[i].ToEntity.name
-                                    : getData.logs[i].to,
+                                      ? getData.logs[i].ToEntity.name
+                                      : getData.logs[i].to,
                                   DollarValue: getData.logs[i].valueInDollar,
                                   value: getData.logs[i].value,
                                   time: getData.timestamp,
@@ -830,7 +830,7 @@ const Page = () => {
                                 ? detailRes.data.data.label_tags.labels.length >
                                   0
                                   ? detailRes.data.data.label_tags.labels[0]
-                                      .label
+                                    .label
                                   : null
                                 : null,
                             main: true,
@@ -849,9 +849,9 @@ const Page = () => {
                             metadata:
                               detailRes.status === 200
                                 ? detailRes.data.data.address_detail
-                                    .metadata !== null
+                                  .metadata !== null
                                   ? detailRes.data.data.address_detail.metadata
-                                      .label
+                                    .label
                                   : null
                                 : null,
                             inputs: [],
@@ -901,14 +901,14 @@ const Page = () => {
                       }
                       for (let i = 0; i < getData.inputs.length; i++) {
                         for (let j = 0; j < getData.outputs.length; j++) {
-                            if (getData.inputs[i].address === getData.outputs[j].address) {
-                                getData.inputs[i].value = getData.inputs[i].value - getData.outputs[j].value
-                                getData.inputs[i].valueInDollar = getData.inputs[i].valueInDollar - getData.outputs[j].valueInDollar
-                                getData.outputs.splice(j, 1)
-                                j = j - 1
-                            }
+                          if (getData.inputs[i].address === getData.outputs[j].address) {
+                            getData.inputs[i].value = getData.inputs[i].value - getData.outputs[j].value
+                            getData.inputs[i].valueInDollar = getData.inputs[i].valueInDollar - getData.outputs[j].valueInDollar
+                            getData.outputs.splice(j, 1)
+                            j = j - 1
+                          }
                         }
-                    }
+                      }
                       createdData.push({
                         id: hash,
                         text: hash,
@@ -1161,7 +1161,7 @@ const Page = () => {
               });
           }
         })
-        .catch((err) => {});
+        .catch((err) => { });
     }
   }, []);
   useEffect(() => {
@@ -1202,6 +1202,10 @@ const Page = () => {
     return map[key];
   };
   const [open, setOpen] = useState(false);
+
+
+  const [OpenHelpBox, SetOpenHelpBox] = useState(false);
+
 
   return (
     <div>
@@ -1247,154 +1251,151 @@ const Page = () => {
         }}
       ></div>
 
-<div className="fixed top-20 right-0 h-[calc(100vh-60px)] flex items-start justify-end z-50">
-  <button
-    onClick={() => setOpen(!open)}
-    className="bg-boxColor/80 backdrop-blur-sm text-textColor px-3 py-2 rounded-l-md shadow-lg transition-all duration-300 hover:bg-boxBorderColor/30 hover:shadow-md"
-  >
-    {open ? "→" : "←"}
-  </button>
-  <div
-    className={`bg-boxColor/80 backdrop-blur-md shadow-lg transition-all duration-500 overflow-hidden p-2 ${
-      open
-      ? "w-100 opacity-100 overflow-visible"
-      : "w-0 opacity-0 overflow-hidden"
-    }`}
-  >
-    <div className="w-full m-0 p-0">
-      <div className="mt-3 space-y-3">
-        {[
-          { label: "نمایش حجم", state: ShowValues, setState: SetShowValues },
-          { label: "نمایش زمان", state: ShowTimes, setState: SetShowTimes },
-          { label: "نمایش قیمت(دلار)", state: ShowPrice, setState: SetShowPrice },
-        ].map((item, index) => (
-          <div
-            key={index}
-            className="grid grid-cols-2 items-center px-2 py-1.5 rounded-lg bg-boxColor/30 backdrop-blur-sm"
-          >
-            <span className="py-1 text-textColor/80">{item.label}</span>
-            <div className="text-left">
-              <Switch
-                checked={item.state}
-                onChange={(e) => item.setState(e.target.checked)}
-                className={`${
-                  item.state ? "bg-primary" : "bg-boxBorderColor"
-                } relative inline-flex h-6 w-11 items-center rounded-full transition-colors`}
-              >
-                <span
-                  className={`${
-                    item.state ? "translate-x-6" : "translate-x-1"
-                  } inline-block h-4 w-4 transform rounded-full bg-white transition-transform`}
-                />
-              </Switch>
+      <div className="fixed top-20 right-0 h-[calc(100vh-60px)] flex items-start justify-end z-30">
+        <button
+          onClick={() => setOpen(!open)}
+          className="bg-boxColor/80 backdrop-blur-sm text-textColor px-3 py-2 rounded-l-md shadow-lg transition-all duration-300 hover:bg-boxBorderColor/30 hover:shadow-md cursor-pointer"
+        >
+          {open ? "→" : "←"}
+        </button>
+        <div
+          className={`bg-boxColor/80 backdrop-blur-md shadow-lg transition-all duration-500 overflow-hidden p-2 ${open
+            ? "w-100 opacity-100 overflow-visible"
+            : "w-0 opacity-0 overflow-hidden"
+            }`}
+        >
+          <div className="w-full m-0 p-0">
+            <div className="mt-3 space-y-3">
+              {[
+                { label: "نمایش حجم", state: ShowValues, setState: SetShowValues },
+                { label: "نمایش زمان", state: ShowTimes, setState: SetShowTimes },
+                { label: "نمایش قیمت(دلار)", state: ShowPrice, setState: SetShowPrice },
+              ].map((item, index) => (
+                <div
+                  key={index}
+                  className="grid grid-cols-2 items-center px-2 py-1.5 rounded-lg bg-boxColor/30 backdrop-blur-sm"
+                >
+                  <span className="py-1 text-textColor/80">{item.label}</span>
+                  <div className="text-left">
+                    <Switch
+                      checked={item.state}
+                      onChange={(e) => item.setState(e.target.checked)}
+                      className={`${item.state ? "bg-primary" : "bg-boxBorderColor"
+                        } relative inline-flex h-6 w-11 items-center rounded-full transition-colors`}
+                    >
+                      <span
+                        className={`${item.state ? "translate-x-6" : "translate-x-1"
+                          } inline-block h-4 w-4 transform rounded-full bg-white transition-transform`}
+                      />
+                    </Switch>
+                  </div>
+                </div>
+              ))}
             </div>
-          </div>
-        ))}
-      </div>
 
-      {/* انتخاب توکن */}
-      <div className="mt-4 px-2">
-        <label className="block mb-1.5 text-textColor/80 font-medium">ترسیم بر اساس</label>
-        <Dropdown value={selectedValue?.value || ""} onChange={() => {}}>
-          <Dropdown.Trigger className="w-full">
-            <Button
-              as="span"
-              role="button"
-              variant="ghost"
-              className="flex items-center justify-between w-full px-3 py-2.5 cursor-pointer
+            {/* انتخاب توکن */}
+            <div className="mt-4 px-2">
+              <label className="block mb-1.5 text-textColor/80 font-medium">ترسیم بر اساس</label>
+              <Dropdown value={selectedValue?.value || ""} onChange={() => { }}>
+                <Dropdown.Trigger className="w-full">
+                  <Button
+                    as="span"
+                    role="button"
+                    variant="ghost"
+                    className="flex items-center justify-between w-full px-3 py-2.5 cursor-pointer
         text-textColor border border-boxBorderColor/30 rounded-xl
         bg-boxColor/50 backdrop-blur-sm hover:bg-boxColor/70 transition-all duration-200"
-            >
-              {selectedValue ? (
-                <span className="flex items-center">
-                  <img
-                    src={`/images/${selectedValue.value}.png`}
-                    alt={selectedValue.value}
-                    className="w-5 h-5 inline-block ml-1"
-                  />
-                  {selectedValue.label || selectedValue.value}
-                </span>
-              ) : (
-                <span className="text-textColor/60">انتخاب توکن...</span>
-              )}
-            </Button>
-          </Dropdown.Trigger>
-          <Dropdown.Options
-            className="absolute right-0 mt-2 w-full max-w-xs px-2 py-1.5
+                  >
+                    {selectedValue ? (
+                      <span className="flex items-center">
+                        <img
+                          src={`/images/${selectedValue.value}.png`}
+                          alt={selectedValue.value}
+                          className="w-5 h-5 inline-block ml-1"
+                        />
+                        {selectedValue.label || selectedValue.value}
+                      </span>
+                    ) : (
+                      <span className="text-textColor/60">انتخاب توکن...</span>
+                    )}
+                  </Button>
+                </Dropdown.Trigger>
+                <Dropdown.Options
+                  className="absolute right-0 mt-2 w-full max-w-xs px-2 py-1.5
       text-textColor bg-boxColor/80 backdrop-blur-md
       border border-boxBorderColor/20 rounded-xl shadow-lg"
-          >
-            {GraphTokens.map((item, index) => (
-              <Dropdown.Option value={item.value} key={index}>
-                {({ active }) => (
-                  <MenuItem
-                    isActive={active}
-                    isSelected={selectedValue?.value === item.value}
-                    onClick={() => {
-                      if (
-                        Networks.find((item) => item.symbole === network)
-                          .type === "account"
-                      ) {
-                        setAddselectedToken({
-                          value: item.value,
-                          contract: item.contract,
-                        });
-                        setChangeNetworkBox(true);
-                      }
-                      document.activeElement?.blur();
-                    }}
-                    className={`border mt-1 mb-1 rounded-xl border-boxBorderColor/20
+                >
+                  {GraphTokens.map((item, index) => (
+                    <Dropdown.Option value={item.value} key={index}>
+                      {({ active }) => (
+                        <MenuItem
+                          isActive={active}
+                          isSelected={selectedValue?.value === item.value}
+                          onClick={() => {
+                            if (
+                              Networks.find((item) => item.symbole === network)
+                                .type === "account"
+                            ) {
+                              setAddselectedToken({
+                                value: item.value,
+                                contract: item.contract,
+                              });
+                              setChangeNetworkBox(true);
+                            }
+                            document.activeElement?.blur();
+                          }}
+                          className={`border mt-1 mb-1 rounded-xl border-boxBorderColor/20
           ${selectedValue?.value === item.value
-            ? "bg-primary/10 border-primary/30 shadow-md"
-            : "bg-boxColor/20 hover:bg-boxColor/30 hover:border-boxBorderColor/30"
-          } text-textColor transition-all duration-200`}
-                  >
-                    <MenuItem.Title>
-                      <img
-                        src={`/images/${item.value}.png`}
-                        alt={item.value}
-                        className="w-5 h-5 inline-block ml-1"
-                      />
-                      {item.label || item.value}
-                    </MenuItem.Title>
-                  </MenuItem>
-                )}
-              </Dropdown.Option>
-            ))}
-          </Dropdown.Options>
-        </Dropdown>
-      </div>
+                              ? "bg-primary/10 border-primary/30 shadow-md"
+                              : "bg-boxColor/20 hover:bg-boxColor/30 hover:border-boxBorderColor/30"
+                            } text-textColor transition-all duration-200`}
+                        >
+                          <MenuItem.Title>
+                            <img
+                              src={`/images/${item.value}.png`}
+                              alt={item.value}
+                              className="w-5 h-5 inline-block ml-1"
+                            />
+                            {item.label || item.value}
+                          </MenuItem.Title>
+                        </MenuItem>
+                      )}
+                    </Dropdown.Option>
+                  ))}
+                </Dropdown.Options>
+              </Dropdown>
+            </div>
 
-      {/* افزودن رنگ */}
-      <div className="mt-4 px-2">
-        <label className="block mb-1.5 text-textColor/80 font-medium">افزودن رنگ</label>
-        <div className="flex items-center gap-2 pb-1">
-          {[
-            { color: "red", label: "قرمز" },
-            { color: "success", label: "سبز" },
-            { color: "warning", label: "نارنجی" },
-            { color: "yellow", label: "زرد" },
-            { color: "sky", label: "بنفش" },
-          ].map((color, index) => (
-            <button
-              key={index}
-              onClick={() => {
-                SetSelectedEdges([]);
-                SetColor(themeColor(color.color));
-              }}
-              className={`h-6 w-6 rounded-full ring-1 ring-boxBorderColor/20 transition-all duration-200
+            {/* افزودن رنگ */}
+            <div className="mt-4 px-2">
+              <label className="block mb-1.5 text-textColor/80 font-medium">افزودن رنگ</label>
+              <div className="flex items-center gap-2 pb-1">
+                {[
+                  { color: "red", label: "قرمز" },
+                  { color: "success", label: "سبز" },
+                  { color: "warning", label: "نارنجی" },
+                  { color: "yellow", label: "زرد" },
+                  { color: "sky", label: "بنفش" },
+                ].map((color, index) => (
+                  <button
+                    key={index}
+                    onClick={() => {
+                      SetSelectedEdges([]);
+                      SetColor(themeColor(color.color));
+                    }}
+                    className={`h-6 w-6 rounded-full ring-1 ring-boxBorderColor/20 transition-all duration-200
                 ${"hover:ring-2 hover:ring-primary/30"}`}
-              style={{ backgroundColor: themeColor(color.color) }}
-            />
-          ))}
-          <button
-            onClick={() => {
-              SetSelectedEdges([]);
-              DeleteColor();
-            }}
-            title="حذف رنگ"
-            className="ml-1  rounded-full text-textColor/60 hover:text-textColor transition-all duration-200"
-          >
+                    style={{ backgroundColor: themeColor(color.color) }}
+                  />
+                ))}
+                <button
+                  onClick={() => {
+                    SetSelectedEdges([]);
+                    DeleteColor();
+                  }}
+                  title="حذف رنگ"
+                  className="ml-1  rounded-full text-textColor/60 hover:text-textColor transition-all duration-200"
+                >
                   <svg
                     width="24"
                     height="24"
@@ -1407,81 +1408,173 @@ const Page = () => {
                       transform="translate(-152 -1035)"
                     />
                   </svg>
-          </button>
+                </button>
+              </div>
+            </div>
+
+            <div className="mt-5 space-y-2">
+              {Networks.find((item) => item.symbole === network).type === "account" && (
+                <button
+                  onClick={() => SetReportBox(true)}
+                  className="flex items-center gap-2 w-full px-3 py-2.5  cursor-pointer rounded-xl bg-boxColor/30 backdrop-blur-sm text-textColor hover:bg-boxColor/50 transition-all duration-200 shadow-sm hover:shadow-md"
+                >
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+                    <path
+                      d="M8 12H9M16 12H12"
+                      stroke="currentColor"
+                      strokeWidth="1.5"
+                      strokeLinecap="round"
+                    />
+                    <path
+                      d="M16 8H15M12 8H8"
+                      stroke="currentColor"
+                      strokeWidth="1.5"
+                      strokeLinecap="round"
+                    />
+                    <path
+                      d="M8 16H13"
+                      stroke="currentColor"
+                      strokeWidth="1.5"
+                      strokeLinecap="round"
+                    />
+                    <path
+                      d="M3 14V10C3 6.22876 3 4.34315 4.17157 3.17157C5.34315 2 7.22876 2 11 2H13C16.7712 2 18.6569 2 19.8284 3.17157C20.4816 3.82476 20.7706 4.69989 20.8985 6M21 10V14C21 17.7712 21 19.6569 19.8284 20.8284C18.6569 22 16.7712 22 13 22H11C7.22876 22 5.34315 22 4.17157 20.8284C3.51839 20.1752 3.22937 19.3001 3.10149 18"
+                      stroke="currentColor"
+                      strokeWidth="1.5"
+                      strokeLinecap="round"
+                    />
+                  </svg>
+                  <span className="text-textColor">دریافت گزارش</span>
+                </button>
+              )}
+              <button
+                onClick={() => SetOpenSaveBox(true)}
+                className="flex items-center gap-2 w-full px-3 py-2.5 rounded-xl cursor-pointer bg-boxColor/30 backdrop-blur-sm text-textColor hover:bg-boxColor/50 transition-all duration-200 shadow-sm hover:shadow-md"
+              >
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+                  <path
+                    d="M15 8H8.6C8.03995 8 7.75992 8 7.54601 7.89101C7.35785 7.79513 7.20487 7.64215 7.10899 7.45399C7 7.24008 7 6.96005 7 6.4V3M17 21V14.6C17 14.0399 17 13.7599 16.891 13.546C16.7951 13.3578 16.6422 13.2049 16.454 13.109C16.2401 13 15.9601 13 15.4 13H8.6C8.03995 13 7.75992 13 7.54601 13.109C7.35785 13.2049 7.20487 13.3578 7.10899 13.546C7 13.7599 7 14.0399 7 14.6V21M21 9.32548V16.2C21 17.8802 21 18.7202 20.673 19.362C20.3854 19.9265 19.9265 20.3854 19.362 20.673C18.7202 21 17.8802 21 16.2 21H7.8C6.11984 21 5.27976 21 4.63803 20.673C4.07354 20.3854 3.6146 19.9265 3.32698 19.362C3 18.7202 3 17.8802 3 16.2V7.8C3 6.11984 3 5.27976 3.32698 4.63803C3.6146 4.07354 4.07354 3.6146 4.63803 3.32698C5.27976 3 6.11984 3 7.8 3H14.6745C15.1637 3 15.4083 3 15.6385 3.05526C15.8425 3.10425 16.0376 3.18506 16.2166 3.29472C16.4184 3.4184 16.5914 3.59135 16.9373 3.93726L20.0627 7.06274C20.4086 7.40865 20.5816 7.5816 20.7053 7.78343C20.8149 7.96237 20.8957 8.15746 20.9447 8.36154C21 8.59171 21 8.8363 21 9.32548Z"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  />
+                </svg>
+                <span className="text-textColor">ذخیره</span>
+              </button>
+              {id !== undefined && (
+                <button
+                  onClick={() => SetOpenFolderBox(true)}
+                  className="flex items-center gap-2 w-full px-3 py-2.5 rounded-xl bg-boxColor/30 backdrop-blur-sm text-textColor hover:bg-boxColor/50 transition-all duration-200 shadow-sm hover:shadow-md"
+                >
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+                    <path
+                      d="M15 8H8.6C8.03995 8 7.75992 8 7.54601 7.89101C7.35785 7.79513 7.20487 7.64215 7.10899 7.45399C7 7.24008 7 6.96005 7 6.4V3M17 21V14.6C17 14.0399 17 13.7599 16.891 13.546C16.7951 13.3578 16.6422 13.2049 16.454 13.109C16.2401 13 15.9601 13 15.4 13H8.6C8.03995 13 7.75992 13 7.54601 13.109C7.35785 13.2049 7.20487 13.3578 7.10899 13.546C7 13.7599 7 14.0399 7 14.6V21M21 9.32548V16.2C21 17.8802 21 18.7202 20.673 19.362C20.3854 19.9265 19.9265 20.3854 19.362 20.673C18.7202 21 17.8802 21 16.2 21H7.8C6.11984 21 5.27976 21 4.63803 20.673C4.07354 20.3854 3.6146 19.9265 3.32698 19.362C3 18.7202 3 17.8802 3 16.2V7.8C3 6.11984 3 5.27976 3.32698 4.63803C3.6146 4.07354 4.07354 3.6146 4.63803 3.32698C5.27976 3 6.11984 3 7.8 3H14.6745C15.1637 3 15.4083 3 15.6385 3.05526C15.8425 3.10425 16.0376 3.18506 16.2166 3.29472C16.4184 3.4184 16.5914 3.59135 16.9373 3.93726L20.0627 7.06274C20.4086 7.40865 20.5816 7.5816 20.7053 7.78343C20.8149 7.96237 20.8957 8.15746 20.9447 8.36154C21 8.59171 21 8.8363 21 9.32548Z"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    />
+                  </svg>
+                  <span className="text-textColor">افزودن به پرونده</span>
+                </button>
+              )}
+            </div>
+          </div>
         </div>
       </div>
-
-      <div className="mt-5 space-y-2">
-        {Networks.find((item) => item.symbole === network).type === "account" && (
-          <button
-            onClick={() => SetReportBox(true)}
-            className="flex items-center gap-2 w-full px-3 py-2.5  cursor-pointer rounded-xl bg-boxColor/30 backdrop-blur-sm text-textColor hover:bg-boxColor/50 transition-all duration-200 shadow-sm hover:shadow-md"
-          >
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
-              <path
-                d="M8 12H9M16 12H12"
-                stroke="currentColor"
-                strokeWidth="1.5"
-                strokeLinecap="round"
-              />
-              <path
-                d="M16 8H15M12 8H8"
-                stroke="currentColor"
-                strokeWidth="1.5"
-                strokeLinecap="round"
-              />
-              <path
-                d="M8 16H13"
-                stroke="currentColor"
-                strokeWidth="1.5"
-                strokeLinecap="round"
-              />
-              <path
-                d="M3 14V10C3 6.22876 3 4.34315 4.17157 3.17157C5.34315 2 7.22876 2 11 2H13C16.7712 2 18.6569 2 19.8284 3.17157C20.4816 3.82476 20.7706 4.69989 20.8985 6M21 10V14C21 17.7712 21 19.6569 19.8284 20.8284C18.6569 22 16.7712 22 13 22H11C7.22876 22 5.34315 22 4.17157 20.8284C3.51839 20.1752 3.22937 19.3001 3.10149 18"
-                stroke="currentColor"
-                strokeWidth="1.5"
-                strokeLinecap="round"
-              />
-            </svg>
-            <span className="text-textColor">دریافت گزارش</span>
-          </button>
-        )}
-        <button
-          onClick={() => SetOpenSaveBox(true)}
-          className="flex items-center gap-2 w-full px-3 py-2.5 rounded-xl cursor-pointer bg-boxColor/30 backdrop-blur-sm text-textColor hover:bg-boxColor/50 transition-all duration-200 shadow-sm hover:shadow-md"
+      <button
+        onClick={() => {SetOpenHelpBox(true), setOpen(false)}}
+        className="
+    fixed bottom-5 right-5 z-50
+    h-10 w-10 flex items-center justify-center
+    rounded-xl
+    bg-white/15 dark:bg-white/10
+    border border-white/20
+    shadow-lg backdrop-blur-xl
+    hover:bg-white/25 dark:hover:bg-white/20
+    hover:scale-105
+    transition
+    cursor-pointer
+    text-textColor
+  "
+      >
+        <svg
+          xmlns='http://www.w3.org/2000/svg'
+          className='h-5 w-5'
+          fill='none'
+          stroke='currentColor'
+          strokeWidth='2'
+          viewBox='0 0 24 24'
         >
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
-            <path
-              d="M15 8H8.6C8.03995 8 7.75992 8 7.54601 7.89101C7.35785 7.79513 7.20487 7.64215 7.10899 7.45399C7 7.24008 7 6.96005 7 6.4V3M17 21V14.6C17 14.0399 17 13.7599 16.891 13.546C16.7951 13.3578 16.6422 13.2049 16.454 13.109C16.2401 13 15.9601 13 15.4 13H8.6C8.03995 13 7.75992 13 7.54601 13.109C7.35785 13.2049 7.20487 13.3578 7.10899 13.546C7 13.7599 7 14.0399 7 14.6V21M21 9.32548V16.2C21 17.8802 21 18.7202 20.673 19.362C20.3854 19.9265 19.9265 20.3854 19.362 20.673C18.7202 21 17.8802 21 16.2 21H7.8C6.11984 21 5.27976 21 4.63803 20.673C4.07354 20.3854 3.6146 19.9265 3.32698 19.362C3 18.7202 3 17.8802 3 16.2V7.8C3 6.11984 3 5.27976 3.32698 4.63803C3.6146 4.07354 4.07354 3.6146 4.63803 3.32698C5.27976 3 6.11984 3 7.8 3H14.6745C15.1637 3 15.4083 3 15.6385 3.05526C15.8425 3.10425 16.0376 3.18506 16.2166 3.29472C16.4184 3.4184 16.5914 3.59135 16.9373 3.93726L20.0627 7.06274C20.4086 7.40865 20.5816 7.5816 20.7053 7.78343C20.8149 7.96237 20.8957 8.15746 20.9447 8.36154C21 8.59171 21 8.8363 21 9.32548Z"
-              stroke="currentColor"
-              strokeWidth="2"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            />
-          </svg>
-          <span className="text-textColor">ذخیره</span>
-        </button>
-        {id !== undefined && (
-          <button
-            onClick={() => SetOpenFolderBox(true)}
-            className="flex items-center gap-2 w-full px-3 py-2.5 rounded-xl bg-boxColor/30 backdrop-blur-sm text-textColor hover:bg-boxColor/50 transition-all duration-200 shadow-sm hover:shadow-md"
-          >
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
-              <path
-                d="M15 8H8.6C8.03995 8 7.75992 8 7.54601 7.89101C7.35785 7.79513 7.20487 7.64215 7.10899 7.45399C7 7.24008 7 6.96005 7 6.4V3M17 21V14.6C17 14.0399 17 13.7599 16.891 13.546C16.7951 13.3578 16.6422 13.2049 16.454 13.109C16.2401 13 15.9601 13 15.4 13H8.6C8.03995 13 7.75992 13 7.54601 13.109C7.35785 13.2049 7.20487 13.3578 7.10899 13.546C7 13.7599 7 14.0399 7 14.6V21M21 9.32548V16.2C21 17.8802 21 18.7202 20.673 19.362C20.3854 19.9265 19.9265 20.3854 19.362 20.673C18.7202 21 17.8802 21 16.2 21H7.8C6.11984 21 5.27976 21 4.63803 20.673C4.07354 20.3854 3.6146 19.9265 3.32698 19.362C3 18.7202 3 17.8802 3 16.2V7.8C3 6.11984 3 5.27976 3.32698 4.63803C3.6146 4.07354 4.07354 3.6146 4.63803 3.32698C5.27976 3 6.11984 3 7.8 3H14.6745C15.1637 3 15.4083 3 15.6385 3.05526C15.8425 3.10425 16.0376 3.18506 16.2166 3.29472C16.4184 3.4184 16.5914 3.59135 16.9373 3.93726L20.0627 7.06274C20.4086 7.40865 20.5816 7.5816 20.7053 7.78343C20.8149 7.96237 20.8957 8.15746 20.9447 8.36154C21 8.59171 21 8.8363 21 9.32548Z"
-                stroke="currentColor"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              />
-            </svg>
-            <span className="text-textColor">افزودن به پرونده</span>
-          </button>
-        )}
-      </div>
+          <path
+            strokeLinecap='round'
+            strokeLinejoin='round'
+            d='M12 18h.01M12 14a4 4 0 10-4-4'
+          />
+        </svg>
+      </button>
+
+      <Modal open={OpenHelpBox} onClose={() => SetOpenHelpBox(false)}>
+  <Modal.Backdrop className="bg-black/30 backdrop-blur-sm" />
+
+  <Modal.Panel
+    className="
+      w-full max-w-xl
+      rounded-2xl
+      bg-bgColor dark:bg-gray-900
+      border border-boxBorderColor dark:border-gray-700
+      shadow-lg
+      p-6
+      mt-25
+    "
+  >
+    {/* header */}
+    <div className="flex items-center justify-between mb-6">
+      <h2 className="text-lg font-semibold text-textTitleColor">
+        راهنمای استفاده
+      </h2>
+
+      <button
+        onClick={() => SetOpenHelpBox(false)}
+        className="
+          h-8 w-8 flex items-center justify-center
+          rounded-full
+          cursor-pointer
+          text-textColor 
+          transition
+        "
+      >
+        ✕
+      </button>
     </div>
-  </div>
-</div>
+
+    {/* content */}
+    <div className="space-y-4 text-sm leading-7 text-textColor">
+
+      <p>
+        توضیحات کلی برنامه را اینجا بنویس.
+      </p>
+
+      <div>
+        <h3 className="font-medium text-textTitleColor">
+            امکانات
+        </h3>
+        <p>توضیح مرحله اول.</p>
+      </div>
+
+      <div>
+        <h3 className="font-medium text-textTitleColor">
+          علامت‌ها و اجزای گراف
+        </h3>
+        <p>توضیح مرحله دوم.</p>
+      </div>
+
+    </div>
+  </Modal.Panel>
+</Modal>
+
+
 
       <Modal
         open={OpenSaveBox}
@@ -1570,10 +1663,9 @@ const Page = () => {
               className="bg-boxBorderColor border border-boxBorderColor rounded-lg text-textColor w-full py-1 cursor-pointer mt-4"
               onClick={() => {
                 window.location.assign(
-                  `/panel/tracker/${network}/${hash}/${selectedToken.value}/${
-                    selectedToken.contract !== undefined
-                      ? selectedToken.contract
-                      : ""
+                  `/panel/tracker/${network}/${hash}/${selectedToken.value}/${selectedToken.contract !== undefined
+                    ? selectedToken.contract
+                    : ""
                   }`
                 );
               }}
@@ -1584,7 +1676,7 @@ const Page = () => {
         </div>
       </Modal>
 
-      <Modal open={SelectTokenBox} onClose={() => {}} className="p-0">
+      <Modal open={SelectTokenBox} onClose={() => { }} className="p-0">
         <Modal.Backdrop />
         <div className="fixed inset-0 flex items-center justify-center z-50 p-4">
           <Modal.Panel
@@ -1639,18 +1731,16 @@ const Page = () => {
                         key={index}
                         onClick={() => {
                           window.location.assign(
-                            `/panel/tracker/${network}/${hash}/${item.value}/${
-                              item.contract !== undefined ? item.contract : ""
+                            `/panel/tracker/${network}/${hash}/${item.value}/${item.contract !== undefined ? item.contract : ""
                             }`
                           );
                         }}
                         className={`
                     group relative flex items-center p-2 rounded-xl cursor-pointer transition-all duration-350
-                    ${
-                      isSelected
-                        ? "bg-primary/15 backdrop-blur-md border-2 border-primary/50 shadow-lg shadow-primary/20"
-                        : "bg-boxColor/15 backdrop-blur-md border border-boxBorderColor/15 hover:bg-boxColor/25 hover:border-boxBorderColor/30 hover:shadow-md group-hover:scale-[1.02]"
-                    }
+                    ${isSelected
+                            ? "bg-primary/15 backdrop-blur-md border-2 border-primary/50 shadow-lg shadow-primary/20"
+                            : "bg-boxColor/15 backdrop-blur-md border border-boxBorderColor/15 hover:bg-boxColor/25 hover:border-boxBorderColor/30 hover:shadow-md group-hover:scale-[1.02]"
+                          }
                   `}
                       >
                         <div className="relative shrink-0">

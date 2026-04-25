@@ -702,8 +702,6 @@ const AddressBox = ({ Data, SetData, AddressSelectedData, Reload, SetReload }) =
         if (Networks.find(item => item.symbole === network).type === 'account') {
           if (network === token) {
             const getData = (Account_Address(response.data.data.result, AddressSelectedData.id, network, 0))
-            console.log('getData')
-            console.log(getData)
             const getTransactions = []
             for (let i = 0; i < getData.inputs.length; i++) {
               getTransactions.push(
@@ -754,8 +752,6 @@ const AddressBox = ({ Data, SetData, AddressSelectedData, Reload, SetReload }) =
             SetAddressTransactions(getTransactions)
           } else {
             const getData = (Account_Token_Address(response.data.data, AddressSelectedData.id, network, 0))
-            console.log('Account_Token_Address')
-            console.log(getData)
             const getTransactions = []
             for (let i = 0; i < getData.logs.inputs.length; i++) {
               getTransactions.push(
