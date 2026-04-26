@@ -1,36 +1,118 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# Blockchain Graph Analysis Service
 
-## Getting Started
+این پروژه یک سرویس حرفه‌ای برای **رسم، تحلیل و مدیریت شبکه‌های بلاکچینی** است.  
+کاربران می‌توانند ارتباط بین آدرس‌ها، تراکنش‌ها و مسیرهای جریان دارایی را در شبکه‌های مختلف مشاهده کرده و تحلیل دقیق‌تری از رفتارها، مالکیت‌ آدرس‌ها و ریسک‌ها داشته باشند.
 
-First, run the development server:
+**این پروژه توسط محمد صالحی ساخته شده است.**
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+---
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## ✨ قابلیت‌ها
 
-You can start editing the page by modifying `app/page.js`. The page auto-updates as you edit the file.
+### 1. تحلیل اطلاعات شبکه‌های بلاکچینی
+- نمایش گراف تعاملی بین آدرس‌ها، تراکنش‌ها و توکن‌ها  
+- پشتیبانی از شبکه‌های مختلف  
+- نمایش نوع آدرس‌ها (Deposit، Hot Wallet و …)  
+- نمایش مالک آدرس‌ها  
+- نمایش ریسک‌اسکور آدرس  
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+### 2. رسم گراف تراکنش‌ها
+- رنگ‌گذاری مسیرها و تفکیک مسیرهای مختلف  
+- مشاهده مالک آدرس‌های افزوده‌شده به گراف  
+- نمایش قیمت دلاری تراکنش‌ها  
+- نمایش حجم و زمان هر تراکنش  
+- استخراج گزارش اکسل از مسیرهای انتخاب‌شده  
 
-## Learn More
+### 3. تحلیل موجودیت‌های بلاکچینی
+- مشاهده نام و اطلاعات موجودیت‌های مختلف 
+- مشاهده آدرس های هر موجودیت به تفکیک شبکه
+- مشاهده ریسک‌اسکور موجودیت‌ها
 
-To learn more about Next.js, take a look at the following resources:
+### 4. پرونده‌ها
+- امکان ساخت و ویرایش پرونده‌های بلاکچینی
+- دسته‌بندی مجموعه‌ای از آدرس، تراکنش و گراف ها در یک پرونده مشخص
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+---
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## 🧩 کامپوننت SavedGraph
 
-## Deploy on Vercel
+کامپوننت `SavedGraph` مسئول نمایش و مدیریت لیست گراف‌های ذخیره‌شده است.  
+ویژگی‌ها:
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+- نمایش نام گراف (فقط در حالت hover آبی می‌شود)  
+- نمایش توضیحات  
+- نمایش تعداد آیتم‌ها  
+- نمایش شبکه با آیکن  
+- دکمه حذف مینیمال و حرفه‌ای  
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+### نمونه ستون‌های استفاده‌شده در جدول:
+```jsx
+const columns = [
+  {
+header: 'نام گراف',
+cell: (row) => (
+<a
+href={`/panel/tracker/${row.networkName}/${row.hash}/${row.token}/${row.contract}/${row.id}`}
+className="font-medium text-textColor hover:text-primary transition-colors"
+>
+{row.name}
+</a>
+),
+  },
+  {
+header: 'توضیحات',
+cell: (row) => (
+<span className="text-sm text-textColor/80">
+{row.description || '—'}
+</span>
+),
+  },
+  {
+header: 'آیتم‌ها',
+cell: (row) => (
+<span className="px-2 py-1 text-xs font-semibold rounded-full bg-primary/10 text-primary">
+{row.items || 0}
+</span>
+),
+  },
+  {
+header: 'شبکه',
+cell: (row) => (
+<div className="flex items-center gap-2 bg-bgPrimary px-2 py-1 rounded-md w-fit">
+<img
+src={`/images/${row.networkName}.png`}
+className="h-4 w-4"
+alt={row.networkName}
+/>
+<span className="text-sm">{row.networkName}</span>
+</div>
+),
+  },
+  {
+header: 'عملیات',
+cell: (row) => (
+<button
+type="button"
+onClick={() => openDeleteModal(row.id)}
+className="flex items-center justify-center w-9 h-9 rounded-lg text-textColor/60 hover:text-red-500 hover:bg-red-50 transition-colors"
+>
+<svg
+xmlns="http://www.w3.org/2000/svg"
+className="h-4 w-4"
+viewBox="0 0 24 24"
+fill="none"
+stroke="currentColor"
+strokeWidth="1.8"
+strokeLinecap="round"
+strokeLinejoin="round"
+>
+<polyline points="3 6 5 6 21 6" />
+<path d="M19 6l-1 14H6L5 6" />
+<path d="M10 11v6" />
+<path d="M14 11v6" />
+<path d="M9 6V4h6v2" />
+</svg>
+</button>
+),
+  },
+];
