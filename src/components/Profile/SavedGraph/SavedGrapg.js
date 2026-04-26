@@ -11,6 +11,7 @@ import Cookies from 'js-cookie';
 import toast from 'react-hot-toast';
 import { GetRequest } from '@/functions/GetRequest';
 import ExpandableTable from '@/components/ExpandableTable/ExpandableTable';
+import SkeletonLoading from '@/components/SkeletonLoading/SkeletonLoading'
 
 const SavedGraph = () => {
   const [data, setData] = useState([]);
@@ -18,9 +19,11 @@ const SavedGraph = () => {
   const [deleteId, setDeleteId] = useState(null);
   const [openDeleteBox, setOpenDeleteBox] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [TableLoading, SetTableLoading] = useState(false)
 
   // گرفتن لیست گراف‌های ذخیره‌شده
   useEffect(() => {
+    SetTableLoading(true)
     GetRequest(`${serverAddress}/explorer/graph/`)
       .then((response) => {
         console.log(response)
@@ -43,6 +46,8 @@ const SavedGraph = () => {
         }));
 
         setData(mapped);
+        SetTableLoading(false)
+
       })
       .catch((err) => {
         console.log(err);
@@ -52,7 +57,8 @@ const SavedGraph = () => {
             Cookies.set('access', '');
             window.location.assign('/');
           }
-        } catch (e) {}
+        } catch (e) { }
+        SetTableLoading(false)
       });
   }, []);
 
@@ -101,7 +107,7 @@ const SavedGraph = () => {
             window.location.assign('/');
             return;
           }
-        } catch (e) {}
+        } catch (e) { }
 
         return toast.error('ناموفق', {
           position: 'bottom-left',
@@ -111,11 +117,11 @@ const SavedGraph = () => {
 
   const columns = [
     {
-      header: 'نام',
+      header: 'نام گراف',
       cell: (row) => (
         <a
           href={`/panel/tracker/${row.networkName}/${row.hash}/${row.token}/${row.contract}/${row.id}`}
-          className="text-textColor no-underline hover:underline"
+          className="font-medium text-textColor hover:text-primary transition-colors"
         >
           {row.name}
         </a>
@@ -123,68 +129,81 @@ const SavedGraph = () => {
     },
     {
       header: 'توضیحات',
-      cell: (row) => <span>{row.description}</span>,
+      cell: (row) => (
+        <span className="text-sm text-textColor/80">
+          {row.description || '—'}
+        </span>
+      ),
     },
     {
       header: 'آیتم‌ها',
-      cell: (row) => <span>{row.items}</span>,
+      cell: (row) => (
+        <span className="px-2 py-1 text-xs font-semibold rounded-full bg-primary/10 text-primary">
+          {row.items || 0}
+        </span>
+      ),
     },
     {
       header: 'شبکه',
       cell: (row) => (
-        <span className="inline-flex items-center gap-1">
+        <div className="flex items-center gap-2 bg-bgPrimary px-2 py-1 rounded-md w-fit">
           <img
             src={`/images/${row.networkName}.png`}
-            className="ml-1 inline-block h-5 w-5"
+            className="h-4 w-4"
             alt={row.networkName}
           />
-          {row.networkName}
-        </span>
+          <span className="text-sm">{row.networkName}</span>
+        </div>
       ),
     },
     {
       header: 'عملیات',
       cell: (row) => (
-        <button
-          type="button"
-          onClick={() => openDeleteModal(row.id)}
-          className="text-TextRed hover:text-red-600 cursor-pointer"
-        >
-          {/* آیکن سطل زباله (بدون react-feather) */}
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            className="h-5 w-5"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="1.8"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-          >
-            <polyline points="3 6 5 6 21 6" />
-            <path d="M19 6l-1 14H6L5 6" />
-            <path d="M10 11v6" />
-            <path d="M14 11v6" />
-            <path d="M9 6V4h6v2" />
-          </svg>
-        </button>
+<button
+  type="button"
+  onClick={() => openDeleteModal(row.id)}
+  className="flex items-center justify-center w-8 h-8 rounded-lg text-textColor/60 hover:text-red-500 cursor-pointer transition-colors"
+>
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    className="h-9 w-9"
+    viewBox="0 0 32 32"
+    fill="none"
+    stroke="currentColor"
+    strokeWidth="1.8"
+    strokeLinecap="round"
+    strokeLinejoin="round"
+  >
+    <polyline points="3 6 5 6 21 6" />
+    <path d="M19 6l-1 14H6L5 6" />
+    <path d="M10 11v6" />
+    <path d="M14 11v6" />
+    <path d="M9 6V4h6v2" />
+  </svg>
+</button>
       ),
     },
   ];
 
+
   return (
     <>
       <div className="text-textColor" dir="rtl">
-        {data.length > 0 && !isEmpty ? (
-          <ExpandableTable
-            data={data}
-            columns={columns}
-            rowDetailsMode="row"
-            rowDetailsClassName="rounded-xl p-3"
-          />
-        ) : (
-          <p className="mt-5 text-center">بدون گراف ذخیره شده</p>
-        )}
+        {
+          TableLoading ?
+            <div className='border border-boxBorderColor rounded-xl p-3'>
+              <SkeletonLoading />
+            </div> :
+            data.length > 0 && !isEmpty ? (
+              <ExpandableTable
+                data={data}
+                columns={columns}
+                rowDetailsMode="row"
+                rowDetailsClassName="rounded-xl p-3"
+              />
+            ) : (
+              <p className="mt-5 text-center">بدون گراف ذخیره شده</p>
+            )}
       </div>
 
       {/* مودال حذف با Tailwind */}

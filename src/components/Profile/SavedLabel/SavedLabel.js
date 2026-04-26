@@ -13,6 +13,7 @@ import { GetRequest } from '@/functions/GetRequest';
 import ExpandableTable from '@/components/ExpandableTable/ExpandableTable';
 import { Networks } from '@/functions/Networks';
 import { AddressFormat } from '@/components/AddressFormat/AddressFormat';
+import SkeletonLoading from '@/components/SkeletonLoading/SkeletonLoading'
 
 const SavedLabel = () => {
     const [data, setData] = useState([]);
@@ -20,9 +21,11 @@ const SavedLabel = () => {
     const [deleteId, setDeleteId] = useState(null);
     const [openDeleteBox, setOpenDeleteBox] = useState(false);
     const [loading, setLoading] = useState(false);
+    const [TableLoading, SetTableLoading] = useState(false)
 
     // دریافت لیست برچسب‌ها
     useEffect(() => {
+        SetTableLoading(true)
         GetRequest(`${serverAddress}/address-labels/label`)
             .then((response) => {
                 const getResults = [];
@@ -43,9 +46,11 @@ const SavedLabel = () => {
                     });
                 }
                 setData(getResults);
+                SetTableLoading(false)
             })
             .catch((err) => {
                 console.log(err)
+                SetTableLoading(false)
                 try {
                     if (err.response.status === 403 || err.response.status === 401) {
                         Cookies.set('refresh', '');
@@ -158,21 +163,27 @@ const SavedLabel = () => {
         <>
             {/* کارت اصلی با Tailwind */}
             <div className=" text-textColor" dir="rtl">
-                {!isEmpty ? (
-                    data.length > 0 ? (
+                {
+                    TableLoading ?
+                        <div className='border border-boxBorderColor rounded-xl p-3'>
+                            <SkeletonLoading />
+                        </div>
+                        :
+                        !isEmpty ? (
+                            data.length > 0 ? (
 
-                        <ExpandableTable
-                            data={data}          // ← فقط دیتای فیلترشده را بده
-                            columns={basicColumns}
-                            rowDetailsMode="row"
-                            rowDetailsClassName="rounded-xl p-3"
-                        />
-                    ) : (
-                        <p className="mt-5 text-center">بدون برچسب ذخیره شده</p>
-                    )
-                ) : (
-                    <p className="mt-5 text-center">بدون برچسب ذخیره شده</p>
-                )}
+                                <ExpandableTable
+                                    data={data}          // ← فقط دیتای فیلترشده را بده
+                                    columns={basicColumns}
+                                    rowDetailsMode="row"
+                                    rowDetailsClassName="rounded-xl p-3"
+                                />
+                            ) : (
+                                <p className="mt-5 text-center">بدون برچسب ذخیره شده</p>
+                            )
+                        ) : (
+                            <p className="mt-5 text-center">بدون برچسب ذخیره شده</p>
+                        )}
             </div>
 
             {/* مودال حذف با Tailwind */}
