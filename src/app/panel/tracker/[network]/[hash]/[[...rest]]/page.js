@@ -1484,7 +1484,7 @@ const Page = () => {
         </div>
       </div>
       <button
-        onClick={() => {SetOpenHelpBox(true), setOpen(false)}}
+        onClick={() => { SetOpenHelpBox(true), setOpen(false) }}
         className="
     fixed bottom-5 right-5 z-50
     h-10 w-10 flex items-center justify-center
@@ -1516,10 +1516,10 @@ const Page = () => {
       </button>
 
       <Modal open={OpenHelpBox} onClose={() => SetOpenHelpBox(false)}>
-  <Modal.Backdrop className="bg-black/30 backdrop-blur-sm" />
+        <Modal.Backdrop className="bg-black/30 backdrop-blur-sm" />
 
-  <Modal.Panel
-    className="
+        <Modal.Panel
+          className="
       w-full max-w-xl
       rounded-2xl
       bg-bgColor dark:bg-gray-900
@@ -1528,51 +1528,80 @@ const Page = () => {
       p-6
       mt-25
     "
-  >
-    {/* header */}
-    <div className="flex items-center justify-between mb-6">
-      <h2 className="text-lg font-semibold text-textTitleColor">
-        راهنمای استفاده
-      </h2>
+        >
+          {/* header */}
+          <div className="flex items-center justify-between mb-6">
+            <h2 className="text-lg font-semibold text-textTitleColor">
+              راهنمای استفاده
+            </h2>
 
-      <button
-        onClick={() => SetOpenHelpBox(false)}
-        className="
+            <button
+              onClick={() => SetOpenHelpBox(false)}
+              className="
           h-8 w-8 flex items-center justify-center
           rounded-full
           cursor-pointer
           text-textColor 
           transition
         "
-      >
-        ✕
-      </button>
-    </div>
+            >
+              ✕
+            </button>
+          </div>
 
-    {/* content */}
-    <div className="space-y-4 text-sm leading-7 text-textColor">
+          {/* content */}
+          <div className="space-y-4 text-sm leading-7 text-textColor">
 
-      <p>
-        توضیحات کلی برنامه را اینجا بنویس.
-      </p>
+            <p>
+              این سرویس یک گراف تعاملی از آدرس‌ها، تراکنش‌ها و توکن‌ها در شبکه‌های مختلف بلاکچینی ایجاد می‌کند و ارتباط بین آن‌ها را به‌صورت بصری نمایش می‌دهد. علاوه بر نمایش موجودیت‌ها، امکان مشاهده نوع آدرس‌ها (مانند Deposit، Hot Wallet و …) و ریسک‌اسکور هر آدرس برای تحلیل دقیق‌تر و ارزیابی ریسک فراهم است.
+            </p>
 
-      <div>
-        <h3 className="font-medium text-textTitleColor">
-            امکانات
-        </h3>
-        <p>توضیح مرحله اول.</p>
-      </div>
+            <div>
+              <h3 className="font-medium text-textTitleColor">
+                امکانات
+              </h3>
+              <p>
+                <ul class="feature-list">
+                  <li><span class="bullet">●</span> رسم گراف‌های ارتباطی بین آدرس‌ها و تراکنش‌ها در شبکه‌ها و توکن‌های مختلف</li>
+                  <li><span class="bullet">●</span> نشانه‌گذاری و تفکیک مسیرهای گراف با افزودن رنگ‌های مختلف</li>
+                  <li><span class="bullet">●</span> دریافت خروجی اکسل از اجزای ارتباطی مسیرهای انتخاب‌شده</li>
+                  <li><span class="bullet">●</span> نمایش قیمت دلاری، زمان و حجم هر تراکنش</li>
+                  <li><span class="bullet">●</span> ذخیره گراف برای مشاهده و ویرایش در آینده</li>
+                  <li><span class="bullet">●</span> نمایش نام مالک و اطلاعات موجودیت مرتبط با آدرس‌ها</li>
+                </ul>
+              </p>
+            </div>
 
-      <div>
-        <h3 className="font-medium text-textTitleColor">
-          علامت‌ها و اجزای گراف
-        </h3>
-        <p>توضیح مرحله دوم.</p>
-      </div>
+            <div>
+              <h3 className="font-medium text-textTitleColor">
+                طرز استفاده
+              </h3>
+              <p>
+                <ul class="usage-list">
+                  <li><span class="bullet">●</span> <b>تعیین مسیرها:</b> با نگه‌داشتن کلید Ctrl در صفحه‌کلید، یال‌های ارتباطی میان اجزای مورد نظر در گراف را انتخاب کنید. سپس از منوی سمت راست صفحه رنگ دلخواه را انتخاب نمایید تا مسیرهای انتخاب‌شده با همان رنگ مشخص شوند.</li>
 
-    </div>
-  </Modal.Panel>
-</Modal>
+                  <li><span class="bullet">●</span> <b>دریافت گزارش:</b> ابتدا مسیرهای مورد نظر را با استفاده از رنگ‌های مختلف مشخص کنید. سپس می‌توانید گزارش مربوط به هر مسیر را با انتخاب رنگ آن مسیر، در قالب فایل Excel دریافت نمایید.</li>
+
+                  <li><span class="bullet">●</span> <b>مشاهده نقطه آغاز گراف:</b> پیکان نمایش‌داده‌شده در بالای یک گره خاص نشان می‌دهد که فرآیند رسم گراف از کدام گره (Node) آغاز شده است.</li>
+
+                  <li><span class="bullet">●</span> <b>تغییر توکن مبنای گراف:</b> از طریق منوی سمت راست می‌توانید توکن مورد نظر را تغییر داده و گراف را بر اساس توکن جدید رسم کنید. توجه داشته باشید در صورتی که گراف فعلی ذخیره نشده باشد، اطلاعات رسم‌شده قبلی از بین خواهد رفت.</li>
+
+                  <li><span class="bullet">●</span> <b>ذخیره گراف:</b> از منوی سمت راست امکان ذخیره گراف برای مشاهده یا ویرایش در زمان دیگر فراهم است. برای ذخیره‌سازی، تعیین نام برای گراف الزامی می‌باشد.</li>
+
+                  <li><span class="bullet">●</span> <b>نمایش اطلاعات تراکنش‌ها:</b> از طریق منوی سمت راست می‌توانید تعیین کنید که اطلاعاتی مانند حجم تراکنش، زمان انجام تراکنش و قیمت دلاری آن در گراف نمایش داده شود.</li>
+
+                  <li><span class="bullet">●</span> <b>مشاهده اطلاعات آدرس یا تراکنش:</b> با کلیک بر روی گره‌های مربوط به آدرس یا تراکنش، جزئیات مرتبط با آن در پنل سمت چپ صفحه نمایش داده خواهد شد.</li>
+
+                  <li><span class="bullet">●</span> <b>نمایش ریسک آدرس:</b> سطح ریسک آدرس‌ها از طریق رنگ حاشیه گره‌های مربوط به آدرس مشخص می‌شود. همچنین با کلیک بر روی هر آدرس، مقدار دقیق ریسک آن قابل مشاهده است. توجه داشته باشید که ممکن است برای برخی آدرس‌ها ریسک مشخصی در دسترس نباشد.</li>
+
+                  <li><span class="bullet">●</span> <b>حذف آدرس یا تراکنش از گراف:</b> با کلیک بر روی گره آدرس یا تراکنش، پنجره اطلاعات مربوط به آن باز می‌شود. در بخش بالای سمت چپ این پنجره گزینه حذف برای حذف آن گره از گراف در دسترس است.</li>
+                </ul>
+              </p>
+            </div>
+
+          </div>
+        </Modal.Panel>
+      </Modal>
 
 
 
@@ -1581,9 +1610,18 @@ const Page = () => {
         onClose={() => SetOpenSaveBox(false)}
         className="p-0"
       >
-        <Modal.Backdrop />
+        <Modal.Backdrop className="bg-black/30 backdrop-blur-sm" />
         <div className="fixed inset-0 flex z-50 backdrop-blur-sm bg-white/10">
-          <Modal.Panel className="w-full max-w-xl rounded-lg bg-boxColor  shadow-lg mt-12.5 text-textColor p-4">
+          <Modal.Panel className="
+      w-full max-w-xl
+      rounded-2xl
+      bg-bgColor dark:bg-gray-900
+      border border-boxBorderColor dark:border-gray-700
+      shadow-lg
+      p-6
+      mt-25
+      text-textColor
+    ">
             <>
               <h6>ذخیره گراف</h6>
               <Input
@@ -1634,9 +1672,18 @@ const Page = () => {
         onClose={() => SetReportBox(false)}
         className="p-0"
       >
-        <Modal.Backdrop />
+        <Modal.Backdrop className="bg-black/30 backdrop-blur-sm" />
         <div className="fixed inset-0 flex z-50 backdrop-blur-sm bg-white/10">
-          <Modal.Panel className="w-full max-w-xl rounded-lg bg-boxColor  shadow-lg mt-12.5 text-textColor p-4">
+          <Modal.Panel className="
+      w-full max-w-xl
+      rounded-2xl
+      bg-bgColor dark:bg-gray-900
+      border border-boxBorderColor dark:border-gray-700
+      shadow-lg
+      p-6
+      mt-25
+      text-textColor
+    ">
             <ReportModal Data={Data} PaintedEdges={PaintedEdges} />
           </Modal.Panel>
         </div>
@@ -1647,9 +1694,18 @@ const Page = () => {
         onClose={() => setChangeNetworkBox(false)}
         className="p-0"
       >
-        <Modal.Backdrop />
+        <Modal.Backdrop className="bg-black/30 backdrop-blur-sm" />
         <div className="fixed inset-0 flex z-50 backdrop-blur-sm bg-white/10">
-          <Modal.Panel className="w-full max-w-xl rounded-lg bg-boxColor  shadow-lg mt-12.5 text-textColor p-4">
+          <Modal.Panel className="
+      w-full max-w-xl
+      rounded-2xl
+      bg-bgColor dark:bg-gray-900
+      border border-boxBorderColor dark:border-gray-700
+      shadow-lg
+      p-6
+      mt-25
+      text-textColor
+    ">
             <h6> آیا از تغییر شبکه مورد نظر مطمئن هستید؟</h6>
             <small className="font-bold">
               {" "}

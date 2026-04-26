@@ -234,13 +234,13 @@ const AdressActivity = ({
                             <path d="M13 4C16.7712 4 18.6569 4 19.8284 5.17157C20.6366 5.97975 20.8873 7.1277 20.965 9M10 20H13C16.7712 20 18.6569 20 19.8284 18.8284C20.6366 18.0203 20.8873 16.8723 20.965 15M9 4.00093C5.8857 4.01004 4.23467 4.10848 3.17157 5.17157C2 6.34315 2 8.22876 2 12C2 15.7712 2 17.6569 3.17157 18.8284C3.82475 19.4816 4.69989 19.7706 6 19.8985" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
                           </svg>
                         </span>
-                        {Balance !== null ? (
+                        {Balance !== null && Balance !== undefined ? (
                           <span>
                             {Balance.toLocaleString()}
-                            <small className="mr-1 text-sm font-medium text-textTitleColor">{TokenSelected}</small>
+                            <small className="mr-1 ml-1 text-sm font-medium text-textTitleColor">{TokenSelected}</small>
                           </span>
                         ) : (
-                          <span className="text-textTitleColor">نامشخص</span>
+                          <span className="text-textTitleColor text-2xl">نامشخص</span>
                         )}
                       </p>
                     </div>
@@ -261,7 +261,7 @@ const AdressActivity = ({
                       </span>
                       {typeof Transactions === "number"
                         ? Transactions.toLocaleString()
-                        : "نامشخص"}
+                        : <span className="text-textTitleColor text-2xl">نامشخص</span>}
                     </p>
                   </div>
 
@@ -279,11 +279,11 @@ const AdressActivity = ({
                           <path d="M12 12V7M21 12C21 16.9706 16.9706 21 12 21C7.02944 21 3 16.9706 3 12C3 7.02944 7.02944 3 12 3C16.9706 3 21 7.02944 21 12Z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
                         </svg>
                       </span>
-                      {FirstActivity !== null
+                      {FirstActivity !== null && FirstActivity !== undefined
                         ? Miladi === 0
                           ? `${MiladiCalendar(FirstActivity).year}/${MiladiCalendar(FirstActivity).month}/${MiladiCalendar(FirstActivity).day}`
                           : `${JalaliCalendar(FirstActivity).year}/${JalaliCalendar(FirstActivity).month}/${JalaliCalendar(FirstActivity).day}`
-                        : "نامشخص"}
+                        : <span className="text-textTitleColor text-2xl">نامشخص</span>}
                     </p>
                   </div>
 
@@ -300,11 +300,11 @@ const AdressActivity = ({
                           <path d="M12 12V17M21 12C21 16.9706 16.9706 21 12 21C7.02944 21 3 16.9706 3 12C3 7.02944 7.02944 3 12 3C16.9706 3 21 7.02944 21 12Z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
                         </svg>
                       </span>
-                      {LastActivity !== null
+                      {LastActivity !== null && LastActivity !== undefined
                         ? Miladi === 0
                           ? `${MiladiCalendar(LastActivity).year}/${MiladiCalendar(LastActivity).month}/${MiladiCalendar(LastActivity).day}`
                           : `${JalaliCalendar(LastActivity).year}/${JalaliCalendar(LastActivity).month}/${JalaliCalendar(LastActivity).day}`
-                        : "نامشخص"}
+                        : <span className="text-textTitleColor text-2xl">نامشخص</span>}
                     </p>
                   </div>
 
